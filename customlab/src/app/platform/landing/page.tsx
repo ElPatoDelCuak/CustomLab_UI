@@ -24,7 +24,7 @@ export default function LandingPage() {
                         </button>
                         <button className="bg-gray-200 hover:bg-gray-300 text-gray-900 font-bold py-2 px-6 rounded-lg transition">
                             Más Información
-                        </button>
+                        </button>landing
                     </div>
                 </div>
             </main>
@@ -32,7 +32,7 @@ export default function LandingPage() {
             {/* Footer */}
             <footer className="bg-white shadow-sm mt-12">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 text-center text-gray-600">
-                    <p>&copy; 2024 CustomLab. Todos los derechos reservados.</p>
+                    <p>&copy; 2026 CustomLab. Todos los derechos reservados.</p>
                 </div>
             </footer>
         </div>
