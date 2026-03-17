@@ -10,7 +10,7 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand */}
           <div className="space-y-4">
-            <h3 className="font-serif text-2xl font-semibold">ATELIER</h3>
+            <h3 className="font-serif text-2xl font-semibold">CustomLab</h3>
             <p className="text-background/70 text-sm leading-relaxed">
               Moda contemporánea que celebra la individualidad y el estilo atemporal.
             </p>
@@ -85,7 +85,7 @@ export function Footer() {
 
         <div className="border-t border-background/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
           <p className="text-sm text-background/60">
-            2026 ATELIER. Todos los derechos reservados.
+            2026 CustomLab. Todos los derechos reservados.
           </p>
           <div className="flex gap-6">
             <Link href="#" className="text-sm text-background/60 hover:text-background transition-colors">

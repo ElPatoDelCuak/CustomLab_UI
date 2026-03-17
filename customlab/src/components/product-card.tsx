@@ -5,18 +5,7 @@ import { useState } from "react"
 import { Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-
-interface ProductCardProps {
-  id: number
-  name: string
-  price: number
-  originalPrice?: number
-  image: string
-  hoverImage?: string
-  category: string
-  isNew?: boolean
-  isSale?: boolean
-}
+import { ProductCardProps } from "@/types/products"
 
 export function ProductCard({
   name,

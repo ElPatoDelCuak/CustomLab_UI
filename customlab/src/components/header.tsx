@@ -41,7 +41,7 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <h1 className="font-serif text-2xl lg:text-3xl font-semibold tracking-tight">
-              ATELIER
+              CustomLab
             </h1>
           </Link>
 
