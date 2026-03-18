@@ -8,14 +8,12 @@ import { cn } from "@/lib/utils"
 import { ProductCardProps } from "@/types/products"
 
 export function ProductCard({
-  name,
-  price,
-  originalPrice,
-  image,
-  hoverImage,
-  category,
-  isNew,
-  isSale,
+  nombre_producto,
+  precio,
+  image_cover,
+  image_hover,
+  categoria,
+  personalizable,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -28,18 +26,18 @@ export function ProductCard({
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-sm">
         <Image
-          src={image}
-          alt={name}
+          src={image_cover}
+          alt={nombre_producto}
           fill
           className={cn(
             "object-cover transition-all duration-500",
-            isHovered && hoverImage ? "opacity-0" : "opacity-100"
+            isHovered && image_hover ? "opacity-0" : "opacity-100"
           )}
         />
-        {hoverImage && (
+        {image_hover && (
           <Image
-            src={hoverImage}
-            alt={`${name} - vista alternativa`}
+            src={image_hover}
+            alt={`${nombre_producto} - vista alternativa`}
             fill
             className={cn(
               "object-cover transition-all duration-500",
@@ -50,14 +48,9 @@ export function ProductCard({
         
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {isNew && (
+          {personalizable && (
             <span className="px-2 py-1 text-xs uppercase tracking-wider bg-foreground text-background">
-              Nuevo
-            </span>
-          )}
-          {isSale && (
-            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-accent text-accent-foreground">
-              Oferta
+              Personalizable
             </span>
           )}
         </div>
@@ -98,23 +91,15 @@ export function ProductCard({
 
       <div className="mt-4 space-y-1">
         <p className="text-xs text-muted-foreground uppercase tracking-wider">
-          {category}
+          {categoria}
         </p>
         <h3 className="font-medium text-foreground group-hover:text-accent transition-colors">
-          {name}
+          {nombre_producto}
         </h3>
         <div className="flex items-center gap-2">
-          <span className={cn(
-            "font-medium",
-            isSale && "text-accent"
-          )}>
-            ${price.toLocaleString()}
+          <span className="font-medium">
+            ${precio.toLocaleString()}
           </span>
-          {originalPrice && (
-            <span className="text-sm text-muted-foreground line-through">
-              ${originalPrice.toLocaleString()}
-            </span>
-          )}
         </div>
       </div>
     </article>

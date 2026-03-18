@@ -7,6 +7,11 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "images.unsplash.com",
       },
+      {
+        protocol: "http",
+        hostname: "customlab.duckdns.org",
+        port: "8000",
+      }
     ],
   },
 };
