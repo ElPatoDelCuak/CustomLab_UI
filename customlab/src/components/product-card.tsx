@@ -52,12 +52,12 @@ export function ProductCard({
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {oferta && (
-            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-red-600 text-white">
+            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-accent text-accent-foreground">
               Oferta
             </span>
           )}
           {nuevo && (
-            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-green-600 text-white">
+            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-foreground text-background">
               Nuevo
             </span>
           )}
@@ -110,7 +110,7 @@ export function ProductCard({
           {nombre_producto}
         </h3>
         <div className="flex items-center gap-2">
-          <span className={cn("font-medium", oferta && "text-red-600")}>
+          <span className={cn("font-medium", oferta && "text-accent")}>
             {precio.toLocaleString()}€
           </span>
           {precio_original && (
