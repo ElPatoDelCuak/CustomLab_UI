@@ -4,7 +4,7 @@ import { ProductCardProps } from "@/types/products";
 import { useCallback } from "react";
 
 export const useProductsServices = () => {
-    const getProducts = useCallback(async (): Promise<ApiResponse<ProductCardProps[]>> => {
+    const getProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
             const response = await fetch(
                 process.env.NEXT_PUBLIC_API_URL + "/api/productos",
@@ -56,7 +56,7 @@ export const useProductsServices = () => {
             };
         }
 
-    }, []);
+    };
 
     return { getProducts };
 }

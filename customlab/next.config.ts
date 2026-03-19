@@ -5,10 +5,6 @@ const nextConfig: NextConfig = {
     unoptimized: true,
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
         protocol: "http",
         hostname: "customlab.duckdns.org",
         port: "8000",
