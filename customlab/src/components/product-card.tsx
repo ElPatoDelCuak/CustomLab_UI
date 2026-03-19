@@ -98,7 +98,7 @@ export function ProductCard({
         </h3>
         <div className="flex items-center gap-2">
           <span className="font-medium">
-            ${precio.toLocaleString()}
+            {precio.toLocaleString()}€
           </span>
         </div>
       </div>

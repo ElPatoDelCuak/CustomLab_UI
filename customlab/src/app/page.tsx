@@ -1,49 +1,31 @@
+"use client"
 import { Header } from "@/components/header"
 import { HeroBanner } from "@/components/hero-banner"
 import { ProductCard } from "@/components/product-card"
 import { Footer } from "@/components/footer"
+import { useProductsServices } from "@/app/services/productsServices"
+import { useEffect, useState } from "react"
+import { ProductCardProps } from "@/types/products"
 
 export default function LandingPage() {
-const products = [
-  {
-    id_producto: 1,
-    nombre_producto: "Vestido Midi de Lino",
-    precio: 189,
-    stock: 10,
-    image_cover: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
-    image_hover: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80",
-    images: [
-      {
-        id_imagen: 1,
-        url: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80"
-      },
-      {
-        id_imagen: 2,
-        url: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80"
-      },
-      {
-        id_imagen: 3,
-        url: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80"
-      }
-    ],
-    categoria: "Vestidos",
-    personalizable: true,
-    tallas: [
-      {
-        id_talla: 1,
-        id_producto: 1,
-        talla: "S",
-        stock: 5,
-      },
-      {
-        id_talla: 2,
-        id_producto: 1,
-        talla: "M",
-        stock: 3,
-      },
-    ]
-  }
-]    
+    const { getProducts } = useProductsServices();
+    const [products, setProducts] = useState<ProductCardProps[]>([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const result = await getProducts();
+
+            if (result.success && result.data) {
+                setProducts(result.data);
+                return;
+            }
+
+            setProducts([]);
+            console.error(result.message);
+        };
+        fetchProducts();
+    }, [getProducts]);
+
     return (
         <div>
             <Header />
