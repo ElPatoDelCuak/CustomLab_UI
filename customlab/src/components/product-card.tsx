@@ -51,9 +51,9 @@ export function ProductCard({
         
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {personalizable && (
-            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-foreground text-background">
-              Personalizable
+          {oferta && (
+            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-red-600 text-white">
+              Oferta
             </span>
           )}
           {nuevo && (
@@ -61,9 +61,9 @@ export function ProductCard({
               Nuevo
             </span>
           )}
-          {oferta && (
-            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-red-600 text-white">
-              Oferta
+          {personalizable && (
+            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-foreground text-background">
+              Personalizable
             </span>
           )}
         </div>
@@ -110,9 +110,14 @@ export function ProductCard({
           {nombre_producto}
         </h3>
         <div className="flex items-center gap-2">
-          <span className="font-medium">
+          <span className={cn("font-medium", oferta && "text-red-600")}>
             {precio.toLocaleString()}€
           </span>
+          {precio_original && (
+            <span className="text-sm text-muted-foreground line-through">
+              {precio_original.toLocaleString()}€
+            </span>
+          )}
         </div>
       </div>
     </article>
