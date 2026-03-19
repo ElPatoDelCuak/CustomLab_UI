@@ -10,10 +10,13 @@ import { ProductCardProps } from "@/types/products"
 export function ProductCard({
   nombre_producto,
   precio,
+  precio_original,
   image_cover,
   image_hover,
   categoria,
   personalizable,
+  nuevo,
+  oferta,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [isFavorite, setIsFavorite] = useState(false)
@@ -51,6 +54,16 @@ export function ProductCard({
           {personalizable && (
             <span className="px-2 py-1 text-xs uppercase tracking-wider bg-foreground text-background">
               Personalizable
+            </span>
+          )}
+          {nuevo && (
+            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-green-600 text-white">
+              Nuevo
+            </span>
+          )}
+          {oferta && (
+            <span className="px-2 py-1 text-xs uppercase tracking-wider bg-red-600 text-white">
+              Oferta
             </span>
           )}
         </div>

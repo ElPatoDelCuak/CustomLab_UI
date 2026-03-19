@@ -2,6 +2,7 @@ export interface ProductCardProps {
   id_producto: number
   nombre_producto: string
   precio: number
+  precio_original?: number
   stock: number
   image_cover: string
   image_hover: string
@@ -11,6 +12,8 @@ export interface ProductCardProps {
   }[]
   categoria: string
   personalizable: boolean
+  nuevo: boolean
+  oferta: boolean
   tallas: {
     id_talla: number
     id_producto: number
@@ -23,9 +26,12 @@ export interface BackendProduct {
     id_producto: number;
     nombre_producto: string;
     precio_venta: number;
+    precio_original?: number;
     stock: number;
     categoria: string;
     personalizable: boolean;
+    nuevo: boolean;
+    oferta: boolean;
     images: {
         id_imagen_producto: number;
         ruta: string;

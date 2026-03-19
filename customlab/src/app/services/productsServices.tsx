@@ -4,10 +4,10 @@ import { ProductCardProps } from "@/types/products";
 import { useCallback } from "react";
 
 export const useProductsServices = () => {
-    const getProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
+    const getFeaturedProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
             const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos",
+                process.env.NEXT_PUBLIC_API_URL + "/api/productos/featured/",
                 {
                     method: "GET",
                 }
@@ -33,6 +33,7 @@ export const useProductsServices = () => {
                 id_producto: product.id_producto,
                 nombre_producto: product.nombre_producto,
                 precio: product.precio_venta,
+                precio_original: product.precio_original,
                 stock: product.stock,
                 image_cover: product.images[0]?.ruta ?? "",
                 image_hover: product.images[1]?.ruta ?? product.images[0]?.ruta ?? "",
@@ -42,6 +43,8 @@ export const useProductsServices = () => {
                 })),
                 categoria: product.categoria,
                 personalizable: product.personalizable,
+                nuevo: product.nuevo,
+                oferta: product.oferta,
                 tallas: product.tallas,
             }));
 
@@ -58,5 +61,5 @@ export const useProductsServices = () => {
 
     };
 
-    return { getProducts };
+    return { getFeaturedProducts };
 }

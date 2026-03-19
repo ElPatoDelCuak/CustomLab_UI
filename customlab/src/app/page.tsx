@@ -8,12 +8,12 @@ import { useEffect, useState } from "react"
 import { ProductCardProps } from "@/types/products"
 
 export default function LandingPage() {
-    const { getProducts } = useProductsServices();
+    const { getFeaturedProducts } = useProductsServices();
     const [products, setProducts] = useState<ProductCardProps[]>([]);
 
     useEffect(() => {
         const fetchProducts = async () => {
-            const result = await getProducts();
+            const result = await getFeaturedProducts();
 
             if (result.success && result.data) {
                 setProducts(result.data);
@@ -24,7 +24,7 @@ export default function LandingPage() {
             console.error(result.message);
         };
         fetchProducts();
-    }, [getProducts]);
+    }, []);
 
     return (
         <div>
@@ -39,11 +39,14 @@ export default function LandingPage() {
                             id_producto={product.id_producto}
                             nombre_producto={product.nombre_producto}
                             precio={product.precio}
+                            precio_original={product.precio_original}
                             stock={product.stock}
                             image_cover={product.image_cover}
                             image_hover={product.image_hover}
                             categoria={product.categoria}
                             personalizable={product.personalizable}
+                            nuevo={product.nuevo}
+                            oferta={product.oferta}
                             images={product.images}
                             tallas={product.tallas}
                         />
