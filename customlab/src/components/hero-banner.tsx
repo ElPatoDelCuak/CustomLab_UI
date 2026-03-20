@@ -1,12 +1,13 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
+import banner_image from "./../public/img/spring-collection.jpg"
 
 export function HeroBanner() {
   return (
     <section className="relative h-[50vh] md:h-[60vh] lg:h-[70vh] overflow-hidden">
       <Image
-        src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1920&q=80"
+        src={banner_image}
         alt="Colección Primavera"
         fill
         className="object-cover"
