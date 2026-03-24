@@ -50,7 +50,7 @@ export function ProductCard({
         )}
         
         {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
+        <div className="absolute top-3 left-3 flex flex-col items-start gap-2">
           {oferta && (
             <span className="px-2 py-1 text-xs uppercase tracking-wider bg-accent text-accent-foreground">
               Oferta
