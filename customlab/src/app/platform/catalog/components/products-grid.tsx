@@ -24,27 +24,27 @@ export default function ProductsGrid() {
   }, []);
 
   return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
-                  <ProductCard 
-                    key={product.id_producto}
-                    id_producto={product.id_producto}
-                    nombre_producto={product.nombre_producto}
-                    precio={product.precio}
-                    precio_original={product.precio_original}
-                    stock={product.stock}
-                    image_cover={product.image_cover}
-                    image_hover={product.image_hover}
-                    categoria={product.categoria}
-                    personalizable={product.personalizable}
-                    images={product.images}
-                    tallas={product.tallas}
-                    nuevo={product.nuevo}
-                    oferta={product.oferta}
-                  />
-              ))}
-          </div>
-      </div>
+    <div className="w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+                <ProductCard 
+                key={product.id_producto}
+                id_producto={product.id_producto}
+                nombre_producto={product.nombre_producto}
+                precio={product.precio}
+                precio_original={product.precio_original}
+                stock={product.stock}
+                image_cover={product.image_cover}
+                image_hover={product.image_hover}
+                categoria={product.categoria}
+                personalizable={product.personalizable}
+                images={product.images}
+                tallas={product.tallas}
+                nuevo={product.nuevo}
+                oferta={product.oferta}
+                />
+            ))}
+        </div>
+    </div>
   )
 }
