@@ -1,0 +1,50 @@
+"use client"
+import { ProductCard } from "@/components/product-card"
+import { useProductsServices } from "@/app/services/productsServices"
+import { useEffect, useState } from "react"
+import { ProductCardProps } from "@/types/products"
+
+export default function ProductsGrid() {
+  const { getProducts } = useProductsServices();
+  const [products, setProducts] = useState<ProductCardProps[]>([]);
+
+  useEffect(() => {
+      const fetchProducts = async () => {
+          const result = await getProducts();
+
+          if (result.success && result.data) {
+              setProducts(result.data);
+              return;
+          }
+
+          setProducts([]);
+          console.error(result.message);
+      };
+      fetchProducts();
+  }, []);
+
+  return (
+    <div className="w-full">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+            {products.map((product) => (
+                <ProductCard 
+                key={product.id_producto}
+                id_producto={product.id_producto}
+                nombre_producto={product.nombre_producto}
+                precio={product.precio}
+                precio_original={product.precio_original}
+                stock={product.stock}
+                image_cover={product.image_cover}
+                image_hover={product.image_hover}
+                categoria={product.categoria}
+                personalizable={product.personalizable}
+                images={product.images}
+                tallas={product.tallas}
+                nuevo={product.nuevo}
+                oferta={product.oferta}
+                />
+            ))}
+        </div>
+    </div>
+  )
+}
