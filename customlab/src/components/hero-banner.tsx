@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "lucide-react"
-import banner_image from "./../public/img/spring-collection.jpg"
+import banner_image from "./../../public/img/spring-collection.jpg"
 
 export function HeroBanner() {
   return (

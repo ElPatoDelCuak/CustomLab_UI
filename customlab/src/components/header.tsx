@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import logo from "./../public/img/logo_black_white.png"
+import logo from "./../../public/img/logo_black_white.png"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
