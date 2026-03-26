@@ -3,12 +3,7 @@
 import { useState } from "react"
 import { ChevronDown, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 
@@ -18,6 +13,13 @@ const categories = [
   { id: "pants", label: "Pantalones", count: 18 },
   { id: "jackets", label: "Chaquetas", count: 12 },
   { id: "skirts", label: "Faldas", count: 15 },
+]
+
+
+const features = [
+  { id: "eco", label: "Ecológico", count: 10 },
+  { id: "new", label: "Nuevo", count: 8 },
+  { id: "bestseller", label: "Más vendido", count: 5 },
 ]
 
 const sizes = ["XS", "S", "M", "L", "XL"]
@@ -36,8 +38,15 @@ interface CatalogFiltersProps {
 
 export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+
   const [selectedSizes, setSelectedSizes] = useState<string[]>([])
   const [selectedColors, setSelectedColors] = useState<string[]>([])
+  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
+  const toggleFeature = (id: string) => {
+    setSelectedFeatures(prev =>
+      prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
+    )
+  }
 
   const toggleCategory = (id: string) => {
     setSelectedCategories(prev =>
@@ -51,13 +60,15 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
     )
   }
 
+
   const clearFilters = () => {
     setSelectedCategories([])
     setSelectedSizes([])
     setSelectedColors([])
+    setSelectedFeatures([])
   }
 
-  const hasActiveFilters = selectedCategories.length > 0 || selectedSizes.length > 0 || selectedColors.length > 0
+  const hasActiveFilters = selectedCategories.length > 0 || selectedSizes.length > 0 || selectedColors.length > 0 || selectedFeatures.length > 0
 
   return (
     <div className={cn("space-y-6", isMobile && "p-4")}>
@@ -81,7 +92,33 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
         </Button>
       )}
 
-      <Accordion type="multiple" defaultValue={["category", "size", "color", "price"]} className="space-y-2">
+      <Accordion type="multiple" defaultValue={["category", "features", "size", "color", "price"]} className="space-y-2">
+                <AccordionItem value="features" className="border-b border-border">
+                  <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
+                    Características
+                  </AccordionTrigger>
+                  <AccordionContent className="pb-4">
+                    <div className="space-y-3">
+                      {features.map((feature) => (
+                        <label
+                          key={feature.id}
+                          className="flex items-center gap-3 cursor-pointer group"
+                        >
+                          <Checkbox
+                            checked={selectedFeatures.includes(feature.id)}
+                            onCheckedChange={() => toggleFeature(feature.id)}
+                          />
+                          <span className="text-sm group-hover:text-accent transition-colors">
+                            {feature.label}
+                          </span>
+                          <span className="text-xs text-muted-foreground ml-auto">
+                            ({feature.count})
+                          </span>
+                        </label>
+                      ))}
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
         <AccordionItem value="category" className="border-b border-border">
           <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
             Categoría
@@ -108,7 +145,7 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
             </div>
           </AccordionContent>
         </AccordionItem>
-
+        
         <AccordionItem value="size" className="border-b border-border">
           <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
             Talla

@@ -2,7 +2,6 @@
 
 import Image from "next/image"
 import { useState } from "react"
-import { Heart } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ProductCardProps } from "@/types/products"
@@ -19,7 +18,6 @@ export function ProductCard({
   oferta,
 }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const [isFavorite, setIsFavorite] = useState(false)
 
   return (
     <article 
@@ -67,27 +65,6 @@ export function ProductCard({
             </span>
           )}
         </div>
-
-        {/* Favorite button */}
-        <Button
-          variant="ghost"
-          size="icon"
-          className={cn(
-            "absolute top-3 right-3 bg-background/80 backdrop-blur-sm hover:bg-background transition-all duration-300",
-            isHovered ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-2"
-          )}
-          onClick={(e) => {
-            e.stopPropagation()
-            setIsFavorite(!isFavorite)
-          }}
-        >
-          <Heart 
-            className={cn(
-              "h-4 w-4 transition-colors",
-              isFavorite ? "fill-accent text-accent" : "text-foreground"
-            )} 
-          />
-        </Button>
 
         {/* Quick add button */}
         <div className={cn(
