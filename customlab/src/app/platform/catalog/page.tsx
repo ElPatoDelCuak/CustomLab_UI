@@ -6,7 +6,7 @@ import { ProductCard } from "@/components/product-card"
 import { useProductsServices } from "@/app/services/productsServices"
 import { useEffect, useState, useMemo } from "react"
 import { ProductCardProps } from "@/types/products"
-import { FilterState } from "@/types/filters"
+import { FilterState } from "@/types/catalogFilters"
 import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/catalog-filters"
 import { cn } from "@/lib/utils"
 

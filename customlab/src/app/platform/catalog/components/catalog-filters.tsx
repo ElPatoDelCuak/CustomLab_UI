@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
-import { FilterState } from "@/types/filters"
+import { FilterState, CatalogFiltersProps, CatalogSortProps } from "@/types/catalogFilters"
 
 const categories = [
   { id: "dresses", label: "Vestidos", count: 24 },
@@ -30,13 +30,6 @@ const priceRanges = [
   { id: "100-200", label: "$100 - $200" },
   { id: "200+", label: "$200+" },
 ]
-
-interface CatalogFiltersProps {
-  isMobile?: boolean
-  onClose?: () => void
-  filters: FilterState
-  onChange: (filters: FilterState) => void
-}
 
 export function CatalogFilters({ isMobile, onClose, filters, onChange }: CatalogFiltersProps) {
 
@@ -190,11 +183,6 @@ export function CatalogFilters({ isMobile, onClose, filters, onChange }: Catalog
       )}
     </div>
   )
-}
-
-interface CatalogSortProps {
-  selected: string
-  onChange: (value: string) => void
 }
 
 export function CatalogSort({ selected, onChange }: CatalogSortProps) {
