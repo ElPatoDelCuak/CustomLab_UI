@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
+import { FilterState } from "@/types/filters"
 
 const categories = [
   { id: "dresses", label: "Vestidos", count: 24 },
@@ -14,7 +15,6 @@ const categories = [
   { id: "jackets", label: "Chaquetas", count: 12 },
   { id: "skirts", label: "Faldas", count: 15 },
 ]
-
 
 const features = [
   { id: "eco", label: "Ecológico", count: 10 },
@@ -34,41 +34,32 @@ const priceRanges = [
 interface CatalogFiltersProps {
   isMobile?: boolean
   onClose?: () => void
+  filters: FilterState
+  onChange: (filters: FilterState) => void
 }
 
-export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
+export function CatalogFilters({ isMobile, onClose, filters, onChange }: CatalogFiltersProps) {
 
-  const [selectedSizes, setSelectedSizes] = useState<string[]>([])
-  const [selectedColors, setSelectedColors] = useState<string[]>([])
-  const [selectedFeatures, setSelectedFeatures] = useState<string[]>([])
-  const toggleFeature = (id: string) => {
-    setSelectedFeatures(prev =>
-      prev.includes(id) ? prev.filter(f => f !== id) : [...prev, id]
-    )
+  const toggle = (
+    key: keyof Pick<FilterState, "categories" | "sizes" | "features" | "priceRange">,
+    value: string
+  ) => {
+    onChange({
+      ...filters,
+      [key]: filters[key].includes(value)
+        ? filters[key].filter((v) => v !== value)
+        : [...filters[key], value],
+    })
   }
 
-  const toggleCategory = (id: string) => {
-    setSelectedCategories(prev =>
-      prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
-    )
-  }
+  const clearFilters = () =>
+    onChange({ ...filters, categories: [], sizes: [], features: [], priceRange: [] })
 
-  const toggleSize = (size: string) => {
-    setSelectedSizes(prev =>
-      prev.includes(size) ? prev.filter(s => s !== size) : [...prev, size]
-    )
-  }
-
-
-  const clearFilters = () => {
-    setSelectedCategories([])
-    setSelectedSizes([])
-    setSelectedColors([])
-    setSelectedFeatures([])
-  }
-
-  const hasActiveFilters = selectedCategories.length > 0 || selectedSizes.length > 0 || selectedColors.length > 0 || selectedFeatures.length > 0
+  const hasActiveFilters =
+    filters.categories.length > 0 ||
+    filters.sizes.length > 0 ||
+    filters.features.length > 0 ||
+    filters.priceRange.length > 0
 
   return (
     <div className={cn("space-y-6", isMobile && "p-4")}>
@@ -92,33 +83,31 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
         </Button>
       )}
 
-      <Accordion type="multiple" defaultValue={["category", "features", "size", "color", "price"]} className="space-y-2">
-                <AccordionItem value="features" className="border-b border-border">
-                  <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
-                    Características
-                  </AccordionTrigger>
-                  <AccordionContent className="pb-4">
-                    <div className="space-y-3">
-                      {features.map((feature) => (
-                        <label
-                          key={feature.id}
-                          className="flex items-center gap-3 cursor-pointer group"
-                        >
-                          <Checkbox
-                            checked={selectedFeatures.includes(feature.id)}
-                            onCheckedChange={() => toggleFeature(feature.id)}
-                          />
-                          <span className="text-sm group-hover:text-accent transition-colors">
-                            {feature.label}
-                          </span>
-                          <span className="text-xs text-muted-foreground ml-auto">
-                            ({feature.count})
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </AccordionContent>
-                </AccordionItem>
+      <Accordion type="multiple" defaultValue={["features", "category", "size", "price"]} className="space-y-2">
+        <AccordionItem value="features" className="border-b border-border">
+          <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
+            Características
+          </AccordionTrigger>
+          <AccordionContent className="pb-4">
+            <div className="space-y-3">
+              {features.map((feature) => (
+                <label key={feature.id} className="flex items-center gap-3 cursor-pointer group">
+                  <Checkbox
+                    checked={filters.features.includes(feature.id)}
+                    onCheckedChange={() => toggle("features", feature.id)}
+                  />
+                  <span className="text-sm group-hover:text-accent transition-colors">
+                    {feature.label}
+                  </span>
+                  <span className="text-xs text-muted-foreground ml-auto">
+                    ({feature.count})
+                  </span>
+                </label>
+              ))}
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+
         <AccordionItem value="category" className="border-b border-border">
           <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
             Categoría
@@ -126,13 +115,10 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
           <AccordionContent className="pb-4">
             <div className="space-y-3">
               {categories.map((category) => (
-                <label
-                  key={category.id}
-                  className="flex items-center gap-3 cursor-pointer group"
-                >
+                <label key={category.id} className="flex items-center gap-3 cursor-pointer group">
                   <Checkbox
-                    checked={selectedCategories.includes(category.id)}
-                    onCheckedChange={() => toggleCategory(category.id)}
+                    checked={filters.categories.includes(category.id)}
+                    onCheckedChange={() => toggle("categories", category.id)}
                   />
                   <span className="text-sm group-hover:text-accent transition-colors">
                     {category.label}
@@ -145,7 +131,7 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
             </div>
           </AccordionContent>
         </AccordionItem>
-        
+
         <AccordionItem value="size" className="border-b border-border">
           <AccordionTrigger className="text-sm uppercase tracking-wider hover:no-underline py-4">
             Talla
@@ -155,10 +141,10 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
               {sizes.map((size) => (
                 <button
                   key={size}
-                  onClick={() => toggleSize(size)}
+                  onClick={() => toggle("sizes", size)}
                   className={cn(
                     "w-10 h-10 text-sm border rounded-sm transition-all duration-200",
-                    selectedSizes.includes(size)
+                    filters.sizes.includes(size)
                       ? "bg-foreground text-background border-foreground"
                       : "border-border hover:border-foreground"
                   )}
@@ -177,11 +163,11 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
           <AccordionContent className="pb-4">
             <div className="space-y-3">
               {priceRanges.map((range) => (
-                <label
-                  key={range.id}
-                  className="flex items-center gap-3 cursor-pointer group"
-                >
-                  <Checkbox />
+                <label key={range.id} className="flex items-center gap-3 cursor-pointer group">
+                  <Checkbox
+                    checked={filters.priceRange.includes(range.id)}
+                    onCheckedChange={() => toggle("priceRange", range.id)}
+                  />
                   <span className="text-sm group-hover:text-accent transition-colors">
                     {range.label}
                   </span>
@@ -194,7 +180,7 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
 
       {isMobile && (
         <div className="pt-4 border-t border-border">
-          <Button 
+          <Button
             className="w-full bg-foreground text-background hover:bg-foreground/90"
             onClick={onClose}
           >
@@ -206,9 +192,13 @@ export function CatalogFilters({ isMobile, onClose }: CatalogFiltersProps) {
   )
 }
 
-export function CatalogSort() {
+interface CatalogSortProps {
+  selected: string
+  onChange: (value: string) => void
+}
+
+export function CatalogSort({ selected, onChange }: CatalogSortProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [selected, setSelected] = useState("newest")
 
   const sortOptions = [
     { id: "newest", label: "Más recientes" },
@@ -225,14 +215,11 @@ export function CatalogSort() {
         onClick={() => setIsOpen(!isOpen)}
       >
         <span className="text-sm">
-          {sortOptions.find(o => o.id === selected)?.label}
+          {sortOptions.find((o) => o.id === selected)?.label}
         </span>
-        <ChevronDown className={cn(
-          "h-4 w-4 transition-transform",
-          isOpen && "rotate-180"
-        )} />
+        <ChevronDown className={cn("h-4 w-4 transition-transform", isOpen && "rotate-180")} />
       </Button>
-      
+
       {isOpen && (
         <div className="absolute top-full right-0 mt-2 w-full bg-background border border-border rounded-sm shadow-lg z-10">
           {sortOptions.map((option) => (
@@ -243,7 +230,7 @@ export function CatalogSort() {
                 selected === option.id && "bg-muted"
               )}
               onClick={() => {
-                setSelected(option.id)
+                onChange(option.id)
                 setIsOpen(false)
               }}
             >
