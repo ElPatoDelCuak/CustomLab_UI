@@ -4,10 +4,19 @@ import Link from "next/link"
 import { useState } from "react"
 import { Menu, Search, ShoppingBag, User, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { usePlatformStore } from "@/stores/platformStore"
+import { useRouter } from "next/navigation"
 import logo from "./../../public/img/logo_black_white.png"
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const { usuario, clearAuth } = usePlatformStore()
+  const router = useRouter()
+
+  function handleLogout() {
+    clearAuth()
+    router.push("/")
+  }
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -23,37 +32,56 @@ export function Header() {
           </Button>
 
           <nav className="hidden lg:flex items-center gap-8">
-            <Link href="/platform/catalog" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Catalogo
-            </Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Mujer
-            </Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Hombre
-            </Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Accesorios
-            </Link>
+            <Link href="/platform/catalog" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
+            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
+            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
+            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Accesorios</Link>
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
             <Image src={logo} alt="CustomLab Logo" className="h-45 w-auto" />
           </Link>
 
+          {/* Zona derecha — condicional según sesión */}
           <div className="flex items-center gap-2">
             <Button variant="ghost" size="icon" className="hidden sm:flex">
               <Search className="h-5 w-5" />
             </Button>
-            <Button variant="ghost" size="icon">
-              <User className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon" className="relative">
-              <ShoppingBag className="h-5 w-5" />
-              <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center">
-                3
-              </span>
-            </Button>
+
+            {usuario ? (
+              // Usuario logueado
+              <>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link href="/platform/perfil">
+                    <User className="h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button variant="ghost" size="icon" className="relative">
+                  <ShoppingBag className="h-5 w-5" />
+                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center">
+                    3
+                  </span>
+                </Button>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleLogout}
+                  className="hidden sm:flex text-xs uppercase tracking-wider"
+                >
+                  Salir
+                </Button>
+              </>
+            ) : (
+              // Usuario no logueado
+              <>
+                <Button variant="ghost" size="sm" asChild className="text-xs uppercase tracking-wider">
+                  <Link href="/auth/login">Entrar</Link>
+                </Button>
+                <Button size="sm" asChild className="text-xs uppercase tracking-wider bg-foreground text-background hover:bg-foreground/90">
+                  <Link href="/auth/register">Registro</Link>
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </div>
@@ -61,18 +89,21 @@ export function Header() {
       {isMenuOpen && (
         <div className="lg:hidden border-t border-border bg-background">
           <nav className="flex flex-col py-4 px-4">
-            <Link href="/platform/catalog" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Catalogo
-            </Link>
-            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Mujer
-            </Link>
-            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Hombre
-            </Link>
-            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">
-              Accesorios
-            </Link>
+            <Link href="/platform/catalog" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
+            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
+            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
+            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Accesorios</Link>
+            {/* Opciones móvil según sesión */}
+            {usuario ? (
+              <button onClick={handleLogout} className="py-3 text-sm uppercase tracking-wider text-left hover:text-accent transition-colors">
+                Cerrar sesión
+              </button>
+            ) : (
+              <>
+                <Link href="/auth/login" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Entrar</Link>
+                <Link href="/auth/register" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Registro</Link>
+              </>
+            )}
           </nav>
         </div>
       )}

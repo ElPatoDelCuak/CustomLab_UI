@@ -3,15 +3,37 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import backgroundImage from "@/../public/img/spring-collection.jpg"
+import { loginService } from "@/services/loginService"
+
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
+
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault()
+    setError("")
+    setLoading(true)
+
+    const result = await loginService(email, password)
+
+    if (result.success) {
+      router.push("/")
+    } else {
+      setError(result.message)
+    }
+
+    setLoading(false)
+  }
 
   return (
     <div className="min-h-screen flex">
@@ -49,7 +71,7 @@ export default function LoginPage() {
           </div>
 
           {/* Formulario */}
-          <form className="space-y-6">
+          <form className="space-y-6" onSubmit={handleLogin}>
             {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="block text-sm font-medium text-foreground">
@@ -84,7 +106,7 @@ export default function LoginPage() {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                  {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                 </button>
               </div>
             </div>
@@ -105,12 +127,18 @@ export default function LoginPage() {
               </Link>
             </div>
 
+            {/* Error — añadir justo antes del botón */}
+            {error && (
+              <p className="text-sm text-destructive text-center">{error}</p>
+            )}
+
             {/* Botón de login */}
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
+              disabled={loading}
               className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-medium tracking-wide"
             >
-              Iniciar Sesión
+              {loading ? "Iniciando sesión..." : "Iniciar Sesión"}
             </Button>
           </form>
 

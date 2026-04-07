@@ -3,7 +3,7 @@ import { Header } from "@/components/header"
 import { HeroBanner } from "@/components/hero-banner"
 import { ProductCard } from "@/components/product-card"
 import { Footer } from "@/components/footer"
-import { useProductsServices } from "@/app/services/productsServices"
+import { useProductsServices } from "@/services/productsServices"
 import { useEffect, useState } from "react"
 import { ProductCardProps } from "@/types/products"
 

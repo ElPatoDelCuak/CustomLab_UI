@@ -3,7 +3,7 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
-import { useProductsServices } from "@/app/services/productsServices"
+import { useProductsServices } from "@/services/productsServices"
 import { useEffect, useState, useMemo } from "react"
 import { ProductCardProps } from "@/types/products"
 import { FilterState } from "@/types/catalogFilters"
