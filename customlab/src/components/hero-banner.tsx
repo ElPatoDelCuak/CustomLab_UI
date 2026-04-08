@@ -1,5 +1,6 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import banner_image from "./../../public/img/spring-collection.jpg"
 
@@ -26,13 +27,15 @@ export function HeroBanner() {
           <p className="text-lg md:text-xl max-w-xl mx-auto text-background/90">
             Descubre piezas únicas que definen la elegancia contemporánea
           </p>
-          <Button 
-            size="lg" 
-            className="bg-background text-foreground hover:bg-background/90 group"
-          >
-            <span>Explorar colección</span>
-            <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Button>
+          <Link href="/platform/catalog" passHref>
+            <Button 
+              size="lg" 
+              className="bg-background text-foreground hover:bg-background/90 group"
+            >
+              <span>Explorar colección</span>
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Button>
+          </Link>
         </div>
       </div>
     </section>
