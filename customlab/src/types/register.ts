@@ -3,6 +3,6 @@ export interface RegisterPayload {
   apellidos: string;
   password: string;
   email: string;
-  fecha_nacimiento?: string;
+  fecha_nacimiento?: string | null;
   doble_factor?: boolean;
 }

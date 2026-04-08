@@ -133,7 +133,7 @@ export default function LoginPage() {
 
             {/* Error — añadir justo antes del botón */}
             {error && (
-              <p className="text-sm text-destructive text-center">{error}</p>
+              <p className="text-sm text-accent text-center">{error}</p>
             )}
 
             {/* Botón de login */}

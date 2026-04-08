@@ -3,13 +3,21 @@
 import { useState } from "react"
 import Link from "next/link"
 import { Eye, EyeOff } from "lucide-react"
+import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
+import { registerService } from "@/services/registerService"
+import { RegisterPayload } from "@/types/register"
 
 export default function RegisterPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [error, setError] = useState("")
+  const [passwordStrength, setPasswordStrength] = useState(0)
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const router = useRouter()
   const [formData, setFormData] = useState({
     nombre: "",
     apellidos: "",
@@ -21,7 +29,117 @@ export default function RegisterPage() {
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
+    const nextFormData = { ...formData, [e.target.name]: e.target.value }
+    setFormData(nextFormData)
+
+    if (e.target.name === "password") {
+      setPasswordStrength(getPasswordStrength(nextFormData.password))
+    }
+
+    if (e.target.name === "password" || e.target.name === "confirmPassword") {
+      passwordsMatch(nextFormData)
+    }
+  }
+
+  const handleDobleFactorChange = (checked: boolean | "indeterminate") => {
+    setFormData({ ...formData, dobleFactor: checked === true })
+  }
+
+  const handleTermsChange = (checked: boolean | "indeterminate") => {
+    setTermsAccepted(checked === true)
+  }
+
+  const getPasswordStrength = (password: string) => {
+    if (!password) return 0
+
+    let score = 0
+
+    if (password.length >= 8) score += 1
+    if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score += 1
+    if (/\d/.test(password)) score += 1
+    if (/[^A-Za-z0-9]/.test(password)) score += 1
+
+    if (score <= 1) return 1
+    if (score <= 3) return 2
+    return 3
+  }
+
+  const passwordsMatch = (nextFormData = formData) => {
+    if (!nextFormData.password || !nextFormData.confirmPassword) {
+      setError("")
+      return true
+    }
+
+    if (nextFormData.password !== nextFormData.confirmPassword) {
+      setError("Las contraseñas no coinciden")
+      return false
+    }
+
+    setError("")
+    return true
+  }
+
+  const isPasswordMismatch =
+  Boolean(formData.password) &&
+  Boolean(formData.confirmPassword) &&
+  formData.password !== formData.confirmPassword
+  const isPasswordStrong = passwordStrength === 3
+  const strengthWidth = `${(passwordStrength / 3) * 100}%`
+  const strengthColorClass =
+    passwordStrength === 1
+      ? "bg-red-400"
+      : passwordStrength === 2
+        ? "bg-yellow-400"
+        : passwordStrength === 3
+          ? "bg-green-500"
+          : "bg-transparent"
+  const strengthLabel =
+    passwordStrength === 1
+      ? "Fuerza: debil"
+      : passwordStrength === 2
+        ? "Fuerza: media"
+        : passwordStrength === 3
+          ? "Fuerza: fuerte"
+          : "Usa 8+ caracteres, mayusculas, numeros y simbolos"
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setError("")
+
+    if (!passwordsMatch(formData)) {
+      return
+    }
+
+    if (!isPasswordStrong) {
+      setError("La contrasena debe estar en nivel fuerte")
+      return
+    }
+
+    if (!termsAccepted) {
+      setError("Debes aceptar los terminos y condiciones")
+      return
+    }
+
+    setLoading(true)
+
+    const payload: RegisterPayload = {
+      nombre: formData.nombre,
+      apellidos: formData.apellidos,
+      email: formData.email,
+      password: formData.password,
+      fecha_nacimiento: formData.fechaNacimiento || null,
+      doble_factor: formData.dobleFactor ? true : undefined,
+    }
+
+    const result = await registerService(payload)
+
+    if (result.success) {
+      router.push("/auth/login")
+    } else {
+      setError(result.message)
+    }
+
+    setLoading(false)
   }
   
 
@@ -65,7 +183,7 @@ export default function RegisterPage() {
           </div>
 
           {/* Formulario */}
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
             {/* Nombre y Apellido */}
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
@@ -79,6 +197,7 @@ export default function RegisterPage() {
                   placeholder="Juan"
                   value={formData.nombre}
                   onChange={handleChange}
+                  required
                   className="h-12 bg-card border-border focus:border-accent focus:ring-accent"
                 />
               </div>
@@ -93,6 +212,7 @@ export default function RegisterPage() {
                   placeholder="Pérez"
                   value={formData.apellidos}
                   onChange={handleChange}
+                  required
                   className="h-12 bg-card border-border focus:border-accent focus:ring-accent"
                 />
               </div>
@@ -124,6 +244,7 @@ export default function RegisterPage() {
                 value={formData.email}
                 onChange={handleChange}
                 className="h-12 bg-card border-border focus:border-accent focus:ring-accent"
+                required
               />
             </div>
 
@@ -140,6 +261,7 @@ export default function RegisterPage() {
                   placeholder="Contraseña"
                   value={formData.password}
                   onChange={handleChange}
+                  required
                   className="h-12 bg-card border-border focus:border-accent focus:ring-accent pr-12"
                 />
                 <button
@@ -149,6 +271,15 @@ export default function RegisterPage() {
                 >
                   {showPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                 </button>
+              </div>
+              <div className="mt-2 space-y-1">
+                <div className="h-1.5 w-full overflow-hidden rounded-full bg-border">
+                  <div
+                    className={`h-full rounded-full transition-all duration-300 ${strengthColorClass}`}
+                    style={{ width: strengthWidth }}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">{strengthLabel}</p>
               </div>
             </div>
 
@@ -165,6 +296,7 @@ export default function RegisterPage() {
                   placeholder="Confirmar contraseña"
                   value={formData.confirmPassword}
                   onChange={handleChange}
+                  required
                   className="h-12 bg-card border-border focus:border-accent focus:ring-accent pr-12"
                 />
                 <button
@@ -176,11 +308,16 @@ export default function RegisterPage() {
                 </button>
               </div>
             </div>
+            {error && (
+              <p className="text-sm text-accent text-center">{error}</p>
+            )}
 
             {/* Doble factor de autenticación */}
             <div className="flex items-start gap-3">
               <Checkbox 
                 id="dobleFactor" 
+                checked={formData.dobleFactor}
+                onCheckedChange={handleDobleFactorChange}
                 className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
               />
               <label htmlFor="dobleFactor" className="text-sm text-muted-foreground cursor-pointer leading-relaxed">
@@ -192,7 +329,10 @@ export default function RegisterPage() {
             <div className="flex items-start gap-3">
               <Checkbox 
                 id="terms" 
+                checked={termsAccepted}
+                onCheckedChange={handleTermsChange}
                 className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
+                required
               />
               <label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer leading-relaxed">
                 Acepto los{" "}
@@ -209,9 +349,10 @@ export default function RegisterPage() {
             {/* Botón de registro */}
             <Button 
               type="submit" 
+              disabled={loading || isPasswordMismatch || !isPasswordStrong || !termsAccepted}
               className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-medium tracking-wide"
             >
-              Crear Cuenta
+              {loading ? "Creando cuenta..." : "Crear Cuenta"}
             </Button>
           </form>
 
