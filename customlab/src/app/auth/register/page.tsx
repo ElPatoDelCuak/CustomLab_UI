@@ -17,11 +17,13 @@ export default function RegistroPage() {
     password: "",
     confirmPassword: "",
     fechaNacimiento: "",
+    dobleFactor: false,
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
   }
+  
 
   return (
     <div className="min-h-screen flex">
@@ -173,6 +175,17 @@ export default function RegistroPage() {
                   {showConfirmPassword ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                 </button>
               </div>
+            </div>
+
+            {/* Doble factor de autenticación */}
+            <div className="flex items-start gap-3">
+              <Checkbox 
+                id="dobleFactor" 
+                className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
+              />
+              <label htmlFor="dobleFactor" className="text-sm text-muted-foreground cursor-pointer leading-relaxed">
+                Activar doble Factor de autenticación
+              </label>
             </div>
 
             {/* Términos y condiciones */}
