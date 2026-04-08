@@ -59,7 +59,11 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <Link href="/" className="block text-center mb-12">
-            <h1 className="font-serif text-3xl tracking-widest text-foreground">CUSTOMLAB</h1>
+            <img 
+              src="/img/logo_black_white_horizontal.png" 
+              alt="CUSTOMLAB logo" 
+              style={{ display: 'inline-block', maxWidth: '320px', width: '100%', height: 'auto' }}
+            />
           </Link>
 
           {/* Header */}
@@ -145,7 +149,7 @@ export default function LoginPage() {
           {/* Link a registro */}
           <p className="text-center mt-8 text-muted-foreground">
             ¿No tienes una cuenta?{" "}
-            <Link href="/register" className="text-accent hover:text-accent/80 font-medium transition-colors">
+            <Link href="/auth/register" className="text-accent hover:text-accent/80 font-medium transition-colors">
               Regístrate
             </Link>
           </p>

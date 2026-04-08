@@ -88,13 +88,13 @@ export function Footer() {
             2026 CustomLab. Todos los derechos reservados.
           </p>
           <div className="flex gap-6">
-            <Link href="#" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="/auth/terms_privacy/privacy" className="text-sm text-background/60 hover:text-background transition-colors">
               Privacidad
             </Link>
-            <Link href="#" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="/auth/terms_privacy/terms" className="text-sm text-background/60 hover:text-background transition-colors">
               Términos
             </Link>
-            <Link href="#" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="/auth/terms_privacy/cookies" className="text-sm text-background/60 hover:text-background transition-colors">
               Cookies
             </Link>
           </div>

@@ -2,7 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Menu, Search, ShoppingBag, User, X } from "lucide-react"
+import { Menu, Search, ShoppingBag, User, X, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
@@ -62,22 +62,22 @@ export function Header() {
                     3
                   </span>
                 </Button>
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <Button 
+                  variant="ghost" 
                   onClick={handleLogout}
-                  className="hidden sm:flex text-xs uppercase tracking-wider"
+                  className="text-sm uppercase tracking-wider gap-2"
                 >
-                  Salir
+                  <LogOut className="h-4 w-4" />
+                  <span className="hidden sm:inline">Salir</span>
                 </Button>
               </>
             ) : (
               // Usuario no logueado
               <>
-                <Button variant="ghost" size="sm" asChild className="text-xs uppercase tracking-wider">
-                  <Link href="/auth/login">Entrar</Link>
+                <Button variant="ghost" asChild className="text-sm uppercase tracking-wider">
+                  <Link href="/auth/login">Iniciar sesion</Link>
                 </Button>
-                <Button size="sm" asChild className="text-xs uppercase tracking-wider bg-foreground text-background hover:bg-foreground/90">
+                <Button asChild className="text-sm uppercase tracking-wider">
                   <Link href="/auth/register">Registro</Link>
                 </Button>
               </>
