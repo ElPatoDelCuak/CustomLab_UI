@@ -88,6 +88,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="h-12 bg-card border-border focus:border-accent focus:ring-accent"
+                required
               />
             </div>
 
@@ -104,6 +105,7 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   className="h-12 bg-card border-border focus:border-accent focus:ring-accent pr-12"
+                  required
                 />
                 <button
                   type="button"

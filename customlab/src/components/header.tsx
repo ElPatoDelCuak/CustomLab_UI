@@ -74,10 +74,10 @@ export function Header() {
             ) : (
               // Usuario no logueado
               <>
-                <Button variant="ghost" asChild className="text-sm uppercase tracking-wider">
+                <Button variant="ghost" asChild className="hidden lg:flex text-sm uppercase tracking-wider">
                   <Link href="/auth/login">Iniciar sesion</Link>
                 </Button>
-                <Button asChild className="text-sm uppercase tracking-wider">
+                <Button asChild className="hidden lg:flex text-sm uppercase tracking-wider">
                   <Link href="/auth/register">Registro</Link>
                 </Button>
               </>

@@ -349,7 +349,17 @@ export default function RegisterPage() {
             {/* Botón de registro */}
             <Button 
               type="submit" 
-              disabled={loading || isPasswordMismatch || !isPasswordStrong || !termsAccepted}
+              disabled={
+                loading ||
+                !formData.nombre ||
+                !formData.apellidos ||
+                !formData.email ||
+                !formData.password ||
+                !formData.confirmPassword ||
+                !isPasswordStrong ||
+                isPasswordMismatch ||
+                !termsAccepted
+              }
               className="w-full h-12 bg-foreground text-background hover:bg-foreground/90 font-medium tracking-wide"
             >
               {loading ? "Creando cuenta..." : "Crear Cuenta"}

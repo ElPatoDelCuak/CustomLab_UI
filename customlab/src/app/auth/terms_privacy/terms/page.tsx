@@ -13,7 +13,7 @@ export default function TerminosPage() {
           <Button variant="ghost" asChild className="gap-2">
             <Link href="/">
               <ArrowLeft className="h-4 w-4" />
-              Volver a la tienda
+              Volver
             </Link>
           </Button>
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">

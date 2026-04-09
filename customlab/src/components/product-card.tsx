@@ -88,11 +88,11 @@ export function ProductCard({
         </h3>
         <div className="flex items-center gap-2">
           <span className={cn("font-medium", oferta && "text-accent")}>
-            {precio.toLocaleString()}€
+            {precio.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€
           </span>
           {precio_original && (
             <span className="text-sm text-muted-foreground line-through">
-              {precio_original.toLocaleString()}€
+              {precio_original.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}€
             </span>
           )}
         </div>
