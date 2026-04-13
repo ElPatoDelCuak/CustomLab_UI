@@ -17,3 +17,8 @@ export interface CatalogSortProps {
   selected: string
   onChange: (value: string) => void
 }
+
+export interface CaracteristicsResponse {
+  id_caracteristica: number
+  caracteristica: string
+}
