@@ -178,7 +178,6 @@ export function CatalogSort({ selected, onChange }: CatalogSortProps) {
     { id: "newest", label: "Más recientes" },
     { id: "price-asc", label: "Precio: menor a mayor" },
     { id: "price-desc", label: "Precio: mayor a menor" },
-    { id: "popular", label: "Más populares" },
   ]
 
   return (

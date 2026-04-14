@@ -28,6 +28,7 @@ export default function CatalogPage() {
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
 
   useEffect(() => {
+    // Fetch products and features
     const fetchProducts = async () => {
       const result = await getProducts()
       if (result.success && result.data) {
@@ -50,6 +51,7 @@ export default function CatalogPage() {
     fetchFeatures()
   }, [])
 
+  // Count products by feature
   const featuresWithCounts = useMemo(() => {
     return availableFeatures.map((f) => {
       const count = products.filter((p) =>
@@ -59,6 +61,7 @@ export default function CatalogPage() {
     })
   }, [availableFeatures, products])
 
+  // Count products by category
   const categoriesWithCounts = useMemo(() => {
     const categoryMap = new Map<string, { id: string; label: string; count: number }>()
 
@@ -76,6 +79,7 @@ export default function CatalogPage() {
     return Array.from(categoryMap.values())
   }, [products])
 
+  // Filter products by selected filters
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
@@ -109,7 +113,7 @@ export default function CatalogPage() {
       )
     }
 
-    // Ordenación
+    // Sort products by selected sort
     if (filters.sort === "price-asc") result.sort((a, b) => a.precio - b.precio)
     if (filters.sort === "price-desc") result.sort((a, b) => b.precio - a.precio)
     if (filters.sort === "newest") result.sort((a, b) => (b.nuevo ? 1 : 0) - (a.nuevo ? 1 : 0))
