@@ -119,5 +119,53 @@ export const useProductsServices = () => {
 
     };
 
-    return { getProducts, getFeaturedProducts };
+    const postProduct = async (product: BackendProduct): Promise<ApiResponse<BackendProduct>> => {
+        try {
+            const response = await fetch(
+                process.env.NEXT_PUBLIC_API_URL + "/api/productos/create",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(product),
+                }
+            );
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: `Error HTTP ${response.status}`,
+                };
+            }
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
+
+            if (!payload.success) {
+                return {
+                    success: false,
+                    message: payload.message,
+                };
+            }
+
+            if (payload.success == true) {
+                return {
+                    success: true,
+                    data: payload.data,
+                };
+            } else {
+                return {
+                    success: false,
+                    message: payload.message,
+                };
+            }
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
+    return { getProducts, getFeaturedProducts, postProduct };
 }
