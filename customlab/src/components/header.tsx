@@ -2,7 +2,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useState } from "react"
-import { Menu, Search, ShoppingBag, User, X, LogOut } from "lucide-react"
+import { Menu, Search, ShoppingBag, User, X, LogOut, LayoutDashboard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
@@ -62,17 +62,28 @@ export function Header() {
                     3
                   </span>
                 </Button>
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   onClick={handleLogout}
                   className="text-sm uppercase tracking-wider gap-2"
                 >
                   <LogOut className="h-4 w-4" />
                   <span className="hidden sm:inline">Salir</span>
                 </Button>
+                {usuario.rol === "admin" || usuario.rol === "manager" ? (
+                  <Button
+                    variant="ghost"
+                    className="text-sm uppercase tracking-wider gap-2"
+                    asChild
+                  >
+                    <Link href="/admin/panel">
+                      <LayoutDashboard className="h-4 w-4" />
+                      <span className="hidden sm:inline">Admin</span>
+                    </Link>
+                  </Button>
+                ) : null}
               </>
             ) : (
-              // Usuario no logueado
               <>
                 <Button variant="ghost" asChild className="hidden lg:flex text-sm uppercase tracking-wider">
                   <Link href="/auth/login">Iniciar sesion</Link>
