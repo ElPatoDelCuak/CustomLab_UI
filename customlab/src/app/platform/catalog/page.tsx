@@ -4,9 +4,10 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
 import { useProductsServices } from "@/services/productsServices"
+import { useFiltersServices } from "@/services/filtersService"
 import { useEffect, useState, useMemo } from "react"
 import { ProductCardProps } from "@/types/products"
-import { FilterState } from "@/types/catalogFilters"
+import { FilterState, CaracteristicsResponse } from "@/types/catalogFilters"
 import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/catalog-filters"
 import { cn } from "@/lib/utils"
 
@@ -21,21 +22,42 @@ const initialFilters: FilterState = {
 export default function CatalogPage() {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const { getProducts } = useProductsServices()
+  const { getCaracteristics } = useFiltersServices()
   const [products, setProducts] = useState<ProductCardProps[]>([])
   const [filters, setFilters] = useState<FilterState>(initialFilters)
+  const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
 
   useEffect(() => {
     const fetchProducts = async () => {
       const result = await getProducts()
       if (result.success && result.data) {
         setProducts(result.data)
-        return
+      } else {
+        setProducts([])
+        console.error(result.message)
       }
-      setProducts([])
-      console.error(result.message)
+    }
+    const fetchFeatures = async () => {
+      const result = await getCaracteristics()
+      if (result.success && result.data) {
+        setAvailableFeatures(result.data)
+      } else {
+        setAvailableFeatures([])
+        console.error(result.message)
+      }
     }
     fetchProducts()
+    fetchFeatures()
   }, [])
+
+  const featuresWithCounts = useMemo(() => {
+    return availableFeatures.map((f) => {
+      const count = products.filter((p) =>
+        p.caracteristicas?.some((c) => c.id_caracteristica === f.id_caracteristica)
+      ).length
+      return { ...f, count }
+    })
+  }, [availableFeatures, products])
 
   const filteredProducts = useMemo(() => {
     let result = [...products]
@@ -55,14 +77,10 @@ export default function CatalogPage() {
     }
 
     // Características
-    if (filters.features.includes("new")) {
-      result = result.filter((p) => p.nuevo)
-    }
-    if (filters.features.includes("bestseller")) {
-      result = result.filter((p) => p.oferta)
-    }
-    if (filters.features.includes("eco")) {
-      result = result.filter((p) => p.personalizable)
+    if (filters.features.length > 0) {
+      result = result.filter((p) =>
+        p.caracteristicas?.some((c) => filters.features.includes(c.id_caracteristica.toString()))
+      )
     }
 
     // Precio
@@ -117,7 +135,7 @@ export default function CatalogPage() {
         <div className="flex gap-10">
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24">
-              <CatalogFilters filters={filters} onChange={setFilters} />
+              <CatalogFilters filters={filters} onChange={setFilters} availableFeatures={featuresWithCounts} />
             </div>
           </aside>
           <div className="flex-1">
@@ -157,6 +175,7 @@ export default function CatalogPage() {
           onClose={() => setIsMobileFiltersOpen(false)}
           filters={filters}
           onChange={setFilters}
+          availableFeatures={featuresWithCounts}
         />
       </div>
     </div>

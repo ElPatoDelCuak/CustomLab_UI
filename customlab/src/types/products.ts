@@ -20,6 +20,10 @@ export interface ProductCardProps {
     talla: string
     stock: number
   }[]
+  caracteristicas?: {
+    id_caracteristica: number
+    caracteristica: string
+  }[]
 }
 
 export interface BackendProduct {
@@ -41,6 +45,10 @@ export interface BackendProduct {
         id_producto: number;
         talla: string;
         stock: number;
+    }[];
+    caracteristicas?: {
+        id_caracteristica: number;
+        caracteristica: string;
     }[];
 }
 

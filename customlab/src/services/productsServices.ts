@@ -45,6 +45,7 @@ export const useProductsServices = () => {
                 nuevo: product.nuevo,
                 oferta: product.oferta,
                 tallas: product.tallas,
+                caracteristicas: product.caracteristicas,
             }));
 
             return {
@@ -102,6 +103,7 @@ export const useProductsServices = () => {
                 nuevo: product.nuevo,
                 oferta: product.oferta,
                 tallas: product.tallas,
+                caracteristicas: product.caracteristicas,
             }));
 
             return {

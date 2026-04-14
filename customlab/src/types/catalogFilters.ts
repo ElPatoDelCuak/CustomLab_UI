@@ -11,6 +11,7 @@ export interface CatalogFiltersProps {
   onClose?: () => void
   filters: FilterState
   onChange: (filters: FilterState) => void
+  availableFeatures: (CaracteristicsResponse & { count?: number })[]
 }
 
 export interface CatalogSortProps {

@@ -16,12 +16,6 @@ const categories = [
   { id: "skirts", label: "Faldas", count: 15 },
 ]
 
-const features = [
-  { id: "eco", label: "Ecológico", count: 10 },
-  { id: "new", label: "Nuevo", count: 8 },
-  { id: "bestseller", label: "Más vendido", count: 5 },
-]
-
 const sizes = ["XS", "S", "M", "L", "XL"]
 
 const priceRanges = [
@@ -31,7 +25,7 @@ const priceRanges = [
   { id: "200+", label: "$200+" },
 ]
 
-export function CatalogFilters({ isMobile, onClose, filters, onChange }: CatalogFiltersProps) {
+export function CatalogFilters({ isMobile, onClose, filters, onChange, availableFeatures }: CatalogFiltersProps) {
 
   const toggle = (
     key: keyof Pick<FilterState, "categories" | "sizes" | "features" | "priceRange">,
@@ -83,17 +77,17 @@ export function CatalogFilters({ isMobile, onClose, filters, onChange }: Catalog
           </AccordionTrigger>
           <AccordionContent className="pb-4">
             <div className="space-y-3">
-              {features.map((feature) => (
-                <label key={feature.id} className="flex items-center gap-3 cursor-pointer group">
+              {availableFeatures.map((feature) => (
+                <label key={feature.id_caracteristica} className="flex items-center gap-3 cursor-pointer group">
                   <Checkbox
-                    checked={filters.features.includes(feature.id)}
-                    onCheckedChange={() => toggle("features", feature.id)}
+                    checked={filters.features.includes(feature.id_caracteristica.toString())}
+                    onCheckedChange={() => toggle("features", feature.id_caracteristica.toString())}
                   />
                   <span className="text-sm group-hover:text-accent transition-colors">
-                    {feature.label}
+                    {feature.caracteristica}
                   </span>
                   <span className="text-xs text-muted-foreground ml-auto">
-                    ({feature.count})
+                    ({feature.count || 0})
                   </span>
                 </label>
               ))}
