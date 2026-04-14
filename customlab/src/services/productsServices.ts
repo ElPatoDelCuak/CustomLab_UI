@@ -119,6 +119,72 @@ export const useProductsServices = () => {
 
     };
 
+
+    const getProductById = async (id: string | number): Promise<ApiResponse<ProductCardProps>> => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/productos/${id}`,
+                {
+                    method: "GET",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: `Error HTTP ${response.status}`,
+                };
+            }
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
+
+            if (!payload.success || !payload.data) {
+                return {
+                    success: false,
+                    message: payload.message || "Producto no encontrado",
+                };
+            }
+
+            const product = payload.data;
+            const images = Array.isArray(product.images) ? product.images : [];
+            const tallas = Array.isArray(product.tallas) ? product.tallas : [];
+            const caracteristicas = Array.isArray(product.caracteristicas) ? product.caracteristicas : [];
+
+            const productCard: ProductCardProps = {
+                id_producto: product.id_producto,
+                nombre_producto: product.nombre_producto,
+                precio: product.precio_venta,
+                precio_original: product.precio_original,
+                stock: product.stock,
+                image_cover: images[0]?.ruta ?? "",
+                image_hover: images[1]?.ruta ?? images[0]?.ruta ?? "",
+                images: images.map((image) => ({
+                    id_imagen: image.id_imagen_producto,
+                    url: image.ruta,
+                })),
+                categoria: product.categoria,
+                personalizable: product.personalizable,
+                nuevo: product.nuevo,
+                oferta: product.oferta,
+                tallas: tallas,
+                caracteristicas: caracteristicas,
+            };
+
+            return {
+                success: true,
+                data: productCard,
+            };
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
     const postProduct = async (product: BackendProduct): Promise<ApiResponse<BackendProduct>> => {
         try {
             const response = await fetch(
@@ -167,5 +233,5 @@ export const useProductsServices = () => {
         }
     };
 
-    return { getProducts, getFeaturedProducts, postProduct };
+    return { getProducts, getFeaturedProducts, getProductById, postProduct };
 }
