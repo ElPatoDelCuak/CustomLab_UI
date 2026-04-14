@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { LayoutDashboard, Users, ShoppingBag, Settings, LogOut } from "lucide-react"
@@ -16,6 +17,25 @@ export default function AdminLayout({
   const router = useRouter()
   const clearAuth = usePlatformStore((state) => state.clearAuth)
   const usuario = usePlatformStore((state) => state.usuario)
+  const [isHydrated, setIsHydrated] = useState(false)
+
+  useEffect(() => {
+    setIsHydrated(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isHydrated) return
+
+    if (!usuario) {
+      router.push("/auth/login")
+      return
+    }
+
+    const rol = usuario.rol?.toLowerCase() || ""
+    if (rol !== "admin" && rol !== "manager") {
+      router.push("/")
+    }
+  }, [usuario, router, isHydrated])
 
   const navigation = [
     { name: "Panel", href: "/admin/panel", icon: LayoutDashboard },
@@ -28,6 +48,11 @@ export default function AdminLayout({
     clearAuth()
     router.push("/auth/login")
   }
+
+  // Prevenir mostrar información parpadeando a usuarios no autorizados
+  if (!isHydrated || !usuario) return null
+  const rol = usuario.rol?.toLowerCase() || ""
+  if (rol !== "admin" && rol !== "manager") return null
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
