@@ -1,0 +1,36 @@
+// stores/platformStore.ts
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
+import { Usuario, AuthStore } from '../types/authenticationResponse'
+
+const cookieStorage = {
+  getItem: (name: string) => {
+    const cookies = document.cookie.split('; ')
+    const cookie = cookies.find(c => c.startsWith(`${name}=`))
+    return cookie ? decodeURIComponent(cookie.split('=')[1]) : null
+  },
+  setItem: (name: string, value: string) => {
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 días
+  },
+  removeItem: (name: string) => {
+    document.cookie = `${name}=; path=/; max-age=0`
+  },
+}
+
+export const usePlatformStore = create<AuthStore>()(
+  persist(
+    (set) => ({
+      usuario: null,
+      accessToken: null,
+      refreshToken: null,
+      setAuth: (usuario, accessToken, refreshToken) =>
+        set({ usuario, accessToken, refreshToken }),
+      clearAuth: () =>
+        set({ usuario: null, accessToken: null, refreshToken: null }),
+    }),
+    {
+      name: 'auth-storage',
+      storage: createJSONStorage(() => cookieStorage),
+    }
+  )
+)

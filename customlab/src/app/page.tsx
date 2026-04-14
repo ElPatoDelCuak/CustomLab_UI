@@ -1,38 +1,31 @@
+"use client"
 import { Header } from "@/components/header"
 import { HeroBanner } from "@/components/hero-banner"
 import { ProductCard } from "@/components/product-card"
 import { Footer } from "@/components/footer"
+import { useProductsServices } from "@/services/productsServices"
+import { useEffect, useState } from "react"
+import { ProductCardProps } from "@/types/products"
 
 export default function LandingPage() {
-const products = [
-  {
-    id: 1,
-    name: "Vestido Midi de Lino",
-    price: 189,
-    image: "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?w=600&q=80",
-    category: "Vestidos",
-    isNew: true,
-  },
-  {
-    id: 2,
-    name: "Blazer Estructurado",
-    price: 245,
-    image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=600&q=80",
-    category: "Chaquetas",
-  },
-  {
-    id: 3,
-    name: "Pantalón Wide Leg",
-    price: 129,
-    originalPrice: 169,
-    image: "https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80",
-    hoverImage: "https://images.unsplash.com/photo-1509631179647-0177331693ae?w=600&q=80",
-    category: "Pantalones",
-    isSale: true,
-  },
-]    
+    const { getFeaturedProducts } = useProductsServices();
+    const [products, setProducts] = useState<ProductCardProps[]>([]);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const result = await getFeaturedProducts();
+
+            if (result.success && result.data) {
+                setProducts(result.data);
+                return;
+            }
+
+            setProducts([]);
+            console.error(result.message);
+        };
+        fetchProducts();
+    }, []);
+
     return (
         <div>
             <Header />
@@ -42,16 +35,20 @@ const products = [
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                     {products.map((product) => (
                         <ProductCard 
-                            key={product.id}
-                            id={product.id}
-                            name={product.name}
-                            price={product.price}
-                            originalPrice={product.originalPrice}
-                            image={product.image}
-                            hoverImage={product.hoverImage}
-                            category={product.category}
-                            isNew={product.isNew}
-                            isSale={product.isSale}
+                            key={product.id_producto}
+                            id_producto={product.id_producto}
+                            nombre_producto={product.nombre_producto}
+                            precio={product.precio}
+                            precio_original={product.precio_original}
+                            stock={product.stock}
+                            image_cover={product.image_cover}
+                            image_hover={product.image_hover}
+                            categoria={product.categoria}
+                            personalizable={product.personalizable}
+                            nuevo={product.nuevo}
+                            oferta={product.oferta}
+                            images={product.images}
+                            tallas={product.tallas}
                         />
                     ))}
                 </div>
