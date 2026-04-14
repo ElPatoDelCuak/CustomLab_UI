@@ -59,47 +59,60 @@ export default function CatalogPage() {
     })
   }, [availableFeatures, products])
 
+  const categoriesWithCounts = useMemo(() => {
+    const categoryMap = new Map<string, { id: string; label: string; count: number }>()
+
+    products.forEach((p) => {
+      const label = p.categoria || "Sin categoría"
+      const id = label.toLowerCase()
+
+      if (categoryMap.has(id)) {
+        categoryMap.get(id)!.count++
+      } else {
+        categoryMap.set(id, { id, label, count: 1 })
+      }
+    })
+
+    return Array.from(categoryMap.values())
+  }, [products])
+
   const filteredProducts = useMemo(() => {
     let result = [...products]
 
-    // Categoría — ajusta los valores si tu API devuelve en español
     if (filters.categories.length > 0) {
       result = result.filter((p) =>
         filters.categories.includes(p.categoria?.toLowerCase() ?? "")
       )
     }
 
-    // Tallas — ahora usamos t.talla porque es un array de objetos
     if (filters.sizes.length > 0) {
       result = result.filter((p) =>
         p.tallas.some((t) => filters.sizes.includes(t.talla))
       )
     }
 
-    // Características
     if (filters.features.length > 0) {
       result = result.filter((p) =>
         p.caracteristicas?.some((c) => filters.features.includes(c.id_caracteristica.toString()))
       )
     }
 
-    // Precio
     if (filters.priceRange.length > 0) {
       result = result.filter((p) =>
         filters.priceRange.some((range) => {
-          if (range === "0-50")    return p.precio >= 0 && p.precio <= 50
-          if (range === "50-100")  return p.precio > 50 && p.precio <= 100
+          if (range === "0-50") return p.precio >= 0 && p.precio <= 50
+          if (range === "50-100") return p.precio > 50 && p.precio <= 100
           if (range === "100-200") return p.precio > 100 && p.precio <= 200
-          if (range === "200+")    return p.precio > 200
+          if (range === "200+") return p.precio > 200
           return false
         })
       )
     }
 
     // Ordenación
-    if (filters.sort === "price-asc")  result.sort((a, b) => a.precio - b.precio)
+    if (filters.sort === "price-asc") result.sort((a, b) => a.precio - b.precio)
     if (filters.sort === "price-desc") result.sort((a, b) => b.precio - a.precio)
-    if (filters.sort === "newest")     result.sort((a, b) => (b.nuevo ? 1 : 0) - (a.nuevo ? 1 : 0))
+    if (filters.sort === "newest") result.sort((a, b) => (b.nuevo ? 1 : 0) - (a.nuevo ? 1 : 0))
 
     return result
   }, [products, filters])
@@ -135,7 +148,12 @@ export default function CatalogPage() {
         <div className="flex gap-10">
           <aside className="hidden lg:block w-64 shrink-0">
             <div className="sticky top-24">
-              <CatalogFilters filters={filters} onChange={setFilters} availableFeatures={featuresWithCounts} />
+              <CatalogFilters
+                filters={filters}
+                onChange={setFilters}
+                availableFeatures={featuresWithCounts}
+                availableCategories={categoriesWithCounts}
+              />
             </div>
           </aside>
           <div className="flex-1">
@@ -176,6 +194,7 @@ export default function CatalogPage() {
           filters={filters}
           onChange={setFilters}
           availableFeatures={featuresWithCounts}
+          availableCategories={categoriesWithCounts}
         />
       </div>
     </div>

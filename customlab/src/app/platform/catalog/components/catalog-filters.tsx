@@ -8,14 +8,6 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { cn } from "@/lib/utils"
 import { FilterState, CatalogFiltersProps, CatalogSortProps } from "@/types/catalogFilters"
 
-const categories = [
-  { id: "dresses", label: "Vestidos", count: 24 },
-  { id: "tops", label: "Tops y Blusas", count: 36 },
-  { id: "pants", label: "Pantalones", count: 18 },
-  { id: "jackets", label: "Chaquetas", count: 12 },
-  { id: "skirts", label: "Faldas", count: 15 },
-]
-
 const sizes = ["XS", "S", "M", "L", "XL"]
 
 const priceRanges = [
@@ -25,7 +17,7 @@ const priceRanges = [
   { id: "200+", label: "$200+" },
 ]
 
-export function CatalogFilters({ isMobile, onClose, filters, onChange, availableFeatures }: CatalogFiltersProps) {
+export function CatalogFilters({ isMobile, onClose, filters, onChange, availableFeatures, availableCategories }: CatalogFiltersProps) {
 
   const toggle = (
     key: keyof Pick<FilterState, "categories" | "sizes" | "features" | "priceRange">,
@@ -101,7 +93,7 @@ export function CatalogFilters({ isMobile, onClose, filters, onChange, available
           </AccordionTrigger>
           <AccordionContent className="pb-4">
             <div className="space-y-3">
-              {categories.map((category) => (
+              {availableCategories.map((category) => (
                 <label key={category.id} className="flex items-center gap-3 cursor-pointer group">
                   <Checkbox
                     checked={filters.categories.includes(category.id)}

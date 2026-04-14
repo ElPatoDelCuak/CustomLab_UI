@@ -12,6 +12,7 @@ export interface CatalogFiltersProps {
   filters: FilterState
   onChange: (filters: FilterState) => void
   availableFeatures: (CaracteristicsResponse & { count?: number })[]
+  availableCategories: { id: string; label: string; count: number }[]
 }
 
 export interface CatalogSortProps {
