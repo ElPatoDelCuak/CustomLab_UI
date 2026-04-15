@@ -1,18 +1,17 @@
 import { ApiResponse } from "@/types/api-response";
 import { BackendProduct } from "@/types/products";
 import { ProductCardProps } from "@/types/products";
-import { usePlatformStore } from "@/stores/platformStore";
+import { apiClient } from "@/services/apiClient";
 
+/**
+ * Hook that provides product-related services using the authenticated apiClient.
+ */
 export const useProductsServices = () => {
-    const { accessToken } = usePlatformStore();
     const getProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
-            const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos/",
-                {
-                    method: "GET",
-                }
-            );
+            const response = await apiClient("/api/productos/", {
+                method: "GET",
+            });
 
             if (!response.ok) {
                 return {
@@ -60,17 +59,13 @@ export const useProductsServices = () => {
                 message: "No se pudo conectar con el servidor",
             };
         }
-
     };
 
     const getFeaturedProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
-            const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos/featured/",
-                {
-                    method: "GET",
-                }
-            );
+            const response = await apiClient("/api/productos/featured/", {
+                method: "GET",
+            });
 
             if (!response.ok) {
                 return {
@@ -118,22 +113,13 @@ export const useProductsServices = () => {
                 message: "No se pudo conectar con el servidor",
             };
         }
-
     };
-
 
     const getProductById = async (id: string | number): Promise<ApiResponse<ProductCardProps>> => {
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/productos/${id}`,
-                {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        ...(accessToken && { "Authorization": `Bearer ${accessToken}` }),
-                    },
-                }
-            );
+            const response = await apiClient(`/api/productos/${id}`, {
+                method: "GET",
+            });
 
             if (!response.ok) {
                 return {
@@ -190,13 +176,10 @@ export const useProductsServices = () => {
 
     const postProductFormData = async (formData: FormData): Promise<ApiResponse<BackendProduct>> => {
         try {
-            const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos/create/",
-                {
-                    method: "POST",
-                    body: formData,
-                }
-            );
+            const response = await apiClient("/api/productos/create/", {
+                method: "POST",
+                body: formData,
+            });
 
             const payload = (await response.json()) as ApiResponse<BackendProduct>;
 
@@ -222,12 +205,9 @@ export const useProductsServices = () => {
 
     const deleteProduct = async (id: string | number): Promise<ApiResponse<BackendProduct>> => {
         try {
-            const response = await fetch(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/productos/delete/${id}`,
-                {
-                    method: "DELETE",
-                }
-            );
+            const response = await apiClient(`/api/productos/delete/${id}`, {
+                method: "DELETE",
+            });
 
             const payload = (await response.json()) as ApiResponse<BackendProduct>;
 
@@ -252,4 +232,4 @@ export const useProductsServices = () => {
     };
 
     return { getProducts, getFeaturedProducts, getProductById, postProductFormData, deleteProduct };
-}
+};
