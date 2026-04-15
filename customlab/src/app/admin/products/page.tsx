@@ -9,7 +9,7 @@ import { ProductInformationCard } from "./components/product-information-card"
 import UploadModal from "./components/uploadModal"
 
 export default function AdminProductsPage() {
-    const { getProducts } = useProductsServices()
+    const { getProducts, deleteProduct } = useProductsServices()
     const [products, setProducts] = useState<ProductCardProps[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
@@ -30,6 +30,15 @@ export default function AdminProductsPage() {
     useEffect(() => {
         fetchProducts()
     }, [])
+
+    const handleDeleteProduct = async (id: number) => {
+        const result = await deleteProduct(id)
+        if (result.success === true) {
+            fetchProducts()
+        } else {
+            setError(result.message || "Error al eliminar el producto")
+        }
+    }
 
     return (
         <div className="p-8">
@@ -141,7 +150,7 @@ export default function AdminProductsPage() {
                                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-gray-900">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50">
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteProduct(product.id_producto)}>
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>

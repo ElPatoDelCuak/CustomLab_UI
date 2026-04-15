@@ -1,8 +1,10 @@
 import { ApiResponse } from "@/types/api-response";
 import { BackendProduct } from "@/types/products";
 import { ProductCardProps } from "@/types/products";
+import { usePlatformStore } from "@/stores/platformStore";
 
 export const useProductsServices = () => {
+    const { accessToken } = usePlatformStore();
     const getProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
             const response = await fetch(
@@ -128,6 +130,7 @@ export const useProductsServices = () => {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",
+                        ...(accessToken && { "Authorization": `Bearer ${accessToken}` }),
                     },
                 }
             );
@@ -217,5 +220,36 @@ export const useProductsServices = () => {
         }
     };
 
-    return { getProducts, getFeaturedProducts, getProductById, postProductFormData };
+    const deleteProduct = async (id: string | number): Promise<ApiResponse<BackendProduct>> => {
+        try {
+            const response = await fetch(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/productos/delete/${id}`,
+                {
+                    method: "DELETE",
+                }
+            );
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: payload.message || `Error HTTP ${response.status}`,
+                };
+            }
+
+            return {
+                success: payload.success,
+                message: payload.message,
+                data: payload.data,
+            };
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
+    return { getProducts, getFeaturedProducts, getProductById, postProductFormData, deleteProduct };
 }

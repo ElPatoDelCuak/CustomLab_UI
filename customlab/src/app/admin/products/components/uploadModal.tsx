@@ -33,11 +33,11 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
     const [isNuevo, setIsNuevo] = useState(true)
     const [isOferta, setIsOferta] = useState(false)
     const [isPersonalizable, setIsPersonalizable] = useState(false)
-    
+
     // Images
     const [selectedImages, setSelectedImages] = useState<File[]>([])
     const [previews, setPreviews] = useState<string[]>([])
-    
+
     // Tallas
     const [tallas, setTallas] = useState<TallaItem[]>([])
     const [newTalla, setNewTalla] = useState("")
@@ -66,7 +66,7 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
         if (e.target.files) {
             const files = Array.from(e.target.files)
             setSelectedImages(prev => [...prev, ...files])
-            
+
             const newPreviews = files.map(file => URL.createObjectURL(file))
             setPreviews(prev => [...prev, ...newPreviews])
         }
@@ -93,7 +93,7 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
     }
 
     const toggleChar = (id: number) => {
-        setSelectedChars(prev => 
+        setSelectedChars(prev =>
             prev.includes(id) ? prev.filter(c => c !== id) : [...prev, id]
         )
     }
@@ -165,7 +165,7 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-4 border-b">
                     <h2 className="text-xl font-bold text-gray-900">Crear Nuevo Producto</h2>
-                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-gray-100">
+                    <Button variant="ghost" size="icon" onClick={onClose} className="rounded-full hover:bg-gray-100 hover:text-black-500">
                         <X className="h-5 w-5" />
                     </Button>
                 </div>
@@ -184,9 +184,9 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700">Nombre del Producto *</label>
-                                <Input 
-                                    required 
-                                    placeholder="Ej: Camiseta Algodón Premium" 
+                                <Input
+                                    required
+                                    placeholder="Ej: Camiseta Algodón Premium"
                                     value={nombre}
                                     onChange={(e) => setNombre(e.target.value)}
                                     className="rounded-lg border-gray-200 focus:ring-2 focus:ring-black"
@@ -194,9 +194,9 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700">Categoría *</label>
-                                <Input 
-                                    required 
-                                    placeholder="Ej: Ropa, Accesorios..." 
+                                <Input
+                                    required
+                                    placeholder="Ej: Ropa, Accesorios..."
                                     value={categoria}
                                     onChange={(e) => setCategoria(e.target.value)}
                                     className="rounded-lg border-gray-200"
@@ -204,11 +204,11 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700">Precio de Venta (€) *</label>
-                                <Input 
-                                    required 
-                                    type="number" 
-                                    step="0.01" 
-                                    placeholder="0.00" 
+                                <Input
+                                    required
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="0.00"
                                     value={precioVenta}
                                     onChange={(e) => setPrecioVenta(e.target.value)}
                                     className="rounded-lg border-gray-200"
@@ -216,10 +216,10 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700">Precio Original (€)</label>
-                                <Input 
-                                    type="number" 
-                                    step="0.01" 
-                                    placeholder="0.00" 
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="0.00"
                                     value={precioOriginal}
                                     onChange={(e) => setPrecioOriginal(e.target.value)}
                                     className="rounded-lg border-gray-200"
@@ -227,10 +227,10 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700">Precio de Coste (€)</label>
-                                <Input 
-                                    type="number" 
-                                    step="0.01" 
-                                    placeholder="0.00" 
+                                <Input
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="0.00"
                                     value={precioCosto}
                                     onChange={(e) => setPrecioCosto(e.target.value)}
                                     className="rounded-lg border-gray-200"
@@ -238,9 +238,9 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                             </div>
                             <div className="space-y-2">
                                 <label className="text-sm font-semibold text-gray-700">Stock Inicial Total</label>
-                                <Input 
-                                    type="number" 
-                                    placeholder="0" 
+                                <Input
+                                    type="number"
+                                    placeholder="0"
                                     value={stockTotal}
                                     onChange={(e) => setStockTotal(e.target.value)}
                                     className="rounded-lg border-gray-200"
@@ -251,25 +251,25 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                         {/* Toggles */}
                         <div className="flex flex-wrap gap-6 p-4 bg-gray-50 rounded-xl border border-gray-100">
                             <label className="flex items-center gap-3 cursor-pointer group">
-                                <Checkbox 
-                                    id="nuevo" 
-                                    checked={isNuevo} 
+                                <Checkbox
+                                    id="nuevo"
+                                    checked={isNuevo}
                                     onCheckedChange={(val) => setIsNuevo(!!val)}
                                 />
                                 <span className="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">Marcar como Nuevo</span>
                             </label>
                             <label className="flex items-center gap-3 cursor-pointer group">
-                                <Checkbox 
-                                    id="oferta" 
-                                    checked={isOferta} 
+                                <Checkbox
+                                    id="oferta"
+                                    checked={isOferta}
                                     onCheckedChange={(val) => setIsOferta(!!val)}
                                 />
                                 <span className="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">En Oferta</span>
                             </label>
                             <label className="flex items-center gap-3 cursor-pointer group">
-                                <Checkbox 
-                                    id="personalizable" 
-                                    checked={isPersonalizable} 
+                                <Checkbox
+                                    id="personalizable"
+                                    checked={isPersonalizable}
                                     onCheckedChange={(val) => setIsPersonalizable(!!val)}
                                 />
                                 <span className="text-sm font-medium text-gray-700 group-hover:text-black transition-colors">Personalizable</span>
@@ -285,7 +285,7 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                                 {previews.map((src, idx) => (
                                     <div key={idx} className="relative aspect-square rounded-xl overflow-hidden group border border-gray-200 sm:hover:scale-105 transition-transform duration-200 shadow-sm">
                                         <img src={src} className="w-full h-full object-cover" alt="Preview" />
-                                        <button 
+                                        <button
                                             type="button"
                                             onClick={() => removeImage(idx)}
                                             className="absolute top-1 right-1 bg-white/90 hover:bg-white text-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
@@ -303,12 +303,12 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                                     <span className="text-xs font-semibold">Añadir</span>
                                 </button>
                             </div>
-                            <input 
-                                type="file" 
-                                multiple 
-                                accept="image/*" 
-                                className="hidden" 
-                                ref={fileInputRef} 
+                            <input
+                                type="file"
+                                multiple
+                                accept="image/*"
+                                className="hidden"
+                                ref={fileInputRef}
                                 onChange={handleImageChange}
                             />
                         </div>
@@ -319,19 +319,19 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                             <div className="flex gap-4 items-end bg-white p-4 rounded-xl border border-gray-200 shadow-sm">
                                 <div className="space-y-2 flex-1">
                                     <label className="text-xs font-bold text-gray-500">Talla</label>
-                                    <Input 
-                                        placeholder="Ej: L, 42, XL..." 
-                                        value={newTalla} 
+                                    <Input
+                                        placeholder="Ej: L, 42, XL..."
+                                        value={newTalla}
                                         onChange={e => setNewTalla(e.target.value)}
                                         className="h-10"
                                     />
                                 </div>
                                 <div className="space-y-2 flex-1">
                                     <label className="text-xs font-bold text-gray-500">Stock</label>
-                                    <Input 
-                                        type="number" 
-                                        placeholder="0" 
-                                        value={newTallaStock} 
+                                    <Input
+                                        type="number"
+                                        placeholder="0"
+                                        value={newTallaStock}
                                         onChange={e => setNewTallaStock(e.target.value)}
                                         className="h-10"
                                     />
@@ -362,11 +362,10 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                                         key={char.id_caracteristica}
                                         type="button"
                                         onClick={() => toggleChar(char.id_caracteristica)}
-                                        className={`flex items-center justify-between px-4 py-2.5 rounded-xl border text-left transition-all duration-200 group ${
-                                            selectedChars.includes(char.id_caracteristica)
+                                        className={`flex items-center justify-between px-4 py-2.5 rounded-xl border text-left transition-all duration-200 group ${selectedChars.includes(char.id_caracteristica)
                                                 ? "bg-black text-white border-black ring-2 ring-black ring-offset-2"
                                                 : "bg-white text-gray-700 border-gray-200 hover:border-black"
-                                        }`}
+                                            }`}
                                     >
                                         <span className="text-sm font-medium">{char.caracteristica}</span>
                                         {selectedChars.includes(char.id_caracteristica) && (
@@ -384,7 +383,7 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                     <Button variant="outline" onClick={onClose} disabled={loading} className="rounded-lg hover:bg-white">
                         Cancelar
                     </Button>
-                    <Button 
+                    <Button
                         form="upload-form"
                         disabled={loading}
                         className="bg-black text-white hover:bg-gray-800 min-w-[140px] rounded-lg h-11"
