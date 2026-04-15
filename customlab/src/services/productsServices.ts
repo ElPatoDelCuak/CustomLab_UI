@@ -185,46 +185,30 @@ export const useProductsServices = () => {
         }
     };
 
-    const postProduct = async (product: BackendProduct): Promise<ApiResponse<BackendProduct>> => {
+    const postProductFormData = async (formData: FormData): Promise<ApiResponse<BackendProduct>> => {
         try {
             const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos/create",
+                process.env.NEXT_PUBLIC_API_URL + "/api/productos/create/",
                 {
                     method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(product),
+                    body: formData,
                 }
             );
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
 
             if (!response.ok) {
                 return {
                     success: false,
-                    message: `Error HTTP ${response.status}`,
+                    message: payload.message || `Error HTTP ${response.status}`,
                 };
             }
 
-            const payload = (await response.json()) as ApiResponse<BackendProduct>;
-
-            if (!payload.success) {
-                return {
-                    success: false,
-                    message: payload.message,
-                };
-            }
-
-            if (payload.success == true) {
-                return {
-                    success: true,
-                    data: payload.data,
-                };
-            } else {
-                return {
-                    success: false,
-                    message: payload.message,
-                };
-            }
+            return {
+                success: payload.success,
+                message: payload.message,
+                data: payload.data,
+            };
         } catch {
             return {
                 success: false,
@@ -233,5 +217,5 @@ export const useProductsServices = () => {
         }
     };
 
-    return { getProducts, getFeaturedProducts, getProductById, postProduct };
+    return { getProducts, getFeaturedProducts, getProductById, postProductFormData };
 }

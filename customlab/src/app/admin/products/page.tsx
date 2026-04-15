@@ -6,6 +6,7 @@ import { ProductCardProps } from "@/types/products"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Trash2, Eye } from "lucide-react"
 import { ProductInformationCard } from "./components/product-information-card"
+import UploadModal from "./components/uploadModal"
 
 export default function AdminProductsPage() {
     const { getProducts } = useProductsServices()
@@ -13,19 +14,20 @@ export default function AdminProductsPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
+    const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+
+    const fetchProducts = async () => {
+        setLoading(true)
+        const result = await getProducts()
+        if (result.success && result.data) {
+            setProducts(result.data)
+        } else {
+            setError(result.message || "Error al cargar los productos")
+        }
+        setLoading(false)
+    }
 
     useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true)
-            const result = await getProducts()
-            if (result.success && result.data) {
-                setProducts(result.data)
-            } else {
-                setError(result.message || "Error al cargar los productos")
-            }
-            setLoading(false)
-        }
-
         fetchProducts()
     }, [])
 
@@ -33,7 +35,10 @@ export default function AdminProductsPage() {
         <div className="p-8">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-gray-900">Productos</h1>
-                <Button className="bg-black text-white hover:bg-gray-800 gap-2">
+                <Button
+                    className="bg-black text-white hover:bg-gray-800 gap-2"
+                    onClick={() => setIsUploadModalOpen(true)}
+                >
                     <Plus className="w-4 h-4" />
                     Añadir Producto
                 </Button>
@@ -118,13 +123,16 @@ export default function AdminProductsPage() {
                                                     {!product.nuevo && !product.oferta && (
                                                         <span className="text-gray-400">-</span>
                                                     )}
+                                                    {product.personalizable && (
+                                                        <span className="px-2 py-1 bg-green-50 text-green-600 rounded text-xs">Personalizable</span>
+                                                    )}
                                                 </div>
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
-                                                    <Button 
-                                                        variant="ghost" 
-                                                        size="icon" 
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="icon"
                                                         className="h-8 w-8 text-gray-500 hover:text-gray-900"
                                                         onClick={() => setSelectedProductId(product.id_producto)}
                                                     >
@@ -148,9 +156,16 @@ export default function AdminProductsPage() {
             )}
 
             {selectedProductId && (
-                <ProductInformationCard 
-                    productId={selectedProductId} 
-                    onClose={() => setSelectedProductId(null)} 
+                <ProductInformationCard
+                    productId={selectedProductId}
+                    onClose={() => setSelectedProductId(null)}
+                />
+            )}
+
+            {isUploadModalOpen && (
+                <UploadModal
+                    onClose={() => setIsUploadModalOpen(false)}
+                    onSuccess={fetchProducts}
                 />
             )}
         </div>
