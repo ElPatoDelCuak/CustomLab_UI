@@ -8,6 +8,7 @@ import { Plus, Edit, Trash2, Eye } from "lucide-react"
 import { ProductInformationCard } from "./components/product-information-card"
 import UploadModal from "./components/product-uploadModal"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 export default function AdminProductsPage() {
     const { getProducts, deleteProduct } = useProductsServices()
@@ -16,6 +17,9 @@ export default function AdminProductsPage() {
     const [error, setError] = useState<string | null>(null)
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+    const [productToDelete, setProductToDelete] = useState<number | null>(null)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const fetchProducts = async () => {
         setLoading(true)
@@ -32,13 +36,24 @@ export default function AdminProductsPage() {
         fetchProducts()
     }, [])
 
-    const handleDeleteProduct = async (id: number) => {
-        const result = await deleteProduct(id)
+    const handleDeleteClick = (id: number) => {
+        setProductToDelete(id)
+        setIsConfirmModalOpen(true)
+    }
+
+    const handleConfirmDelete = async () => {
+        if (productToDelete === null) return
+        
+        setIsDeleting(true)
+        const result = await deleteProduct(productToDelete)
         if (result.success === true) {
-            fetchProducts()
+            await fetchProducts()
+            setIsConfirmModalOpen(false)
+            setProductToDelete(null)
         } else {
             setError(result.message || "Error al eliminar el producto")
         }
+        setIsDeleting(false)
     }
 
     return (
@@ -151,7 +166,7 @@ export default function AdminProductsPage() {
                                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-gray-900">
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteProduct(product.id_producto)}>
+                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteClick(product.id_producto)}>
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
                                                 </div>
@@ -178,6 +193,16 @@ export default function AdminProductsPage() {
                     onSuccess={fetchProducts}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Eliminar Producto"
+                description="¿Estás seguro de que deseas eliminar este producto? Esta acción no se puede deshacer y el producto desaparecerá del catálogo inmediatamente."
+                confirmText="Eliminar"
+                isLoading={isDeleting}
+            />
         </div>
     )
 }

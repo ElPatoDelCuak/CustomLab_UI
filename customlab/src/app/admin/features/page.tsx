@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
 import FeaturesUploadModal from "./components/features-uploadModal"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
 
 export default function AdminFeaturesPage() {
     const { getCaracteristics, deleteCaracteristica } = useFeaturesServices()
@@ -14,6 +15,9 @@ export default function AdminFeaturesPage() {
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
+    const [featureToDelete, setFeatureToDelete] = useState<number | null>(null)
+    const [isDeleting, setIsDeleting] = useState(false)
 
     const fetchFeatures = async () => {
         setLoading(true)
@@ -30,15 +34,24 @@ export default function AdminFeaturesPage() {
         fetchFeatures()
     }, [])
 
-    const handleDeleteFeature = async (id: number) => {
-        if (!confirm("¿Estás seguro de que deseas eliminar esta característica?")) return
+    const handleDeleteClick = (id: number) => {
+        setFeatureToDelete(id)
+        setIsConfirmModalOpen(true)
+    }
 
-        const result = await deleteCaracteristica(id)
+    const handleConfirmDelete = async () => {
+        if (featureToDelete === null) return
+        
+        setIsDeleting(true)
+        const result = await deleteCaracteristica(featureToDelete)
         if (result.success) {
-            fetchFeatures()
+            await fetchFeatures()
+            setIsConfirmModalOpen(false)
+            setFeatureToDelete(null)
         } else {
             setError(result.message || "Error al eliminar la característica")
         }
+        setIsDeleting(false)
     }
 
     return (
@@ -97,7 +110,7 @@ export default function AdminFeaturesPage() {
                                                         variant="ghost" 
                                                         size="icon" 
                                                         className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" 
-                                                        onClick={() => handleDeleteFeature(feature.id_caracteristica)}
+                                                        onClick={() => handleDeleteClick(feature.id_caracteristica)}
                                                     >
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
@@ -118,6 +131,16 @@ export default function AdminFeaturesPage() {
                     onSuccess={fetchFeatures}
                 />
             )}
+
+            <ConfirmModal
+                isOpen={isConfirmModalOpen}
+                onClose={() => setIsConfirmModalOpen(false)}
+                onConfirm={handleConfirmDelete}
+                title="Eliminar Característica"
+                description="¿Estás seguro de que deseas eliminar esta característica? Esta acción no se puede deshacer y puede afectar a los productos asociados."
+                confirmText="Eliminar"
+                isLoading={isDeleting}
+            />
         </div>
     )
 }
