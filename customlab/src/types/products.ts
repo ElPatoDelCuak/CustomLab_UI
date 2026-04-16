@@ -27,29 +27,37 @@ export interface ProductCardProps {
 }
 
 export interface BackendProduct {
+  id_producto: number;
+  nombre_producto: string;
+  precio_venta: number;
+  precio_original?: number;
+  stock: number;
+  categoria: string;
+  personalizable: boolean;
+  nuevo: boolean;
+  oferta: boolean;
+  images: {
+    id_imagen_producto: number;
+    ruta: string;
+  }[];
+  tallas: {
+    id_talla: number;
     id_producto: number;
-    nombre_producto: string;
-    precio_venta: number;
-    precio_original?: number;
+    talla: string;
     stock: number;
-    categoria: string;
-    personalizable: boolean;
-    nuevo: boolean;
-    oferta: boolean;
-    images: {
-        id_imagen_producto: number;
-        ruta: string;
-    }[];
-    tallas: {
-        id_talla: number;
-        id_producto: number;
-        talla: string;
-        stock: number;
-    }[];
-    caracteristicas?: {
-        id_caracteristica: number;
-        caracteristica: string;
-    }[];
+  }[];
+  caracteristicas?: {
+    id_caracteristica: number;
+    caracteristica: string;
+  }[];
+}
+export interface UploadModalProps {
+  onClose: () => void
+  onSuccess: () => void
+}
+export interface TallaItem {
+  talla: string
+  stock: number
 }
 
 /*

@@ -8,16 +8,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { useProductsServices } from "@/services/productsServices"
 import { useFiltersServices } from "@/services/filtersService"
 import { CaracteristicsResponse } from "@/types/catalogFilters"
-
-interface UploadModalProps {
-    onClose: () => void
-    onSuccess: () => void
-}
-
-interface TallaItem {
-    talla: string
-    stock: number
-}
+import { UploadModalProps, TallaItem } from "@/types/products"
 
 export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
     const { postProductFormData } = useProductsServices()
@@ -129,13 +120,9 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                 formData.append("images[]", image)
             })
 
-            tallas.forEach((t) => {
-                formData.append("tallas", JSON.stringify({ talla: t.talla, stock: t.stock }))
-            })
+            formData.append("tallas", JSON.stringify(tallas))
+            formData.append("caracteristicas", JSON.stringify(selectedChars.map(id => ({ id_caracteristica: id }))))
 
-            selectedChars.forEach((charId) => {
-                formData.append("caracteristicas", JSON.stringify({ id_caracteristica: charId }))
-            })
 
             const response = await postProductFormData(formData)
 
@@ -363,8 +350,8 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
                                         type="button"
                                         onClick={() => toggleChar(char.id_caracteristica)}
                                         className={`flex items-center justify-between px-4 py-2.5 rounded-xl border text-left transition-all duration-200 group ${selectedChars.includes(char.id_caracteristica)
-                                                ? "bg-black text-white border-black ring-2 ring-black ring-offset-2"
-                                                : "bg-white text-gray-700 border-gray-200 hover:border-black"
+                                            ? "bg-black text-white border-black ring-2 ring-black ring-offset-2"
+                                            : "bg-white text-gray-700 border-gray-200 hover:border-black"
                                             }`}
                                     >
                                         <span className="text-sm font-medium">{char.caracteristica}</span>
