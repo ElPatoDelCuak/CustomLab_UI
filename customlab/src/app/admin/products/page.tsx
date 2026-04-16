@@ -6,7 +6,8 @@ import { ProductCardProps } from "@/types/products"
 import { Button } from "@/components/ui/button"
 import { Plus, Edit, Trash2, Eye } from "lucide-react"
 import { ProductInformationCard } from "./components/product-information-card"
-import UploadModal from "./components/uploadModal"
+import UploadModal from "./components/product-uploadModal"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 export default function AdminProductsPage() {
     const { getProducts, deleteProduct } = useProductsServices()
@@ -55,7 +56,7 @@ export default function AdminProductsPage() {
 
             {loading ? (
                 <div className="flex justify-center p-12">
-                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                    <LoadingSpinner />
                 </div>
             ) : error ? (
                 <div className="bg-red-50 text-red-500 p-4 rounded-md border border-red-200">

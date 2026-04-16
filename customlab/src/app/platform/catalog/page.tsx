@@ -4,12 +4,13 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
 import { useProductsServices } from "@/services/productsServices"
-import { useFiltersServices } from "@/services/filtersService"
+import { useFeaturesServices } from "@/services/featuresService"
 import { useEffect, useState, useMemo } from "react"
 import { ProductCardProps } from "@/types/products"
 import { FilterState, CaracteristicsResponse } from "@/types/catalogFilters"
 import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/catalog-filters"
 import { cn } from "@/lib/utils"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const initialFilters: FilterState = {
   categories: [],
@@ -22,7 +23,7 @@ const initialFilters: FilterState = {
 export default function CatalogPage() {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const { getProducts } = useProductsServices()
-  const { getCaracteristics } = useFiltersServices()
+  const { getCaracteristics } = useFeaturesServices()
   const [products, setProducts] = useState<ProductCardProps[]>([])
   const [filters, setFilters] = useState<FilterState>(initialFilters)
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
@@ -173,7 +174,7 @@ export default function CatalogPage() {
           <div className="flex-1">
             {isLoading ? (
               <div className="flex justify-center p-12">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
+                <LoadingSpinner />
               </div>
             ) : (
               <>

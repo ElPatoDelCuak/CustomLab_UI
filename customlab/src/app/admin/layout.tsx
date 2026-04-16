@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { LayoutDashboard, Users, ShoppingBag, Settings, LogOut, Store } from "lucide-react"
+import { LayoutDashboard, Users, ShoppingBag, Tag, LogOut, Store } from "lucide-react"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
@@ -41,7 +41,7 @@ export default function AdminLayout({
     { name: "Panel", href: "/admin/panel", icon: LayoutDashboard },
     { name: "Usuarios", href: "/admin/users", icon: Users },
     { name: "Productos", href: "/admin/products", icon: ShoppingBag },
-    { name: "Configuración", href: "/admin/settings", icon: Settings },
+    { name: "Características", href: "/admin/features", icon: Tag },
     { name: "Tienda", href: "/", icon: Store },
   ]
 

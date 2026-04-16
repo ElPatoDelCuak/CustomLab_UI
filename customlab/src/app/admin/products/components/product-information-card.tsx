@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { useProductsServices } from "@/services/productsServices"
 import { ProductCardProps } from "@/types/products"
 import { X, CheckCircle, Package } from "lucide-react"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 interface ProductInformationCardProps {
   productId: number
@@ -54,7 +55,7 @@ export function ProductInformationCard({ productId, onClose }: ProductInformatio
         <div className="flex-1 overflow-y-auto p-6">
           {loading ? (
             <div className="flex flex-col items-center justify-center h-64 gap-4">
-              <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-black"></div>
+              <LoadingSpinner size="lg" />
               <p className="text-gray-500 text-sm">Cargando información...</p>
             </div>
           ) : error ? (

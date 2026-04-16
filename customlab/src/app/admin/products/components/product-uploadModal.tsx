@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
 import { useProductsServices } from "@/services/productsServices"
-import { useFiltersServices } from "@/services/filtersService"
+import { useFeaturesServices } from "@/services/featuresService"
 import { CaracteristicsResponse } from "@/types/catalogFilters"
 import { UploadModalProps, TallaItem } from "@/types/products"
 
 export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
     const { postProductFormData } = useProductsServices()
-    const { getCaracteristics } = useFiltersServices()
+    const { getCaracteristics } = useFeaturesServices()
 
     // Form State
     const [nombre, setNombre] = useState("")
