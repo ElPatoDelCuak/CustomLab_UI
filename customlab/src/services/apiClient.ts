@@ -6,9 +6,6 @@ interface FetchOptions extends RequestInit {
     headers?: Record<string, string>;
 }
 
-/**
- * Centralized API client using fetch with automatic token injection and Silent Refresh logic.
- */
 export async function apiClient(endpoint: string, options: FetchOptions = {}) {
     const { accessToken, refreshToken, setAuth, clearAuth, usuario } = usePlatformStore.getState();
 
@@ -38,7 +35,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
         // Handle 401 Unauthorized (potentially expired token)
         if (response.status === 401 && refreshToken) {
             console.warn("Access token expired. Attempting silent refresh...");
-            
+
             // Try to refresh the token
             const refreshResponse = await fetch(`${API_URL}/api/login/refresh/`, {
                 method: "POST",
@@ -53,7 +50,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
                 if (newAccessToken && usuario) {
                     // Update the store with the new access token
                     setAuth(usuario, newAccessToken, refreshToken);
-                    
+
                     console.info("Token refreshed successfully. Retrying original request...");
 
                     // Retry the original request with the new token
@@ -61,7 +58,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
                         ...headers,
                         "Authorization": `Bearer ${newAccessToken}`,
                     };
-                    
+
                     response = await fetch(url, config);
                 }
             } else {
