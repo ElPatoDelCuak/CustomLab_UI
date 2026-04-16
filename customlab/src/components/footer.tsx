@@ -49,7 +49,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-sm uppercase tracking-wider font-medium">Ayuda</h4>
             <nav className="flex flex-col gap-3">
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/auth/about#contact" className="text-sm text-background/70 hover:text-background transition-colors">
                 Contacto
               </Link>
               <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
