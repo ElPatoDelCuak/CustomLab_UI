@@ -205,7 +205,7 @@ export const useProductsServices = () => {
 
     const deleteProduct = async (id: string | number): Promise<ApiResponse<BackendProduct>> => {
         try {
-            const response = await apiClient(`/api/productos/delete/${id}`, {
+            const response = await apiClient(`/api/productos/delete/${id}/`, {
                 method: "DELETE",
             });
 
