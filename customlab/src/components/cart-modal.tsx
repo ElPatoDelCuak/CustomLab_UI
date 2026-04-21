@@ -37,8 +37,7 @@ export function CartModal({
     onRemoveItem
 }: CartModalProps) {
     const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0)
-    const shipping = subtotal > 100 ? 0 : 9.99
-    const total = subtotal + shipping
+    const total = subtotal
     const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
 
     return (
@@ -133,27 +132,7 @@ export function CartModal({
                         </div>
 
                         <SheetFooter className="border-t border-border px-6 py-4 block">
-                            <div className="space-y-2 text-sm">
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Subtotal</span>
-                                    <span>{subtotal.toFixed(2)} &euro;</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span className="text-muted-foreground">Envio</span>
-                                    {shipping === 0 ? (
-                                        <span className="text-green-600 font-medium">Gratis</span>
-                                    ) : (
-                                        <span>{shipping.toFixed(2)} &euro;</span>
-                                    )}
-                                </div>
-                                {shipping > 0 && (
-                                    <p className="text-xs text-muted-foreground pt-1">
-                                        Envio gratis en pedidos superiores a 100 &euro;
-                                    </p>
-                                )}
-                            </div>
-
-                            <div className="flex justify-between font-semibold text-base mt-4 pt-4 border-t border-border">
+                            <div className="flex justify-between font-semibold text-base">
                                 <span>Total</span>
                                 <span>{total.toFixed(2)} &euro;</span>
                             </div>
