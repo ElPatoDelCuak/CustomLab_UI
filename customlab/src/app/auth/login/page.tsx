@@ -27,7 +27,13 @@ export default function LoginPage() {
     const result = await loginService(email, password)
 
     if (result.success) {
-      router.push("/")
+      const rol = result.data?.usuario?.rol?.toLowerCase() || ""
+
+      if (rol === "admin" || rol === "manager") {
+        router.push("/admin/panel")
+      } else {
+        router.push("/")
+      }
     } else {
       setError(result.message)
     }
@@ -39,7 +45,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex">
       {/* Imagen lateral - visible solo en desktop */}
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
             backgroundImage: `url(${backgroundImage.src})`,
@@ -59,9 +65,9 @@ export default function LoginPage() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <Link href="/" className="block text-center mb-12">
-            <img 
-              src="/img/logo_black_white_horizontal.png" 
-              alt="CUSTOMLAB logo" 
+            <img
+              src="/img/logo_black_white_horizontal.png"
+              alt="CUSTOMLAB logo"
               style={{ display: 'inline-block', maxWidth: '320px', width: '100%', height: 'auto' }}
             />
           </Link>
@@ -125,8 +131,8 @@ export default function LoginPage() {
                   Recordarme
                 </label>
               </div>
-              <Link 
-                href="/forgot-password" 
+              <Link
+                href="/forgot-password"
                 className="text-sm text-accent hover:text-accent/80 transition-colors"
               >
                 ¿Olvidaste tu contraseña?
@@ -158,8 +164,8 @@ export default function LoginPage() {
 
           {/* Volver al inicio */}
           <div className="text-center mt-6">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               ← Volver a la tienda

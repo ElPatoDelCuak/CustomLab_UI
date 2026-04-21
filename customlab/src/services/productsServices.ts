@@ -1,16 +1,17 @@
 import { ApiResponse } from "@/types/api-response";
 import { BackendProduct } from "@/types/products";
 import { ProductCardProps } from "@/types/products";
+import { apiClient } from "@/services/apiClient";
 
+/**
+ * Hook that provides product-related services using the authenticated apiClient.
+ */
 export const useProductsServices = () => {
     const getProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
-            const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos/",
-                {
-                    method: "GET",
-                }
-            );
+            const response = await apiClient("/api/productos/", {
+                method: "GET",
+            });
 
             if (!response.ok) {
                 return {
@@ -58,17 +59,13 @@ export const useProductsServices = () => {
                 message: "No se pudo conectar con el servidor",
             };
         }
-
     };
 
     const getFeaturedProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
-            const response = await fetch(
-                process.env.NEXT_PUBLIC_API_URL + "/api/productos/featured/",
-                {
-                    method: "GET",
-                }
-            );
+            const response = await apiClient("/api/productos/featured/", {
+                method: "GET",
+            });
 
             if (!response.ok) {
                 return {
@@ -116,8 +113,123 @@ export const useProductsServices = () => {
                 message: "No se pudo conectar con el servidor",
             };
         }
-
     };
 
-    return { getProducts, getFeaturedProducts };
-}
+    const getProductById = async (id: string | number): Promise<ApiResponse<ProductCardProps>> => {
+        try {
+            const response = await apiClient(`/api/productos/${id}`, {
+                method: "GET",
+            });
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: `Error HTTP ${response.status}`,
+                };
+            }
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
+
+            if (!payload.success || !payload.data) {
+                return {
+                    success: false,
+                    message: payload.message || "Producto no encontrado",
+                };
+            }
+
+            const product = payload.data;
+            const images = Array.isArray(product.images) ? product.images : [];
+            const tallas = Array.isArray(product.tallas) ? product.tallas : [];
+            const caracteristicas = Array.isArray(product.caracteristicas) ? product.caracteristicas : [];
+
+            const productCard: ProductCardProps = {
+                id_producto: product.id_producto,
+                nombre_producto: product.nombre_producto,
+                precio: product.precio_venta,
+                precio_original: product.precio_original,
+                stock: product.stock,
+                image_cover: images[0]?.ruta ?? "",
+                image_hover: images[1]?.ruta ?? images[0]?.ruta ?? "",
+                images: images.map((image) => ({
+                    id_imagen: image.id_imagen_producto,
+                    url: image.ruta,
+                })),
+                categoria: product.categoria,
+                personalizable: product.personalizable,
+                nuevo: product.nuevo,
+                oferta: product.oferta,
+                tallas: tallas,
+                caracteristicas: caracteristicas,
+            };
+
+            return {
+                success: true,
+                data: productCard,
+            };
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
+    const postProductFormData = async (formData: FormData): Promise<ApiResponse<BackendProduct>> => {
+        try {
+            const response = await apiClient("/api/productos/create/", {
+                method: "POST",
+                body: formData,
+            });
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: payload.message || `Error HTTP ${response.status}`,
+                };
+            }
+
+            return {
+                success: payload.success,
+                message: payload.message,
+                data: payload.data,
+            };
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
+    const deleteProduct = async (id: string | number): Promise<ApiResponse<BackendProduct>> => {
+        try {
+            const response = await apiClient(`/api/productos/delete/${id}/`, {
+                method: "DELETE",
+            });
+
+            const payload = (await response.json()) as ApiResponse<BackendProduct>;
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: payload.message || `Error HTTP ${response.status}`,
+                };
+            }
+
+            return {
+                success: payload.success,
+                message: payload.message,
+                data: payload.data,
+            };
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
+    return { getProducts, getFeaturedProducts, getProductById, postProductFormData, deleteProduct };
+};

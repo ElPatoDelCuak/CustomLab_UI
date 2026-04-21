@@ -1,11 +1,13 @@
 import { usePlatformStore } from '@/stores/platformStore'
+import { apiClient } from '@/services/apiClient'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL
-
+/**
+ * Service to handle user login.
+ * Uses apiClient to maintain consistency, although auth header won't be present yet.
+ */
 export async function loginService(email: string, password: string) {
-  const res = await fetch(`${API_URL}/api/login/`, {
+  const res = await apiClient("/api/login/", {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
   })
 
@@ -13,6 +15,7 @@ export async function loginService(email: string, password: string) {
 
   if (json.success) {
     const { usuario, tokens } = json.data
+    // Save tokens in the store
     usePlatformStore.getState().setAuth(usuario, tokens.access, tokens.refresh)
   }
 

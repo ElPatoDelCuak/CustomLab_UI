@@ -4,12 +4,13 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductCard } from "@/components/product-card"
 import { useProductsServices } from "@/services/productsServices"
-import { useFiltersServices } from "@/services/filtersService"
+import { useFeaturesServices } from "@/services/featuresService"
 import { useEffect, useState, useMemo } from "react"
 import { ProductCardProps } from "@/types/products"
 import { FilterState, CaracteristicsResponse } from "@/types/catalogFilters"
 import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/catalog-filters"
 import { cn } from "@/lib/utils"
+import { LoadingSpinner } from "@/components/ui/loading-spinner"
 
 const initialFilters: FilterState = {
   categories: [],
@@ -22,33 +23,43 @@ const initialFilters: FilterState = {
 export default function CatalogPage() {
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
   const { getProducts } = useProductsServices()
-  const { getCaracteristics } = useFiltersServices()
+  const { getCaracteristics } = useFeaturesServices()
   const [products, setProducts] = useState<ProductCardProps[]>([])
   const [filters, setFilters] = useState<FilterState>(initialFilters)
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    // Fetch products and features
-    const fetchProducts = async () => {
-      const result = await getProducts()
-      if (result.success && result.data) {
-        setProducts(result.data)
-      } else {
-        setProducts([])
-        console.error(result.message)
+    // Fetch products and features with loading state
+    const fetchData = async () => {
+      setIsLoading(true)
+      try {
+        const [productsResult, featuresResult] = await Promise.all([
+          getProducts(),
+          getCaracteristics()
+        ])
+
+        if (productsResult.success && productsResult.data) {
+          setProducts(productsResult.data)
+        } else {
+          setProducts([])
+          console.error(productsResult.message)
+        }
+
+        if (featuresResult.success && featuresResult.data) {
+          setAvailableFeatures(featuresResult.data)
+        } else {
+          setAvailableFeatures([])
+          console.error(featuresResult.message)
+        }
+      } catch (error) {
+        console.error("Error fetching catalog data:", error)
+      } finally {
+        setIsLoading(false)
       }
     }
-    const fetchFeatures = async () => {
-      const result = await getCaracteristics()
-      if (result.success && result.data) {
-        setAvailableFeatures(result.data)
-      } else {
-        setAvailableFeatures([])
-        console.error(result.message)
-      }
-    }
-    fetchProducts()
-    fetchFeatures()
+
+    fetchData()
   }, [])
 
   // Count products by feature
@@ -161,18 +172,26 @@ export default function CatalogPage() {
             </div>
           </aside>
           <div className="flex-1">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
-              {filteredProducts.map((product) => (
-                <ProductCard
-                  key={product.id_producto}
-                  {...product}
-                />
-              ))}
-            </div>
-            {filteredProducts.length === 0 && (
-              <p className="text-center text-muted-foreground py-20">
-                No hay productos con los filtros seleccionados.
-              </p>
+            {isLoading ? (
+              <div className="flex justify-center p-12">
+                <LoadingSpinner />
+              </div>
+            ) : (
+              <>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map((product) => (
+                    <ProductCard
+                      key={product.id_producto}
+                      {...product}
+                    />
+                  ))}
+                </div>
+                {filteredProducts.length === 0 && (
+                  <p className="text-center text-muted-foreground py-20">
+                    No hay productos con los filtros seleccionados.
+                  </p>
+                )}
+              </>
             )}
           </div>
         </div>
