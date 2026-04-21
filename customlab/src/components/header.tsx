@@ -6,17 +6,65 @@ import { Menu, Search, ShoppingBag, User, X, LogOut, LayoutDashboard } from "luc
 import { Button } from "@/components/ui/button"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
+import { CartModal, CartItem } from "@/components/cart-modal"
 import logo from "./../../public/img/logo_black_white.png"
+
+// Datos de ejemplo para el carrito
+const initialCartItems: CartItem[] = [
+  {
+    id: "1",
+    name: "Blazer Estructurado Premium",
+    image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&h=250&fit=crop",
+    price: 189.99,
+    quantity: 1,
+    size: "M",
+    color: "Negro"
+  },
+  {
+    id: "2",
+    name: "Camisa de Lino Natural",
+    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=200&h=250&fit=crop",
+    price: 79.99,
+    quantity: 2,
+    size: "L",
+    color: "Blanco"
+  },
+  {
+    id: "3",
+    name: "Pantalon Wide Leg",
+    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=250&fit=crop",
+    price: 129.99,
+    quantity: 1,
+    size: "38",
+    color: "Beige"
+  }
+]
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems)
   const { usuario, clearAuth } = usePlatformStore()
   const router = useRouter()
+
+  const handleUpdateQuantity = (id: string, quantity: number) => {
+    setCartItems(items =>
+      items.map(item =>
+        item.id === id ? { ...item, quantity } : item
+      )
+    )
+  }
+
+  const handleRemoveItem = (id: string) => {
+    setCartItems(items => items.filter(item => item.id !== id))
+  }
 
   function handleLogout() {
     clearAuth()
     router.push("/")
   }
+
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0)
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -48,6 +96,7 @@ export function Header() {
               <Search className="h-5 w-5" />
             </Button>
 
+            {/* Cart button */}
             {usuario ? (
               // Usuario logueado
               <>
@@ -56,11 +105,19 @@ export function Header() {
                     <User className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="ghost" size="icon" className="relative">
+                {/* Cart button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative"
+                  onClick={() => setIsCartOpen(true)}
+                >
                   <ShoppingBag className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center">
-                    3
-                  </span>
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center font-medium">
+                      {totalItems}
+                    </span>
+                  )}
                 </Button>
                 <Button
                   variant="ghost"
@@ -117,6 +174,16 @@ export function Header() {
             )}
           </nav>
         </div>
+      )}
+      {/* Cart Modal */}
+      {usuario && (
+        <CartModal
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          items={cartItems}
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+        />
       )}
     </header>
   )
