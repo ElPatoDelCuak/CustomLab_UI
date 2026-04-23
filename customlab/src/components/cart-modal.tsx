@@ -29,7 +29,7 @@ export function CartModal({
     onUpdateQuantity,
     onRemoveItem
 }: CartModalProps) {
-    const total = items.reduce((acc, item) => acc + item.precio_total, 0)
+    const total = items.filter(i => i.stock > 0).reduce((acc, item) => acc + item.precio_total, 0)
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0)
 
     return (
@@ -57,9 +57,11 @@ export function CartModal({
                     <>
                         <div className="flex-1 overflow-y-auto px-6 py-4">
                             <div className="space-y-6">
-                                {items.map((item) => (
-                                    <div key={`${item.id_producto}-${item.id_talla}`} className="flex gap-4">
-                                        <div className="w-20 h-24 relative bg-muted rounded overflow-hidden shrink-0">
+                                {items.map((item) => {
+                                    const isOutOfStock = item.stock === 0;
+                                    return (
+                                        <div key={`${item.id_producto}-${item.id_talla}`} className="flex gap-4 transition-all">
+                                        <div className={`w-20 h-24 relative bg-muted rounded overflow-hidden shrink-0 ${isOutOfStock ? "opacity-40 grayscale" : ""}`}>
                                             {item.image ? (
                                                 <Image
                                                     src={item.image}
@@ -76,7 +78,7 @@ export function CartModal({
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex justify-between items-start gap-2">
-                                                <h3 className="font-medium text-sm leading-tight line-clamp-2">
+                                                <h3 className={`font-medium text-sm leading-tight line-clamp-2 ${isOutOfStock ? "text-muted-foreground" : ""}`}>
                                                     {item.nombre}
                                                 </h3>
                                                 <button
@@ -91,12 +93,17 @@ export function CartModal({
                                             <p className="text-xs text-muted-foreground mt-1">
                                                 Talla - {item.talla}
                                             </p>
+                                            {isOutOfStock && (
+                                                <p className="text-[10px] text-destructive font-bold uppercase tracking-tight mt-1 animate-pulse">
+                                                    ¡Agotado! Ya no disponible
+                                                </p>
+                                            )}
 
                                             <div className="flex items-center justify-between mt-3">
-                                                <div className="flex items-center border border-border rounded">
+                                                <div className={`flex items-center border border-border rounded ${isOutOfStock ? "pointer-events-none opacity-50" : ""}`}>
                                                     <button
                                                         onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, Math.max(1, item.cantidad - 1))}
-                                                        disabled={item.cantidad <= 1}
+                                                        disabled={item.cantidad <= 1 || isOutOfStock}
                                                         className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors disabled:opacity-40"
                                                         aria-label="Reducir cantidad"
                                                     >
@@ -107,7 +114,7 @@ export function CartModal({
                                                     </span>
                                                     <button
                                                         onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, item.cantidad + 1)}
-                                                        disabled={item.cantidad >= item.stock}
+                                                        disabled={item.cantidad >= item.stock || isOutOfStock}
                                                         className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                                         aria-label="Aumentar cantidad"
                                                         title={item.cantidad >= item.stock ? "Stock maximo alcanzado" : ""}
@@ -124,8 +131,9 @@ export function CartModal({
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                ))}
+                                        </div>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -135,8 +143,14 @@ export function CartModal({
                                 <span>{total.toFixed(2)} &euro;</span>
                             </div>
 
-                            <Button className="w-full mt-4" size="lg">
-                                Finalizar compra
+                            <Button 
+                                className="w-full mt-4" 
+                                size="lg"
+                                disabled={items.some(item => item.stock === 0)}
+                            >
+                                {items.some(item => item.stock === 0) 
+                                    ? "Elimina los productos agotados" 
+                                    : "Finalizar compra"}
                             </Button>
 
                             <button
