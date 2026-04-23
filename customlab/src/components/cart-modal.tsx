@@ -11,22 +11,15 @@ import {
     SheetFooter,
 } from "@/components/ui/sheet"
 
-export interface CartItem {
-    id: string
-    name: string
-    image: string
-    price: number
-    quantity: number
-    size?: string
-    color?: string
-}
+import { CartItem } from "@/context/CartContext"
+import { ShoppingBag } from "lucide-react"
 
 interface CartModalProps {
     isOpen: boolean
     onClose: () => void
     items: CartItem[]
-    onUpdateQuantity: (id: string, quantity: number) => void
-    onRemoveItem: (id: string) => void
+    onUpdateQuantity: (id_producto: number, id_talla: number, quantity: number) => void
+    onRemoveItem: (id_producto: number, id_talla: number) => void
 }
 
 export function CartModal({
@@ -36,9 +29,8 @@ export function CartModal({
     onUpdateQuantity,
     onRemoveItem
 }: CartModalProps) {
-    const subtotal = items.reduce((acc, item) => acc + (item.price * item.quantity), 0)
-    const total = subtotal
-    const totalItems = items.reduce((acc, item) => acc + item.quantity, 0)
+    const total = items.reduce((acc, item) => acc + item.precio_total, 0)
+    const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0)
 
     return (
         <Sheet open={isOpen} onOpenChange={onClose}>
@@ -66,23 +58,29 @@ export function CartModal({
                         <div className="flex-1 overflow-y-auto px-6 py-4">
                             <div className="space-y-6">
                                 {items.map((item) => (
-                                    <div key={item.id} className="flex gap-4">
+                                    <div key={`${item.id_producto}-${item.id_talla}`} className="flex gap-4">
                                         <div className="w-20 h-24 relative bg-muted rounded overflow-hidden shrink-0">
-                                            <Image
-                                                src={item.image}
-                                                alt={item.name}
-                                                fill
-                                                className="object-cover"
-                                            />
+                                            {item.image ? (
+                                                <Image
+                                                    src={item.image}
+                                                    alt={item.nombre}
+                                                    fill
+                                                    className="object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center bg-secondary/20">
+                                                    <ShoppingBag className="h-8 w-8 text-muted-foreground" />
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex justify-between items-start gap-2">
                                                 <h3 className="font-medium text-sm leading-tight line-clamp-2">
-                                                    {item.name}
+                                                    {item.nombre}
                                                 </h3>
                                                 <button
-                                                    onClick={() => onRemoveItem(item.id)}
+                                                    onClick={() => onRemoveItem(item.id_producto, item.id_talla)}
                                                     className="p-1.5 text-muted-foreground hover:text-destructive transition-colors shrink-0"
                                                     aria-label="Eliminar producto"
                                                 >
@@ -90,27 +88,25 @@ export function CartModal({
                                                 </button>
                                             </div>
 
-                                            {(item.size || item.color) && (
-                                                <p className="text-xs text-muted-foreground mt-1">
-                                                    {[item.size && `Talla ${item.size}`, item.color].filter(Boolean).join(" - ")}
-                                                </p>
-                                            )}
+                                            <p className="text-xs text-muted-foreground mt-1">
+                                                Talla {item.talla}
+                                            </p>
 
                                             <div className="flex items-center justify-between mt-3">
                                                 <div className="flex items-center border border-border rounded">
                                                     <button
-                                                        onClick={() => onUpdateQuantity(item.id, Math.max(1, item.quantity - 1))}
-                                                        disabled={item.quantity <= 1}
+                                                        onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, Math.max(1, item.cantidad - 1))}
+                                                        disabled={item.cantidad <= 1}
                                                         className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors disabled:opacity-40"
                                                         aria-label="Reducir cantidad"
                                                     >
                                                         <Minus className="h-3 w-3" />
                                                     </button>
                                                     <span className="w-8 text-center text-sm">
-                                                        {item.quantity}
+                                                        {item.cantidad}
                                                     </span>
                                                     <button
-                                                        onClick={() => onUpdateQuantity(item.id, item.quantity + 1)}
+                                                        onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, item.cantidad + 1)}
                                                         className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
                                                         aria-label="Aumentar cantidad"
                                                     >
@@ -119,9 +115,9 @@ export function CartModal({
                                                 </div>
 
                                                 <div className="text-right">
-                                                    <p className="font-medium">{(item.price * item.quantity).toFixed(2)} &euro;</p>
-                                                    {item.quantity > 1 && (
-                                                        <p className="text-xs text-muted-foreground">{item.price.toFixed(2)} &euro;/ud</p>
+                                                    <p className="font-medium">{item.precio_total.toFixed(2)} &euro;</p>
+                                                    {item.cantidad > 1 && (
+                                                        <p className="text-xs text-muted-foreground">{item.precio_unidad.toFixed(2)} &euro;/ud</p>
                                                     )}
                                                 </div>
                                             </div>

@@ -6,57 +6,24 @@ import { Menu, Search, ShoppingBag, User, X, LogOut, LayoutDashboard } from "luc
 import { Button } from "@/components/ui/button"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
-import { CartModal, CartItem } from "@/components/cart-modal"
+import { useCart } from "@/context/CartContext"
+import { CartModal } from "@/components/cart-modal"
 import logo from "./../../public/img/logo_black_white.png"
 
-// Datos de ejemplo para el carrito
-const initialCartItems: CartItem[] = [
-  {
-    id: "1",
-    name: "Blazer Estructurado Premium",
-    image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?w=200&h=250&fit=crop",
-    price: 189.99,
-    quantity: 1,
-    size: "M",
-    color: "Negro"
-  },
-  {
-    id: "2",
-    name: "Camisa de Lino Natural",
-    image: "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=200&h=250&fit=crop",
-    price: 79.99,
-    quantity: 2,
-    size: "L",
-    color: "Blanco"
-  },
-  {
-    id: "3",
-    name: "Pantalon Wide Leg",
-    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=200&h=250&fit=crop",
-    price: 129.99,
-    quantity: 1,
-    size: "38",
-    color: "Beige"
-  }
-]
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems)
+  const { items, totalItems, updateQuantity, removeItem } = useCart()
   const { usuario, clearAuth } = usePlatformStore()
   const router = useRouter()
 
-  const handleUpdateQuantity = (id: string, quantity: number) => {
-    setCartItems(items =>
-      items.map(item =>
-        item.id === id ? { ...item, quantity } : item
-      )
-    )
+  const handleUpdateQuantity = (id_producto: number, id_talla: number, quantity: number) => {
+    updateQuantity(id_producto, id_talla, quantity)
   }
 
-  const handleRemoveItem = (id: string) => {
-    setCartItems(items => items.filter(item => item.id !== id))
+  const handleRemoveItem = (id_producto: number, id_talla: number) => {
+    removeItem(id_producto, id_talla)
   }
 
   function handleLogout() {
@@ -64,7 +31,6 @@ export function Header() {
     router.push("/")
   }
 
-  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0)
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -180,7 +146,7 @@ export function Header() {
         <CartModal
           isOpen={isCartOpen}
           onClose={() => setIsCartOpen(false)}
-          items={cartItems}
+          items={items}
           onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={handleRemoveItem}
         />
