@@ -11,6 +11,7 @@ export interface CartItem {
     precio_unitario: number;
     precio_total: number;
     image: string;
+    stock: number;
 }
 
 export interface CartBackendItem {
@@ -27,6 +28,7 @@ export interface CartBackendItem {
     };
     talla: {
         nombre: string;
+        stock?: number;
     };
 }
 

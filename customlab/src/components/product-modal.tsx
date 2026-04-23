@@ -1,7 +1,8 @@
 "use client"
 
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useCart } from "@/context/CartContext"
 import { Minus, Plus, X, Check, AlertCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import {
@@ -23,6 +24,16 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
     const [selectedSize, setSelectedSize] = useState<string | null>(null)
     const [quantity, setQuantity] = useState(1)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
+    const { items: cartItems } = useCart()
+
+    // Reset selection when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            setSelectedSize(null)
+            setQuantity(1)
+            setCurrentImageIndex(0)
+        }
+    }, [isOpen])
 
     if (!product) return null
 
@@ -33,7 +44,16 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
         images.push(product.image_cover)
     }
     const totalStock = product.tallas.reduce((acc, s) => acc + s.stock, 0)
-    const selectedSizeStock = product.tallas.find(s => s.talla === selectedSize)?.stock || 0
+    const selectedTallaObj = product.tallas.find(s => s.talla === selectedSize)
+    const selectedSizeStock = selectedTallaObj?.stock || 0
+    const selectedSizeId = selectedTallaObj?.id_talla
+
+    // Check quantity in cart for this specific product and size
+    const cartItem = cartItems.find(item =>
+        item.id_producto === product.id_producto && item.id_talla === selectedSizeId
+    )
+    const quantityInCart = cartItem?.cantidad || 0
+    const availableStockForSelection = selectedSizeStock - quantityInCart
     const discount = product.precio_original
         ? Math.round((1 - product.precio / product.precio_original) * 100)
         : 0
@@ -42,13 +62,13 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
 
     const handleQuantityChange = (delta: number) => {
         const newQuantity = quantity + delta
-        if (newQuantity >= 1 && newQuantity <= selectedSizeStock) {
+        if (newQuantity >= 1 && newQuantity <= availableStockForSelection) {
             setQuantity(newQuantity)
         }
     }
 
     const handleAddToCart = () => {
-        if (selectedSize) {
+        if (selectedSize && availableStockForSelection > 0) {
             onAddToCart(product, selectedSize, quantity)
             onClose()
         }
@@ -202,20 +222,20 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                     <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Disponibilidad</span>
                                     <div className="flex items-center gap-2">
                                         <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full ${totalStock > 20
-                                                ? "bg-green-100 text-green-700"
-                                                : totalStock > 5
-                                                    ? "bg-yellow-100 text-yellow-700"
-                                                    : totalStock > 0
-                                                        ? "bg-red-100 text-red-700"
-                                                        : "bg-neutral-100 text-neutral-500"
+                                            ? "bg-green-100 text-green-700"
+                                            : totalStock > 5
+                                                ? "bg-yellow-100 text-yellow-700"
+                                                : totalStock > 0
+                                                    ? "bg-red-100 text-red-700"
+                                                    : "bg-neutral-100 text-neutral-500"
                                             }`}>
                                             <span className={`w-2 h-2 rounded-full ${totalStock > 20
-                                                    ? "bg-green-500"
-                                                    : totalStock > 5
-                                                        ? "bg-yellow-500"
-                                                        : totalStock > 0
-                                                            ? "bg-red-500"
-                                                            : "bg-neutral-400"
+                                                ? "bg-green-500"
+                                                : totalStock > 5
+                                                    ? "bg-yellow-500"
+                                                    : totalStock > 0
+                                                        ? "bg-red-500"
+                                                        : "bg-neutral-400"
                                                 }`} />
                                             {totalStock > 20
                                                 ? "En stock"
@@ -231,12 +251,12 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                 <div className="h-1.5 bg-neutral-200 rounded-full overflow-hidden">
                                     <div
                                         className={`h-full rounded-full transition-all ${totalStock > 20
-                                                ? "bg-green-500"
-                                                : totalStock > 5
-                                                    ? "bg-yellow-500"
-                                                    : totalStock > 0
-                                                        ? "bg-red-500"
-                                                        : "bg-neutral-400"
+                                            ? "bg-green-500"
+                                            : totalStock > 5
+                                                ? "bg-yellow-500"
+                                                : totalStock > 0
+                                                    ? "bg-red-500"
+                                                    : "bg-neutral-400"
                                             }`}
                                         style={{ width: `${Math.min((totalStock / 50) * 100, 100)}%` }}
                                     />
@@ -247,18 +267,28 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                             <div className="mb-5">
                                 <div className="flex items-center justify-between mb-3">
                                     <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Talla</span>
-                                    {selectedSize && selectedSizeStock <= 3 && selectedSizeStock > 0 && (
+                                    {selectedSize && availableStockForSelection <= 3 && availableStockForSelection > 0 && (
                                         <span className="text-xs text-red-600 flex items-center gap-1 font-medium">
                                             <AlertCircle className="h-3 w-3" />
-                                            Ultimas {selectedSizeStock} unidades
+                                            Ultimas {availableStockForSelection} unidades
+                                        </span>
+                                    )}
+                                    {selectedSize && availableStockForSelection <= 0 && (
+                                        <span className="text-xs text-red-600 flex items-center gap-1 font-medium">
+                                            <AlertCircle className="h-3 w-3" />
+                                            Sin stock disponible (ya en carrito)
                                         </span>
                                     )}
                                 </div>
                                 <div className="flex flex-wrap gap-2">
                                     {product.tallas.map((sizeStock) => {
-                                        const isAvailable = sizeStock.stock > 0
+                                        const sizeInCart = cartItems.find(item =>
+                                            item.id_producto === product.id_producto && item.id_talla === sizeStock.id_talla
+                                        )?.cantidad || 0
+                                        const actualAvailable = sizeStock.stock - sizeInCart
+                                        const isAvailable = actualAvailable > 0
                                         const isSelected = selectedSize === sizeStock.talla
-                                        const isLowStock = sizeStock.stock > 0 && sizeStock.stock <= 3
+                                        const isLowStock = actualAvailable > 0 && actualAvailable <= 3
 
                                         return (
                                             <button
@@ -286,7 +316,8 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                                             : "text-muted-foreground"
                                                         : "text-muted-foreground"
                                                     }`}>
-                                                    {isAvailable ? `${sizeStock.stock} uds` : "Agotado"}
+                                                    {actualAvailable > 0 ? `${actualAvailable} uds` : "Sin stock"}
+                                                    {sizeInCart > 0 && ` (${sizeInCart} en cesta)`}
                                                 </span>
                                                 {isLowStock && isAvailable && !isSelected && (
                                                     <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
@@ -310,7 +341,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                     <span className="w-12 text-center text-sm font-medium">{quantity}</span>
                                     <button
                                         onClick={() => handleQuantityChange(1)}
-                                        disabled={quantity >= selectedSizeStock || !selectedSize}
+                                        disabled={quantity >= availableStockForSelection || !selectedSize}
                                         className="p-3 hover:bg-secondary disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
                                     >
                                         <Plus className="h-4 w-4" />
@@ -322,7 +353,11 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                     disabled={!selectedSize}
                                     className="flex-1 h-12 text-sm uppercase tracking-wider"
                                 >
-                                    {selectedSize ? `Anadir - ${(product.precio * quantity).toFixed(2)} \u20AC` : "Selecciona talla"}
+                                    {selectedSize
+                                        ? availableStockForSelection > 0
+                                            ? `Anadir - ${(product.precio * quantity).toFixed(2)} \u20AC`
+                                            : "Sin stock disponible"
+                                        : "Selecciona talla"}
                                 </Button>
                             </div>
                         </div>

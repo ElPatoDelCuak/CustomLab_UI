@@ -33,7 +33,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             cantidad: item.cantidad,
             precio_unitario: item.producto.precio_unitario,
             precio_total: item.precio_total,
-            image: item.producto.imagen
+            image: item.producto.imagen,
+            stock: item.talla.stock ?? 999 
         }));
     };
 
@@ -106,7 +107,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     cantidad: cantidad,
                     precio_unitario: productInfo.precio_unitario || 0,
                     precio_total: cantidad * (productInfo.precio_unitario || 0),
-                    image: productInfo.image || ""
+                    image: productInfo.image || "",
+                    stock: productInfo.stock || 999
                 };
                 return [...prevItems, newItem];
             }
@@ -117,7 +119,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             const result = await cartServices.addToCart(id_producto, id_talla, cantidad);
             if (!result.success) {
-                console.warn("Error en el servidor al añadir:", result.message);
+                alert(result.message || "No hay suficiente stock disponible");
                 await refreshCart(); // Si falla, volvemos a la realidad del servidor
             }
         } catch (error) {
@@ -157,6 +159,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
             const result = await cartServices.updateQuantity(id_producto, id_talla, quantity);
             if (!result.success) {
+                alert(result.message || "No se pudo actualizar la cantidad por falta de stock");
                 await refreshCart(); // Revertimos si el servidor dice que no (ej: falta stock)
             }
         } catch (error) {

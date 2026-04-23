@@ -107,10 +107,12 @@ export function CartModal({
                                                     </span>
                                                     <button
                                                         onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, item.cantidad + 1)}
-                                                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors"
+                                                        disabled={item.cantidad >= item.stock}
+                                                        className="w-8 h-8 flex items-center justify-center hover:bg-muted transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
                                                         aria-label="Aumentar cantidad"
+                                                        title={item.cantidad >= item.stock ? "Stock maximo alcanzado" : ""}
                                                     >
-                                                        <Plus className="h-3 w-3" />
+                                                        <Plus className={`h-3 w-3 ${item.cantidad >= item.stock ? "text-muted-foreground" : ""}`} />
                                                     </button>
                                                 </div>
 
