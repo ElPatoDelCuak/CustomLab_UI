@@ -288,7 +288,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                         const actualAvailable = sizeStock.stock - sizeInCart
                                         const isAvailable = actualAvailable > 0
                                         const isSelected = selectedSize === sizeStock.talla
-                                        const isLowStock = actualAvailable > 0 && actualAvailable <= 3
+                                        const isLowStock = actualAvailable > 0 && actualAvailable <= 5
 
                                         return (
                                             <button
