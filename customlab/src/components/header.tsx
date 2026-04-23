@@ -18,6 +18,7 @@ export function Header() {
   const { usuario, clearAuth } = usePlatformStore()
   const router = useRouter()
 
+  //CARRITO - gestion del carrito
   const handleUpdateQuantity = (id_producto: number, id_talla: number, quantity: number) => {
     updateQuantity(id_producto, id_talla, quantity)
   }
@@ -141,12 +142,13 @@ export function Header() {
           </nav>
         </div>
       )}
-      {/* Cart Modal */}
+      {/* CART MODAL */}
       {usuario && (
         <CartModal
           isOpen={isCartOpen}
           onClose={() => setIsCartOpen(false)}
           items={items}
+          //CARRITO - Se le pasan las funciones para actualizar y eliminar productos del carrito
           onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={handleRemoveItem}
         />

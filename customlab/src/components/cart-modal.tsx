@@ -59,8 +59,9 @@ export function CartModal({
                             <div className="space-y-6">
                                 {items.map((item) => {
                                     const isOutOfStock = item.stock === 0;
+                                    const isInsufficientStock = item.cantidad > item.stock && item.stock > 0;
                                     return (
-                                        <div key={`${item.id_producto}-${item.id_talla}`} className="flex gap-4 transition-all">
+                                        <div key={`${item.id_producto}-${item.id_talla}`} className={`flex gap-4 transition-all ${isOutOfStock ? "opacity-60 grayscale" : ""}`}>
                                         <div className={`w-20 h-24 relative bg-muted rounded overflow-hidden shrink-0 ${isOutOfStock ? "opacity-40 grayscale" : ""}`}>
                                             {item.image ? (
                                                 <Image
@@ -98,9 +99,22 @@ export function CartModal({
                                                     ¡Agotado! Ya no disponible
                                                 </p>
                                             )}
+                                            {isInsufficientStock && (
+                                                <div className="mt-1 space-y-1">
+                                                    <p className="text-[10px] text-amber-600 font-bold uppercase tracking-tight">
+                                                        Stock insuficiente (Máx: {item.stock})
+                                                    </p>
+                                                    <button 
+                                                        onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, item.stock)}
+                                                        className="text-[10px] underline text-amber-700 hover:text-amber-800"
+                                                    >
+                                                        Ajustar a {item.stock} unidades
+                                                    </button>
+                                                </div>
+                                            )}
 
                                             <div className="flex items-center justify-between mt-3">
-                                                <div className={`flex items-center border border-border rounded ${isOutOfStock ? "pointer-events-none opacity-50" : ""}`}>
+                                                <div className={`flex items-center border border-border rounded ${isOutOfStock ? "pointer-events-none opacity-50" : ""} ${isInsufficientStock ? "border-amber-500 bg-amber-50" : ""}`}>
                                                     <button
                                                         onClick={() => onUpdateQuantity(item.id_producto, item.id_talla, Math.max(1, item.cantidad - 1))}
                                                         disabled={item.cantidad <= 1 || isOutOfStock}
@@ -146,11 +160,13 @@ export function CartModal({
                             <Button 
                                 className="w-full mt-4" 
                                 size="lg"
-                                disabled={items.some(item => item.stock === 0)}
+                                disabled={items.some(item => item.stock === 0 || item.cantidad > item.stock)}
                             >
                                 {items.some(item => item.stock === 0) 
                                     ? "Elimina los productos agotados" 
-                                    : "Finalizar compra"}
+                                    : items.some(item => item.cantidad > item.stock)
+                                        ? "Ajusta las cantidades"
+                                        : "Finalizar compra"}
                             </Button>
 
                             <button

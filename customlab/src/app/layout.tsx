@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   title: "CustomLab",
   description: "Moda personalizada y productos destacados en CustomLab.",
 };
-
+//IMPORT CartProvider para que el carrito persista en toda la pagina
 import { CartProvider } from "@/context/CartContext";
 
 export default function RootLayout({

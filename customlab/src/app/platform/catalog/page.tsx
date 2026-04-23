@@ -23,24 +23,31 @@ const initialFilters: FilterState = {
 }
 
 export default function CatalogPage() {
+  //Móvil
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+  //Obtención de productos y características
   const { getProducts } = useProductsServices()
   const { getCaracteristics } = useFeaturesServices()
+
   const [products, setProducts] = useState<ProductCardProps[]>([])
   const [filters, setFilters] = useState<FilterState>(initialFilters)
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  //Carrito
   const { addItem } = useCart()
 
-  // Modal State
+  //Modal
   const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+
 
   const handleOpenModal = (product: ProductCardProps) => {
     setSelectedProduct(product)
     setIsModalOpen(true)
   }
 
+  //CARRITO - 
   const handleAddToCart = async (product: ProductCardProps, size: string, quantity: number) => {
     const sizeObj = product.tallas.find(s => s.talla === size)
     if (!sizeObj) return
@@ -55,7 +62,6 @@ export default function CatalogPage() {
   }
 
   useEffect(() => {
-    // Fetch products and features with loading state
     const fetchData = async () => {
       setIsLoading(true)
       try {
@@ -247,10 +253,12 @@ export default function CatalogPage() {
         />
       </div>
 
+      {/* Product Modal */}
       <ProductModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         product={selectedProduct}
+        //CARRITO - Se le pasa la funcion handleAddToCart al modal para agregar productos al carrito
         onAddToCart={handleAddToCart}
       />
     </div>

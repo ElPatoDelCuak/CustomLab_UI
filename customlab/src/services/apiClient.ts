@@ -32,11 +32,11 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
     try {
         let response = await fetch(url, config);
 
-        // Handle 401 Unauthorized (potentially expired token)
+        // If response 401, refresh token (Potentially expired token)
         if (response.status === 401 && refreshToken) {
             console.warn("Access token expired. Attempting silent refresh...");
 
-            // Try to refresh the token
+            // Refresh token
             const refreshResponse = await fetch(`${API_URL}/api/login/refresh/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -45,10 +45,10 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
 
             if (refreshResponse.ok) {
                 const refreshData = await refreshResponse.json();
-                const newAccessToken = refreshData.data?.access || refreshData.access; // Standard simplejwt returns it under 'access'
+                const newAccessToken = refreshData.data?.access || refreshData.access;
 
+                //If refresh token is valid, update the token
                 if (newAccessToken && usuario) {
-                    // Update the store with the new access token
                     setAuth(usuario, newAccessToken, refreshToken);
 
                     console.info("Token refreshed successfully. Retrying original request...");
@@ -62,7 +62,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
                     response = await fetch(url, config);
                 }
             } else {
-                // Refresh failed (refresh token likely expired too)
+                //If refresh token is invalid, log out and redirect to login
                 console.error("Refresh token expired or invalid. Logging out...");
                 clearAuth();
                 if (typeof window !== "undefined") {

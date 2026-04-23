@@ -1,0 +1,58 @@
+# ANÁLISIS DEL SISTEMA DE CARRITO - CUSTOMLAB
+
+Este documento detalla el funcionamiento técnico del carrito de compra.
+
+1. LÓGICA DE SINCRONIZACIÓN (refreshCart)
+----------------------------------------
+El carrito utiliza una estrategia de "Single Source of Truth" (Única fuente de verdad) basada en el servidor, pero con una capa de persistencia local.
+
+¿Cuándo se actualiza con el servidor?
+- Al cargar la aplicación (useEffect inicial).
+- Al iniciar sesión (cambio de accessToken).
+- Al abrir el modal del carrito (Header -> onClick).
+- Tras cualquier error de red o de stock para asegurar que el estado es real.
+
+2. ACTUALIZACIÓN OPTIMISTA (addItem / updateQuantity)
+-----------------------------------------------------
+Para que la interfaz sea instantánea, el CartContext realiza cambios en el estado de React ANTES de que el servidor responda.
+- Si añades un producto, aparece en el carrito en milisegundos.
+- Si el servidor rechaza la operación (ej: stock agotado en ese preciso instante), el sistema captura el error, lanza un alert() y ejecuta refreshCart() para revertir el carrito al estado anterior.
+
+3. GESTIÓN DE STOCK Y VALIDACIONES
+----------------------------------
+El sistema verifica el stock en tres puntos críticos:
+
+A. Product Modal:
+   - Resta los items que YA tienes en el carrito del stock total disponible.
+   - Si tienes 3 de stock y ya hay 3 en el carrito, el botón de añadir se bloquea.
+
+B. Cart Modal:
+   - Deshabilita el botón "+" si la cantidad es igual al stock.
+   - Si el stock es 0, aplica un estilo "ghosted" (opacidad y escala de grises).
+
+C. Backend:
+   - El servicio en Python (carritoService.py) valida el stock final antes de guardar.
+
+4. ESTADO "GHOSTED" (AGOTADOS)
+------------------------------
+- Se bloquea el botón de "Finalizar Compra" para obligar al usuario a corregir el error antes de pagar.
+
+5. ESTADO "STOCK INSUFICIENTE" (CANTIDAD > STOCK)
+------------------------------------------------
+Si la cantidad en el carrito supera al stock disponible (pero hay stock > 0):
+- Se resalta el item en color ámbar/naranja.
+- Se muestra un aviso indicando el stock máximo real.
+- Se ofrece un botón de "Ajustar cantidad" para corregir el error en un solo clic.
+- Se bloquea el botón de "Finalizar Compra" hasta que se ajuste la cantidad.
+
+6. DIAGRAMA DE FLUJO (Resumen)
+------------------------------
+[Usuario] -> [Interfaz (React)] -> [Contexto (Estado Local + LocalStorage)]
+                                     |
+                                     v
+                          (Petición Asíncrona API)
+                                     |
+              /----------------------|----------------------\
+          [ÉXITO]                                        [ERROR]
+      Se mantiene estado                              Alert() + refreshCart()
+      optimista.                                      (Sincronización total)

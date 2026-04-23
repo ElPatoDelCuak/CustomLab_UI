@@ -10,15 +10,8 @@ import {
     DialogContent,
     DialogTitle,
 } from "@/components/ui/dialog"
+import { ProductModalProps } from "@/types/products"
 
-import { ProductCardProps } from "@/types/products"
-
-interface ProductModalProps {
-    isOpen: boolean
-    onClose: () => void
-    product: ProductCardProps | null
-    onAddToCart: (product: ProductCardProps, size: string, quantity: number) => void
-}
 
 export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductModalProps) {
     const [selectedSize, setSelectedSize] = useState<string | null>(null)

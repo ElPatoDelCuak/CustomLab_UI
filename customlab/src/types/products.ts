@@ -60,16 +60,9 @@ export interface TallaItem {
   stock: number
 }
 
-/*
-export interface ProductCardProps {
-  id: number
-  name: string
-  price: number
-  originalPrice?: number
-  image: string
-  hoverImage?: string
-  category: string
-  isNew?: boolean
-  isSale?: boolean
+export interface ProductModalProps {
+  isOpen: boolean
+  onClose: () => void
+  product: ProductCardProps | null
+  onAddToCart: (product: ProductCardProps, size: string, quantity: number) => void
 }
-*/

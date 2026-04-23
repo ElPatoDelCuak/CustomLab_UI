@@ -1,20 +1,9 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from "react";
-
-import { CartItem, cartServices, CartBackendItem } from "@/services/cartServices";
+import { cartServices } from "@/services/cartServices";
 import { usePlatformStore } from "@/stores/platformStore";
-
-interface CartContextType {
-    items: CartItem[];
-    isLoading: boolean;
-    refreshCart: () => Promise<void>;
-    addItem: (id_producto: number, id_talla: number, cantidad: number, productInfo?: Partial<CartItem>) => Promise<void>;
-    removeItem: (id_producto: number, id_talla: number) => Promise<void>;
-    updateQuantity: (id_producto: number, id_talla: number, quantity: number) => Promise<void>;
-    totalItems: number;
-    totalPrice: number;
-}
+import { CartItem, CartBackendItem, CartContextType } from "@/types/cartTypes";
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
@@ -34,11 +23,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             precio_unitario: item.producto.precio_unitario,
             precio_total: item.precio_total,
             image: item.producto.imagen,
-            stock: item.talla.stock ?? 999 
+            stock: item.talla.stock ?? 999
         }));
     };
 
-    // 1. Cargar desde LocalStorage al iniciar (Instantaneo)
+    //Cargar carrito desde localStorage al iniciar
     React.useEffect(() => {
         const savedCart = localStorage.getItem("customlab_cart");
         if (savedCart) {
@@ -50,7 +39,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
-    // 2. Guardar en LocalStorage cada vez que cambien los items
+    //Modificar localStorage cada vez que cambien los items
     React.useEffect(() => {
         if (items.length > 0) {
             localStorage.setItem("customlab_cart", JSON.stringify(items));
@@ -64,7 +53,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setItems([]);
             return;
         }
-        
+
         try {
             const result = await cartServices.getCart();
             if (result.success && result.data) {
@@ -76,7 +65,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [accessToken]);
 
-    // Sincronizar con el servidor al iniciar o cambiar token
+    //Sincronizar con el servidor al iniciar o cambiar token
     React.useEffect(() => {
         refreshCart();
     }, [refreshCart]);
@@ -146,10 +135,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // --- ACTUALIZACION OPTIMISTA ---
         setItems(prevItems => prevItems.map(item => {
             if (item.id_producto === id_producto && item.id_talla === id_talla) {
-                return { 
-                    ...item, 
-                    cantidad: quantity, 
-                    precio_total: quantity * item.precio_unitario 
+                return {
+                    ...item,
+                    cantidad: quantity,
+                    precio_total: quantity * item.precio_unitario
                 };
             }
             return item;
@@ -171,22 +160,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const totalPrice = items.reduce((acc, item) => acc + item.precio_total, 0);
 
     return (
-        <CartContext.Provider value={{ 
-            items, 
+        <CartContext.Provider value={{
+            items,
             isLoading,
             refreshCart,
-            addItem, 
-            removeItem, 
-            updateQuantity, 
-            totalItems, 
-            totalPrice 
+            addItem,
+            removeItem,
+            updateQuantity,
+            totalItems,
+            totalPrice
         }}>
             {children}
         </CartContext.Provider>
     );
 };
 
-export { type CartItem } from "@/services/cartServices";
+export { type CartItem } from "@/types/cartTypes";
 
 export const useCart = () => {
     const context = useContext(CartContext);
