@@ -24,7 +24,7 @@ export interface CartBackendItem {
     };
     talla: {
         nombre: string;
-        stock?: number;
+        stock: number;
     };
 }
 
@@ -37,4 +37,12 @@ export interface CartContextType {
     updateQuantity: (id_producto: number, id_talla: number, quantity: number) => Promise<void>;
     totalItems: number;
     totalPrice: number;
+}
+
+export interface CartModalProps {
+    isOpen: boolean
+    onClose: () => void
+    items: CartItem[]
+    onUpdateQuantity: (id_producto: number, id_talla: number, quantity: number) => void
+    onRemoveItem: (id_producto: number, id_talla: number) => void
 }

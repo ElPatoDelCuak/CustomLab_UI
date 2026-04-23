@@ -6,14 +6,15 @@ import { Menu, Search, ShoppingBag, User, X, LogOut, LayoutDashboard } from "luc
 import { Button } from "@/components/ui/button"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
+import logo from "./../../public/img/logo_black_white.png"
 import { useCart } from "@/context/CartContext"
 import { CartModal } from "@/components/cart-modal"
-import logo from "./../../public/img/logo_black_white.png"
 
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
+  //CARRITO - constantes y funciones importadas desde el context del carrito
   const { items, totalItems, updateQuantity, removeItem } = useCart()
   const { usuario, clearAuth } = usePlatformStore()
   const router = useRouter()

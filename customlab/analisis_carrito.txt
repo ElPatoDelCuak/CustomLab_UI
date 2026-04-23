@@ -56,3 +56,20 @@ Si la cantidad en el carrito supera al stock disponible (pero hay stock > 0):
           [ÉXITO]                                        [ERROR]
       Se mantiene estado                              Alert() + refreshCart()
       optimista.                                      (Sincronización total)
+
+7. ARCHIVOS RELACIONADOS
+------------------------
+A continuación se listan los archivos que componen el sistema del carrito:
+
+### FRONTEND (Next.js)
+- [CartContext.tsx] Núcleo de la lógica. Gestiona el estado global, persistencia en LocalStorage y actualización optimista.
+- [cartServices.ts] Capa de comunicación con la API. Define los endpoints para obtener, añadir, actualizar y eliminar productos.
+- [cartTypes.ts] Definiciones de interfaces (TypeScript) para los items del carrito y la estructura del backend.
+- [cart-modal.tsx] Componente visual del carrito lateral. Gestiona la visualización de items, estados de stock (agotado/insuficiente) y cálculos de totales.
+- [header.tsx] Punto de entrada del carrito. Muestra el contador de productos y controla la apertura del modal.
+- [product-modal.tsx] Integra el botón "Añadir al carrito" y valida el stock local vs stock en carrito antes de permitir la acción.
+- [layout.tsx] Envuelve la aplicación en el `CartProvider` para asegurar disponibilidad en todas las rutas.
+- [page.tsx (Catalog & Landing)] Gestionan la acción de añadir productos al carrito desde la vista principal o catálogo, coordinando la información enviada al modal de producto.
+
+
+

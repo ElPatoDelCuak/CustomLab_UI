@@ -17,9 +17,9 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
     const [selectedSize, setSelectedSize] = useState<string | null>(null)
     const [quantity, setQuantity] = useState(1)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
-    const { items: cartItems } = useCart()
+    const { items: cartItems } = useCart() // CARRITO - Obtenemos los items que ya están en la cesta para calcular el stock real disponible
 
-    // Reset selection when modal opens
+    // CARRITO - Limpiar selección cada vez que se abre el modal para evitar errores de persistencia visual
     useEffect(() => {
         if (isOpen) {
             setSelectedSize(null)
@@ -41,10 +41,12 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
     const selectedSizeStock = selectedTallaObj?.stock || 0
     const selectedSizeId = selectedTallaObj?.id_talla
 
-    // Check quantity in cart for this specific product and size
+    // CARRITO - Logica crucial: ¿Cuánto queda realmente?
+    // 1. Buscamos si el usuario ya tiene este mismo producto y talla en su carrito
     const cartItem = cartItems.find(item =>
         item.id_producto === product.id_producto && item.id_talla === selectedSizeId
     )
+    // 2. Si ya lo tiene, restamos esa cantidad del stock total de la talla
     const quantityInCart = cartItem?.cantidad || 0
     const availableStockForSelection = selectedSizeStock - quantityInCart
     const discount = product.precio_original
@@ -53,6 +55,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
 
     const features = product.caracteristicas?.map(c => c.caracteristica) || []
 
+    // CARRITO - Validar que no se exceda el stock disponible al cambiar la cantidad
     const handleQuantityChange = (delta: number) => {
         const newQuantity = quantity + delta
         if (newQuantity >= 1 && newQuantity <= availableStockForSelection) {
@@ -60,6 +63,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
         }
     }
 
+    // CARRITO - Ejecutar la acción de añadir al carrito y cerrar el modal
     const handleAddToCart = () => {
         if (selectedSize && availableStockForSelection > 0) {
             onAddToCart(product, selectedSize, quantity)
@@ -212,7 +216,9 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                             {/* Stock Indicator */}
                             <div className="mb-5">
                                 <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Disponibilidad</span>
+                                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                                        Disponibilidad <span className="normal-case opacity-70">({totalStock})</span>
+                                    </span>
                                     <div className="flex items-center gap-2">
                                         <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full ${totalStock > 20
                                             ? "bg-green-100 text-green-700"
@@ -269,6 +275,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                     {selectedSize && availableStockForSelection <= 0 && (
                                         <span className="text-xs text-red-600 flex items-center gap-1 font-medium">
                                             <AlertCircle className="h-3 w-3" />
+                                            {/* CARRITO - Aviso si el stock existe pero ya está todo en el carrito */}
                                             Sin stock disponible (ya en carrito)
                                         </span>
                                     )}
@@ -309,6 +316,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                                             : "text-muted-foreground"
                                                         : "text-muted-foreground"
                                                     }`}>
+                                                    {/* CARRITO - Información detallada del stock por talla, restando lo que ya hay en la cesta */}
                                                     {actualAvailable > 0 ? `${actualAvailable} uds` : "Sin stock"}
                                                     {sizeInCart > 0 && ` (${sizeInCart} en cesta)`}
                                                 </span>
@@ -332,6 +340,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                         <Minus className="h-4 w-4" />
                                     </button>
                                     <span className="w-12 text-center text-sm font-medium">{quantity}</span>
+                                    {/* CARRITO - Deshabilitar "+" si llegamos al límite del stock disponible */}
                                     <button
                                         onClick={() => handleQuantityChange(1)}
                                         disabled={quantity >= availableStockForSelection || !selectedSize}
@@ -346,6 +355,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                     disabled={!selectedSize}
                                     className="flex-1 h-12 text-sm uppercase tracking-wider"
                                 >
+                                    {/* CARRITO - Texto dinámico del botón principal según la selección y el stock real */}
                                     {selectedSize
                                         ? availableStockForSelection > 0
                                             ? `Anadir - ${(product.precio * quantity).toFixed(2)} \u20AC`

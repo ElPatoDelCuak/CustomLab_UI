@@ -12,17 +12,21 @@ import { useCart } from "@/context/CartContext"
 export default function LandingPage() {
     const { getFeaturedProducts } = useProductsServices();
     const [products, setProducts] = useState<ProductCardProps[]>([]);
+
+    //Carrito
     const { addItem } = useCart();
 
     // Modal State
     const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
 
+    //Modal
     const handleOpenModal = (product: ProductCardProps) => {
         setSelectedProduct(product)
         setIsModalOpen(true)
     }
 
+    //Carrito
     const handleAddToCart = async (product: ProductCardProps, size: string, quantity: number) => {
         const sizeObj = product.tallas.find(s => s.talla === size)
         if (!sizeObj) return
@@ -58,7 +62,7 @@ export default function LandingPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Productos Destacados</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                     {products.map((product) => (
-                        <ProductCard 
+                        <ProductCard
                             key={product.id_producto}
                             id_producto={product.id_producto}
                             nombre_producto={product.nombre_producto}

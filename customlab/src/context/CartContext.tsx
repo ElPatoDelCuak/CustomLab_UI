@@ -12,7 +12,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isLoading, setIsLoading] = useState(false);
     const { accessToken } = usePlatformStore();
 
-    // Función para transformar el formato complejo del backend al formato simple de la UI
+    //CARRITO - Transforma los datos del backend al formato de datos sencillo del carrito de la UI
     const mapBackendToUi = (backendItems: CartBackendItem[]): CartItem[] => {
         return backendItems.map(item => ({
             id_producto: item.id_producto,
@@ -23,11 +23,11 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             precio_unitario: item.producto.precio_unitario,
             precio_total: item.precio_total,
             image: item.producto.imagen,
-            stock: item.talla.stock ?? 999
+            stock: item.talla.stock
         }));
     };
 
-    //Cargar carrito desde localStorage al iniciar
+    //CARRITO - Carga el carrito guardado en localStorage al iniciar, y evita que se vea vacío por un instante al esperar la respuesta de la API.
     React.useEffect(() => {
         const savedCart = localStorage.getItem("customlab_cart");
         if (savedCart) {
@@ -39,7 +39,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, []);
 
-    //Modificar localStorage cada vez que cambien los items
+    //CARRITO - Persistencia local: Guardamos cada cambio en localStorage para una experiencia fluida
     React.useEffect(() => {
         if (items.length > 0) {
             localStorage.setItem("customlab_cart", JSON.stringify(items));
@@ -48,6 +48,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [items]);
 
+    //CARRITO - Sincronización forzada con el servidor: Asegura que las cantidades y el stock coinciden con la realidad del backend
     const refreshCart = useCallback(async () => {
         if (!accessToken) {
             setItems([]);
@@ -65,13 +66,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     }, [accessToken]);
 
-    //Sincronizar con el servidor al iniciar o cambiar token
+    //CARRITO - Autocarga y sincronización: Carga el carrito al iniciar y cuando el usuario cambia (login/logout)
     React.useEffect(() => {
         refreshCart();
     }, [refreshCart]);
 
+    // CARRITO - Función para AÑADIR productos, se usa en CatalogPage y LandingPage (a través del ProductModal), Añade productos o incrementa la cantidad de uno existente si ya está en el carrito
     const addItem = async (id_producto: number, id_talla: number, cantidad: number, productInfo?: Partial<CartItem>) => {
-        // --- ACTUALIZACION OPTIMISTA (INSTANTANEA) ---
         setItems(prevItems => {
             const existingIndex = prevItems.findIndex(
                 item => item.id_producto === id_producto && item.id_talla === id_talla
@@ -86,7 +87,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return updatedItems;
             }
 
-            // Si es nuevo, necesitamos algo de info básica para mostrarlo mientras el servidor responde
             if (productInfo) {
                 const newItem: CartItem = {
                     id_producto,
@@ -105,11 +105,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
 
         // --- SINCRONIZACION EN SEGUNDO PLANO ---
+        // Paso 2: Avisamos al servidor (API) del cambio.
+        // Si el servidor falla o no hay stock, el Paso 1 se deshace automáticamente con refreshCart().
+
         try {
             const result = await cartServices.addToCart(id_producto, id_talla, cantidad);
             if (!result.success) {
                 alert(result.message || "No hay suficiente stock disponible");
-                await refreshCart(); // Si falla, volvemos a la realidad del servidor
+                // Si el servidor rechaza (ej: por stock), revertimos el carrito a la realidad del servidor
+                await refreshCart();
             }
         } catch (error) {
             console.error("Error de red al añadir:", error);
@@ -117,8 +121,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    // CARRITO - Función para ELIMINAR productos por completo. Se usa en Header.tsx, pasa como props al componente CartModal. Quita el producto del estado local y avisa a la API para que lo borre de la BD.
     const removeItem = async (id_producto: number, id_talla: number) => {
         // --- ACTUALIZACION OPTIMISTA ---
+        // Lo quitamos de la vista inmediatamente (Paso 1)
         setItems(prevItems => prevItems.filter(
             item => !(item.id_producto === id_producto && item.id_talla === id_talla)
         ));
@@ -131,8 +137,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    // CARRITO - Función para CAMBIAR LA CANTIDAD (sumar/restar con botones +/-). Se usa en Header.tsx, pasa como props al componente CartModal. Modifica la cantidad de un item existente y recalcula sus totales.
     const updateQuantity = async (id_producto: number, id_talla: number, quantity: number) => {
         // --- ACTUALIZACION OPTIMISTA ---
+        // Reflejamos el cambio de número en la UI al instante (Paso 1)
         setItems(prevItems => prevItems.map(item => {
             if (item.id_producto === id_producto && item.id_talla === id_talla) {
                 return {
@@ -149,13 +157,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             const result = await cartServices.updateQuantity(id_producto, id_talla, quantity);
             if (!result.success) {
                 alert(result.message || "No se pudo actualizar la cantidad por falta de stock");
-                await refreshCart(); // Revertimos si el servidor dice que no (ej: falta stock)
+                // Revertimos si el servidor dice que no (ej: alguien compró el último stock mientras el modal estaba abierto)
+                await refreshCart();
             }
         } catch (error) {
             await refreshCart();
         }
     };
 
+    //CARRITO - Valores calculados para exportar (totales del carrito)
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0);
     const totalPrice = items.reduce((acc, item) => acc + item.precio_total, 0);
 
