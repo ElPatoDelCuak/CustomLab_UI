@@ -36,7 +36,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
     if (images.length === 0 && product.image_cover) {
         images.push(product.image_cover)
     }
-    const totalStock = product.tallas.reduce((acc, s) => acc + s.stock, 0)
+    const totalStock = product.stock
     const selectedTallaObj = product.tallas.find(s => s.talla === selectedSize)
     const selectedSizeStock = selectedTallaObj?.stock || 0
     const selectedSizeId = selectedTallaObj?.id_talla
