@@ -49,7 +49,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-sm uppercase tracking-wider font-medium">Ayuda</h4>
             <nav className="flex flex-col gap-3">
-              <Link href="/auth/about#contact" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/about#contact" className="text-sm text-background/70 hover:text-background transition-colors">
                 Contacto
               </Link>
               <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
@@ -71,9 +71,9 @@ export function Footer() {
               Suscríbete para recibir las últimas novedades y ofertas exclusivas.
             </p>
             <div className="flex gap-2">
-              <Input 
-                type="email" 
-                placeholder="Tu email" 
+              <Input
+                type="email"
+                placeholder="Tu email"
                 className="bg-transparent border-background/30 placeholder:text-background/50 text-background"
               />
               <Button className="bg-background text-foreground hover:bg-background/90 shrink-0">
@@ -88,13 +88,13 @@ export function Footer() {
             2026 CustomLab. Todos los derechos reservados.
           </p>
           <div className="flex gap-6">
-            <Link href="/auth/terms_privacy/privacy" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="/information/terms_privacy/privacy" className="text-sm text-background/60 hover:text-background transition-colors">
               Privacidad
             </Link>
-            <Link href="/auth/terms_privacy/terms" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="/information/terms_privacy/terms" className="text-sm text-background/60 hover:text-background transition-colors">
               Términos
             </Link>
-            <Link href="/auth/terms_privacy/cookies" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="/information/terms_privacy/cookies" className="text-sm text-background/60 hover:text-background transition-colors">
               Cookies
             </Link>
           </div>

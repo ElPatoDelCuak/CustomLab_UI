@@ -14,10 +14,10 @@ export default function SobreNosotrosPage() {
       <main>
         {/* Hero section */}
         <section className="relative h-[400px] overflow-hidden">
-          <div 
+          <div
             className="absolute inset-0 bg-cover bg-center"
             style={{
-              backgroundImage: "url('https://images.unsplash.com/photo-1441984904996-e0b6ba687e04?w=1600&q=80')"
+              backgroundImage: "url('/img/about/about_banner.jpeg')"
             }}
           />
           <div className="absolute inset-0 bg-foreground/50" />
@@ -41,27 +41,27 @@ export default function SobreNosotrosPage() {
                 <h2 className="font-serif text-3xl md:text-4xl mb-6">Nuestra Historia</h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    CustomLab nació con una visión clara: crear experiencias digitales que combinen 
-                    diseño elegante con funcionalidad intuitiva. Lo que comenzó como un pequeño 
-                    estudio de desarrollo se ha convertido en una plataforma reconocida por su 
+                    CustomLab nació con una visión clara: crear experiencias digitales que combinen
+                    diseño elegante con funcionalidad intuitiva. Lo que comenzó como un pequeño
+                    estudio de desarrollo se ha convertido en una plataforma reconocida por su
                     compromiso con la calidad y la innovación.
                   </p>
                   <p>
-                    Cada proyecto en CustomLab es cuidadosamente planificado y ejecutado, 
-                    utilizando las mejores prácticas de diseño y desarrollo para ofrecer soluciones 
+                    Cada proyecto en CustomLab es cuidadosamente planificado y ejecutado,
+                    utilizando las mejores prácticas de diseño y desarrollo para ofrecer soluciones
                     confiables y escalables. Creemos en el valor de la tecnología responsable.
                   </p>
                   <p>
-                    Hoy, seguimos fieles a nuestros valores fundacionales: creatividad colaborativa, 
+                    Hoy, seguimos fieles a nuestros valores fundacionales: creatividad colaborativa,
                     atención al detalle y un profundo respeto por nuestros clientes y su experiencia.
                   </p>
                 </div>
               </div>
               <div className="relative">
-                <div 
+                <div
                   className="aspect-[4/5] rounded-lg bg-cover bg-center"
                   style={{
-                    backgroundImage: "url('https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&q=80')"
+                    backgroundImage: "url('/img/about/history.jpeg')"
                   }}
                 />
                 <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-accent rounded-lg hidden lg:block" />
@@ -81,7 +81,7 @@ export default function SobreNosotrosPage() {
                 </div>
                 <h3 className="font-serif text-xl mb-3">Calidad</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Seleccionamos los mejores materiales y trabajamos con artesanos expertos 
+                  Seleccionamos los mejores materiales y trabajamos con artesanos expertos
                   para garantizar prendas que perduran en el tiempo.
                 </p>
               </div>
@@ -91,7 +91,7 @@ export default function SobreNosotrosPage() {
                 </div>
                 <h3 className="font-serif text-xl mb-3">Sostenibilidad</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Nos comprometemos con prácticas responsables, desde la producción 
+                  Nos comprometemos con prácticas responsables, desde la producción
                   hasta el empaque, minimizando nuestro impacto ambiental.
                 </p>
               </div>
@@ -101,7 +101,7 @@ export default function SobreNosotrosPage() {
                 </div>
                 <h3 className="font-serif text-xl mb-3">Diseño</h3>
                 <p className="text-muted-foreground text-sm leading-relaxed">
-                  Creamos piezas atemporales que trascienden tendencias, 
+                  Creamos piezas atemporales que trascienden tendencias,
                   combinando elegancia clásica con toques modernos.
                 </p>
               </div>
@@ -114,16 +114,16 @@ export default function SobreNosotrosPage() {
           <div className="container mx-auto px-4">
             <h2 className="font-serif text-3xl md:text-4xl text-center mb-4">Nuestro Equipo</h2>
             <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-12">
-              Un grupo apasionado de diseñadores, artesanos y profesionales dedicados a crear 
+              Un grupo apasionado de diseñadores, artesanos y profesionales dedicados a crear
               experiencias únicas para nuestros clientes.
             </p>
             <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-8">
               {[
-                { name: "Moussa Boudhafri", role: "Desarrollador Web", image: "https://yt3.googleusercontent.com/ePKcIf7aen1SFH9BrzKa0t7B2GCrfrmB99CNaZPKGvKl8soElpLZaPmJ2hg0xyXLY0NnL86UiQ=s160-c-k-c0x00ffffff-no-rj" },
-                { name: "David Juncosa", role: "Desarollador/a Web", image: "photo-1507003211169-0a1dd7228f2d" },
+                { name: "Moussa Boudhafri", role: "Desarrollador Web", image: "/img/team/team1.jpg" },
+                { name: "David Juncosa", role: "Desarollador/a Web", image: "/img/team/team2.jpg" },
               ].map((member) => (
                 <div key={member.name} className="text-center">
-                  <div 
+                  <div
                     className="aspect-square rounded-lg bg-cover bg-center mb-4"
                     style={{
                       backgroundImage: `url('${member.image}')`
@@ -150,50 +150,50 @@ export default function SobreNosotrosPage() {
               <div className="bg-card p-8 rounded-lg text-center mx-auto max-w-md">
                 <h3 className="font-serif text-xl mb-6">Información de contacto</h3>
                 <div className="space-y-4 text-center">
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <MapPin className="h-5 w-5 text-accent" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium">Dirección</p>
-                        <p className="text-muted-foreground text-sm">
-                          Calle Gran Vía 42, 28013<br />Madrid, España
-                        </p>
-                      </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <MapPin className="h-5 w-5 text-accent" />
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Phone className="h-5 w-5 text-accent" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium">Teléfono</p>
-                        <p className="text-muted-foreground text-sm">+34 91 123 45 67</p>
-                      </div>
+                    <div className="text-center">
+                      <p className="font-medium">Dirección</p>
+                      <p className="text-muted-foreground text-sm">
+                        Calle Gran Vía 42, 28013<br />Madrid, España
+                      </p>
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Mail className="h-5 w-5 text-accent" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium">Email</p>
-                        <p className="text-muted-foreground text-sm">info@customlab.com</p>
-                      </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Phone className="h-5 w-5 text-accent" />
                     </div>
-                    <div className="flex flex-col items-center gap-2">
-                      <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                        <Clock className="h-5 w-5 text-accent" />
-                      </div>
-                      <div className="text-center">
-                        <p className="font-medium">Horario</p>
-                        <p className="text-muted-foreground text-sm">
-                          Lunes - Sábado: 10:00 - 21:00<br />
-                          Domingo: 11:00 - 20:00
-                        </p>
-                      </div>
+                    <div className="text-center">
+                      <p className="font-medium">Teléfono</p>
+                      <p className="text-muted-foreground text-sm">+34 91 123 45 67</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Mail className="h-5 w-5 text-accent" />
+                    </div>
+                    <div className="text-center">
+                      <p className="font-medium">Email</p>
+                      <p className="text-muted-foreground text-sm">info@customlab.com</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Clock className="h-5 w-5 text-accent" />
+                    </div>
+                    <div className="text-center">
+                      <p className="font-medium">Horario</p>
+                      <p className="text-muted-foreground text-sm">
+                        Lunes - Sábado: 10:00 - 21:00<br />
+                        Domingo: 11:00 - 20:00
+                      </p>
                     </div>
                   </div>
                 </div>
-                
+              </div>
+
             </div>
 
             {/* Mapa */}

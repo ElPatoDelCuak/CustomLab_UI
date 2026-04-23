@@ -80,9 +80,9 @@ export default function RegisterPage() {
   }
 
   const isPasswordMismatch =
-  Boolean(formData.password) &&
-  Boolean(formData.confirmPassword) &&
-  formData.password !== formData.confirmPassword
+    Boolean(formData.password) &&
+    Boolean(formData.confirmPassword) &&
+    formData.password !== formData.confirmPassword
   const isPasswordStrong = passwordStrength === 3
   const strengthWidth = `${(passwordStrength / 3) * 100}%`
   const strengthColorClass =
@@ -141,16 +141,16 @@ export default function RegisterPage() {
 
     setLoading(false)
   }
-  
+
 
   return (
     <div className="min-h-screen flex">
       {/* Imagen lateral - visible solo en desktop */}
       <div className="hidden lg:flex lg:w-1/2 relative">
-        <div 
+        <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&q=80')`,
+            backgroundImage: `url('/img/auth/register.jpg')`,
           }}
         />
         <div className="absolute inset-0 bg-foreground/30" />
@@ -167,9 +167,9 @@ export default function RegisterPage() {
         <div className="w-full max-w-md">
           {/* Logo */}
           <Link href="/" className="block text-center mb-12">
-            <img 
-              src="/img/logo_black_white_horizontal.png" 
-              alt="CUSTOMLAB logo" 
+            <img
+              src="/img/logo_black_white_horizontal.png"
+              alt="CUSTOMLAB logo"
               style={{ display: 'inline-block', maxWidth: '320px', width: '100%', height: 'auto' }}
             />
           </Link>
@@ -219,17 +219,17 @@ export default function RegisterPage() {
             </div>
             {/* Fecha de nacimiento (opcional) */}
             <div className="space-y-2">
-                <label htmlFor="fechaNacimiento" className="block text-sm font-medium text-foreground">
+              <label htmlFor="fechaNacimiento" className="block text-sm font-medium text-foreground">
                 Fecha de nacimiento <span className="text-muted-foreground text-xs">(opcional)</span>
-                </label>
-                <Input
+              </label>
+              <Input
                 id="fechaNacimiento"
                 name="fechaNacimiento"
                 type="date"
                 value={formData.fechaNacimiento}
                 onChange={handleChange}
                 className="h-12 bg-card border-border focus:border-accent focus:ring-accent"
-                />
+              />
             </div>
             {/* Email */}
             <div className="space-y-2">
@@ -314,11 +314,11 @@ export default function RegisterPage() {
 
             {/* Doble factor de autenticación */}
             <div className="flex items-start gap-3">
-              <Checkbox 
-                id="dobleFactor" 
+              <Checkbox
+                id="dobleFactor"
                 checked={formData.dobleFactor}
                 onCheckedChange={handleDobleFactorChange}
-                className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
+                className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent"
               />
               <label htmlFor="dobleFactor" className="text-sm text-muted-foreground cursor-pointer leading-relaxed">
                 Activar doble Factor de autenticación
@@ -327,28 +327,28 @@ export default function RegisterPage() {
 
             {/* Términos y condiciones */}
             <div className="flex items-start gap-3">
-              <Checkbox 
-                id="terms" 
+              <Checkbox
+                id="terms"
                 checked={termsAccepted}
                 onCheckedChange={handleTermsChange}
-                className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
+                className="mt-0.5 border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent"
                 required
               />
               <label htmlFor="terms" className="text-sm text-muted-foreground cursor-pointer leading-relaxed">
                 Acepto los{" "}
-                <Link href="/auth/terms_privacy/terms" className="text-accent hover:text-accent/80 transition-colors">
+                <Link href="/information/terms_privacy/terms" className="text-accent hover:text-accent/80 transition-colors">
                   términos y condiciones
                 </Link>{" "}
                 y la{" "}
-                <Link href="/auth/terms_privacy/privacy" className="text-accent hover:text-accent/80 transition-colors">
+                <Link href="/information/terms_privacy/privacy" className="text-accent hover:text-accent/80 transition-colors">
                   política de privacidad
                 </Link>
               </label>
             </div>
 
             {/* Botón de registro */}
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={
                 loading ||
                 !formData.nombre ||
@@ -376,8 +376,8 @@ export default function RegisterPage() {
 
           {/* Volver al inicio */}
           <div className="text-center mt-6">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="text-sm text-muted-foreground hover:text-foreground transition-colors"
             >
               ← Volver a la tienda

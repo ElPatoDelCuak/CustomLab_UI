@@ -7,7 +7,6 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Checkbox } from "@/components/ui/checkbox"
-import backgroundImage from "@/../public/img/spring-collection.jpg"
 import { loginService } from "@/services/loginService"
 
 
@@ -48,7 +47,7 @@ export default function LoginPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url(${backgroundImage.src})`,
+            backgroundImage: `url("/img/auth/login.jpg")`,
           }}
         />
         <div className="absolute inset-0 bg-foreground/30" />
