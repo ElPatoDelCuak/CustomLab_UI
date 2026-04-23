@@ -49,7 +49,7 @@ export function Header() {
             <Link href="/platform/catalog" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
             <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
             <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Accesorios</Link>
+            <Link href="/auth/about" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Sobre Nosotros</Link>
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">

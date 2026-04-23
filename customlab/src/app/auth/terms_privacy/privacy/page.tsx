@@ -3,25 +3,14 @@ import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import logo from "@/../public/img/logo_black_white.png"
+import { Footer } from "@/components/footer"
+import { Header } from "@/components/header"
 
 export default function PrivacidadPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header simple */}
-      <header className="border-b border-border bg-card">
-        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <Button variant="ghost" asChild className="gap-2">
-            <Link href="/">
-              <ArrowLeft className="h-4 w-4" />
-              Volver
-            </Link>
-          </Button>
-          <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-            <Image src={logo} alt="CustomLab Logo" className="h-45 w-auto" />
-          </Link>
-          <div className="w-[140px]" />
-        </div>
-      </header>
+      <Header></Header>
 
       {/* Content */}
       <main className="container mx-auto px-4 py-12 max-w-4xl">
@@ -207,15 +196,10 @@ export default function PrivacidadPage() {
           </section>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-border flex flex-col sm:flex-row gap-4 justify-center">
-          <Button variant="outline" asChild>
-            <Link href="/auth/terms_privacy/terms">Términos y Condiciones</Link>
-          </Button>
-          <Button asChild>
-            <Link href="/">Volver a la tienda</Link>
-          </Button>
-        </div>
+        
       </main>
+      <Footer></Footer>
     </div>
+    
   )
 }
