@@ -6,10 +6,34 @@ import { Footer } from "@/components/footer"
 import { useProductsServices } from "@/services/productsServices"
 import { useEffect, useState } from "react"
 import { ProductCardProps } from "@/types/products"
+import { ProductModal } from "@/components/product-modal"
+import { useCart } from "@/context/CartContext"
 
 export default function LandingPage() {
     const { getFeaturedProducts } = useProductsServices();
     const [products, setProducts] = useState<ProductCardProps[]>([]);
+    const { addItem } = useCart();
+
+    // Modal State
+    const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    const handleOpenModal = (product: ProductCardProps) => {
+        setSelectedProduct(product)
+        setIsModalOpen(true)
+    }
+
+    const handleAddToCart = async (product: ProductCardProps, size: string, quantity: number) => {
+        const sizeObj = product.tallas.find(s => s.talla === size)
+        if (!sizeObj) return
+
+        await addItem(product.id_producto, sizeObj.id_talla, quantity, {
+            nombre: product.nombre_producto,
+            talla: size,
+            precio_unitario: product.precio,
+            image: product.image_cover
+        })
+    }
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -49,11 +73,18 @@ export default function LandingPage() {
                             oferta={product.oferta}
                             images={product.images}
                             tallas={product.tallas}
+                            onClick={() => handleOpenModal(product)}
                         />
                     ))}
                 </div>
             </div>
             <Footer />
+            <ProductModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                product={selectedProduct}
+                onAddToCart={handleAddToCart}
+            />
         </div>
     )
 }

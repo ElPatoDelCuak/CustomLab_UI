@@ -12,6 +12,7 @@ import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/ca
 import { cn } from "@/lib/utils"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { ProductModal } from "@/components/product-modal"
+import { useCart } from "@/context/CartContext"
 
 const initialFilters: FilterState = {
   categories: [],
@@ -29,6 +30,7 @@ export default function CatalogPage() {
   const [filters, setFilters] = useState<FilterState>(initialFilters)
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
+  const { addItem } = useCart()
 
   // Modal State
   const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
@@ -39,8 +41,16 @@ export default function CatalogPage() {
     setIsModalOpen(true)
   }
 
-  const handleAddToCart = (product: ProductCardProps, size: string, quantity: number) => {
-    console.log("Adding to cart:", { product, size, quantity })
+  const handleAddToCart = async (product: ProductCardProps, size: string, quantity: number) => {
+    const sizeObj = product.tallas.find(s => s.talla === size)
+    if (!sizeObj) return
+
+    await addItem(product.id_producto, sizeObj.id_talla, quantity, {
+      nombre: product.nombre_producto,
+      talla: size,
+      precio_unitario: product.precio,
+      image: product.image_cover
+    })
   }
 
   useEffect(() => {

@@ -8,7 +8,7 @@ export interface CartItem {
     id_talla: number;
     talla: string;
     cantidad: number;
-    precio_unidad: number;
+    precio_unitario: number;
     precio_total: number;
     image: string;
 }

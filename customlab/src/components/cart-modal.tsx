@@ -89,7 +89,7 @@ export function CartModal({
                                             </div>
 
                                             <p className="text-xs text-muted-foreground mt-1">
-                                                Talla {item.talla}
+                                                Talla - {item.talla}
                                             </p>
 
                                             <div className="flex items-center justify-between mt-3">
@@ -117,7 +117,7 @@ export function CartModal({
                                                 <div className="text-right">
                                                     <p className="font-medium">{item.precio_total.toFixed(2)} &euro;</p>
                                                     {item.cantidad > 1 && (
-                                                        <p className="text-xs text-muted-foreground">{item.precio_unidad.toFixed(2)} &euro;/ud</p>
+                                                        <p className="text-xs text-muted-foreground">{item.precio_unitario.toFixed(2)} &euro;/ud</p>
                                                     )}
                                                 </div>
                                             </div>

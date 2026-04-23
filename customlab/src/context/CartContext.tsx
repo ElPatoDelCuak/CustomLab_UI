@@ -9,7 +9,7 @@ interface CartContextType {
     items: CartItem[];
     isLoading: boolean;
     refreshCart: () => Promise<void>;
-    addItem: (id_producto: number, id_talla: number, cantidad: number) => Promise<void>;
+    addItem: (id_producto: number, id_talla: number, cantidad: number, productInfo?: Partial<CartItem>) => Promise<void>;
     removeItem: (id_producto: number, id_talla: number) => Promise<void>;
     updateQuantity: (id_producto: number, id_talla: number, quantity: number) => Promise<void>;
     totalItems: number;
@@ -31,8 +31,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             nombre: item.producto.nombre_producto,
             talla: item.talla.nombre,
             cantidad: item.cantidad,
-            precio_unitario: item.producto.precio_unitario, // Ajustado nombre segun doc
-            precio_unidad: item.producto.precio_unitario,
+            precio_unitario: item.producto.precio_unitario,
             precio_total: item.precio_total,
             image: item.producto.imagen
         }));
@@ -92,7 +91,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const updatedItems = [...prevItems];
                 const item = { ...updatedItems[existingIndex] };
                 item.cantidad += cantidad;
-                item.precio_total = item.cantidad * item.precio_unidad;
+                item.precio_total = item.cantidad * item.precio_unitario;
                 updatedItems[existingIndex] = item;
                 return updatedItems;
             }
@@ -105,8 +104,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                     nombre: productInfo.nombre || "Producto",
                     talla: productInfo.talla || "-",
                     cantidad: cantidad,
-                    precio_unidad: productInfo.precio_unidad || 0,
-                    precio_total: cantidad * (productInfo.precio_unidad || 0),
+                    precio_unitario: productInfo.precio_unitario || 0,
+                    precio_total: cantidad * (productInfo.precio_unitario || 0),
                     image: productInfo.image || ""
                 };
                 return [...prevItems, newItem];
@@ -148,7 +147,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return { 
                     ...item, 
                     cantidad: quantity, 
-                    precio_total: quantity * item.precio_unidad 
+                    precio_total: quantity * item.precio_unitario 
                 };
             }
             return item;
