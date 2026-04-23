@@ -2,23 +2,16 @@
 
 import React, { createContext, useContext, useState, useCallback } from "react";
 
-// Definimos el tipo de item del carrito segun tu documentacion de backend
-export interface CartItem {
-    id_producto: number;
-    nombre: string;
-    id_talla: number;
-    talla: string;
-    cantidad: number;
-    precio_unidad: number;
-    precio_total: number;
-    image?: string; // Opcional, para la UI
-}
+import { CartItem, cartServices, CartBackendItem } from "@/services/cartServices";
+import { usePlatformStore } from "@/stores/platformStore";
 
 interface CartContextType {
     items: CartItem[];
-    addItem: (item: CartItem) => void;
-    removeItem: (id_producto: number, id_talla: number) => void;
-    updateQuantity: (id_producto: number, id_talla: number, quantity: number) => void;
+    isLoading: boolean;
+    refreshCart: () => Promise<void>;
+    addItem: (id_producto: number, id_talla: number, cantidad: number) => Promise<void>;
+    removeItem: (id_producto: number, id_talla: number) => Promise<void>;
+    updateQuantity: (id_producto: number, id_talla: number, quantity: number) => Promise<void>;
     totalItems: number;
     totalPrice: number;
 }
@@ -27,35 +20,129 @@ const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [items, setItems] = useState<CartItem[]>([]);
+    const [isLoading, setIsLoading] = useState(false);
+    const { accessToken } = usePlatformStore();
 
-    const addItem = useCallback((newItem: CartItem) => {
+    // Función para transformar el formato complejo del backend al formato simple de la UI
+    const mapBackendToUi = (backendItems: CartBackendItem[]): CartItem[] => {
+        return backendItems.map(item => ({
+            id_producto: item.id_producto,
+            id_talla: item.id_talla,
+            nombre: item.producto.nombre_producto,
+            talla: item.talla.nombre,
+            cantidad: item.cantidad,
+            precio_unitario: item.producto.precio_unitario, // Ajustado nombre segun doc
+            precio_unidad: item.producto.precio_unitario,
+            precio_total: item.precio_total,
+            image: item.producto.imagen
+        }));
+    };
+
+    // 1. Cargar desde LocalStorage al iniciar (Instantaneo)
+    React.useEffect(() => {
+        const savedCart = localStorage.getItem("customlab_cart");
+        if (savedCart) {
+            try {
+                setItems(JSON.parse(savedCart));
+            } catch (e) {
+                console.error("Error parsing cart from localStorage");
+            }
+        }
+    }, []);
+
+    // 2. Guardar en LocalStorage cada vez que cambien los items
+    React.useEffect(() => {
+        if (items.length > 0) {
+            localStorage.setItem("customlab_cart", JSON.stringify(items));
+        } else {
+            localStorage.removeItem("customlab_cart");
+        }
+    }, [items]);
+
+    const refreshCart = useCallback(async () => {
+        if (!accessToken) {
+            setItems([]);
+            return;
+        }
+        
+        try {
+            const result = await cartServices.getCart();
+            if (result.success && result.data) {
+                const freshItems = mapBackendToUi(result.data);
+                setItems(freshItems);
+            }
+        } catch (error) {
+            console.error("Error al sincronizar el carrito:", error);
+        }
+    }, [accessToken]);
+
+    // Sincronizar con el servidor al iniciar o cambiar token
+    React.useEffect(() => {
+        refreshCart();
+    }, [refreshCart]);
+
+    const addItem = async (id_producto: number, id_talla: number, cantidad: number, productInfo?: Partial<CartItem>) => {
+        // --- ACTUALIZACION OPTIMISTA (INSTANTANEA) ---
         setItems(prevItems => {
-            // Comprobamos si el producto con esa talla ya existe
             const existingIndex = prevItems.findIndex(
-                item => item.id_producto === newItem.id_producto && item.id_talla === newItem.id_talla
+                item => item.id_producto === id_producto && item.id_talla === id_talla
             );
 
             if (existingIndex > -1) {
-                // Si existe, actualizamos cantidad
                 const updatedItems = [...prevItems];
-                const existingItem = updatedItems[existingIndex];
-                existingItem.cantidad += newItem.cantidad;
-                existingItem.precio_total = existingItem.cantidad * existingItem.precio_unidad;
+                const item = { ...updatedItems[existingIndex] };
+                item.cantidad += cantidad;
+                item.precio_total = item.cantidad * item.precio_unidad;
+                updatedItems[existingIndex] = item;
                 return updatedItems;
             }
 
-            // Si no existe, lo añadimos
-            return [...prevItems, { ...newItem, precio_total: newItem.cantidad * newItem.precio_unidad }];
+            // Si es nuevo, necesitamos algo de info básica para mostrarlo mientras el servidor responde
+            if (productInfo) {
+                const newItem: CartItem = {
+                    id_producto,
+                    id_talla,
+                    nombre: productInfo.nombre || "Producto",
+                    talla: productInfo.talla || "-",
+                    cantidad: cantidad,
+                    precio_unidad: productInfo.precio_unidad || 0,
+                    precio_total: cantidad * (productInfo.precio_unidad || 0),
+                    image: productInfo.image || ""
+                };
+                return [...prevItems, newItem];
+            }
+            return prevItems;
         });
-    }, []);
 
-    const removeItem = useCallback((id_producto: number, id_talla: number) => {
+        // --- SINCRONIZACION EN SEGUNDO PLANO ---
+        try {
+            const result = await cartServices.addToCart(id_producto, id_talla, cantidad);
+            if (!result.success) {
+                console.warn("Error en el servidor al añadir:", result.message);
+                await refreshCart(); // Si falla, volvemos a la realidad del servidor
+            }
+        } catch (error) {
+            console.error("Error de red al añadir:", error);
+            await refreshCart();
+        }
+    };
+
+    const removeItem = async (id_producto: number, id_talla: number) => {
+        // --- ACTUALIZACION OPTIMISTA ---
         setItems(prevItems => prevItems.filter(
             item => !(item.id_producto === id_producto && item.id_talla === id_talla)
         ));
-    }, []);
 
-    const updateQuantity = useCallback((id_producto: number, id_talla: number, quantity: number) => {
+        // --- SINCRONIZACION EN SEGUNDO PLANO ---
+        try {
+            await cartServices.removeItem(id_producto, id_talla);
+        } catch (error) {
+            await refreshCart();
+        }
+    };
+
+    const updateQuantity = async (id_producto: number, id_talla: number, quantity: number) => {
+        // --- ACTUALIZACION OPTIMISTA ---
         setItems(prevItems => prevItems.map(item => {
             if (item.id_producto === id_producto && item.id_talla === id_talla) {
                 return { 
@@ -66,7 +153,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             }
             return item;
         }));
-    }, []);
+
+        // --- SINCRONIZACION EN SEGUNDO PLANO ---
+        try {
+            const result = await cartServices.updateQuantity(id_producto, id_talla, quantity);
+            if (!result.success) {
+                await refreshCart(); // Revertimos si el servidor dice que no (ej: falta stock)
+            }
+        } catch (error) {
+            await refreshCart();
+        }
+    };
 
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0);
     const totalPrice = items.reduce((acc, item) => acc + item.precio_total, 0);
@@ -74,6 +171,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return (
         <CartContext.Provider value={{ 
             items, 
+            isLoading,
+            refreshCart,
             addItem, 
             removeItem, 
             updateQuantity, 
@@ -84,6 +183,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         </CartContext.Provider>
     );
 };
+
+export { type CartItem } from "@/services/cartServices";
 
 export const useCart = () => {
     const context = useContext(CartContext);
