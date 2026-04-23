@@ -41,19 +41,19 @@ export default function SobreNosotrosPage() {
                 <h2 className="font-serif text-3xl md:text-4xl mb-6">Nuestra Historia</h2>
                 <div className="space-y-4 text-muted-foreground leading-relaxed">
                   <p>
-                    ATELIER nació en 2010 con una visión clara: crear prendas que combinen elegancia 
-                    atemporal con comodidad contemporánea. Lo que comenzó como un pequeño taller en 
-                    el corazón de Madrid se ha convertido en una marca reconocida por su compromiso 
-                    con la calidad y el diseño.
+                    CustomLab nació con una visión clara: crear experiencias digitales que combinen 
+                    diseño elegante con funcionalidad intuitiva. Lo que comenzó como un pequeño 
+                    estudio de desarrollo se ha convertido en una plataforma reconocida por su 
+                    compromiso con la calidad y la innovación.
                   </p>
                   <p>
-                    Cada pieza de nuestra colección es cuidadosamente diseñada y confeccionada, 
-                    utilizando materiales de la más alta calidad provenientes de proveedores éticos 
-                    y sostenibles. Creemos que la moda debe ser consciente y responsable.
+                    Cada proyecto en CustomLab es cuidadosamente planificado y ejecutado, 
+                    utilizando las mejores prácticas de diseño y desarrollo para ofrecer soluciones 
+                    confiables y escalables. Creemos en el valor de la tecnología responsable.
                   </p>
                   <p>
-                    Hoy, seguimos fieles a nuestros valores fundacionales: artesanía excepcional, 
-                    atención al detalle y un profundo respeto por nuestros clientes y el medio ambiente.
+                    Hoy, seguimos fieles a nuestros valores fundacionales: creatividad colaborativa, 
+                    atención al detalle y un profundo respeto por nuestros clientes y su experiencia.
                   </p>
                 </div>
               </div>
@@ -117,18 +117,16 @@ export default function SobreNosotrosPage() {
               Un grupo apasionado de diseñadores, artesanos y profesionales dedicados a crear 
               experiencias únicas para nuestros clientes.
             </p>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-8">
               {[
-                { name: "Elena García", role: "Directora Creativa", image: "photo-1494790108377-be9c29b29330" },
-                { name: "Carlos Ruiz", role: "Diseñador Principal", image: "photo-1507003211169-0a1dd7228f2d" },
-                { name: "María López", role: "Jefa de Producción", image: "photo-1438761681033-6461ffad8d80" },
-                { name: "Andrés Martín", role: "Director Comercial", image: "photo-1472099645785-5658abf4ff4e" },
+                { name: "Moussa Boudhafri", role: "Desarrollador Web", image: "https://yt3.googleusercontent.com/ePKcIf7aen1SFH9BrzKa0t7B2GCrfrmB99CNaZPKGvKl8soElpLZaPmJ2hg0xyXLY0NnL86UiQ=s160-c-k-c0x00ffffff-no-rj" },
+                { name: "David Juncosa", role: "Desarollador/a Web", image: "photo-1507003211169-0a1dd7228f2d" },
               ].map((member) => (
                 <div key={member.name} className="text-center">
                   <div 
                     className="aspect-square rounded-lg bg-cover bg-center mb-4"
                     style={{
-                      backgroundImage: `url('https://images.unsplash.com/${member.image}?w=400&q=80')`
+                      backgroundImage: `url('${member.image}')`
                     }}
                   />
                   <h3 className="font-serif text-lg">{member.name}</h3>
@@ -147,86 +145,45 @@ export default function SobreNosotrosPage() {
               Estamos aquí para ayudarte. Visítanos en nuestra tienda o ponte en contacto con nosotros.
             </p>
 
-            <div className="grid lg:grid-cols-2 gap-12">
-              {/* Formulario de contacto */}
-              <div className="bg-card p-8 rounded-lg">
-                <h3 className="font-serif text-xl mb-6">Envíanos un mensaje</h3>
-                <form className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
-                      <label htmlFor="contact-name" className="block text-sm font-medium mb-2">
-                        Nombre
-                      </label>
-                      <Input id="contact-name" placeholder="Tu nombre" />
-                    </div>
-                    <div>
-                      <label htmlFor="contact-email" className="block text-sm font-medium mb-2">
-                        Email
-                      </label>
-                      <Input id="contact-email" type="email" placeholder="tu@email.com" />
-                    </div>
-                  </div>
-                  <div>
-                    <label htmlFor="contact-subject" className="block text-sm font-medium mb-2">
-                      Asunto
-                    </label>
-                    <Input id="contact-subject" placeholder="Asunto del mensaje" />
-                  </div>
-                  <div>
-                    <label htmlFor="contact-message" className="block text-sm font-medium mb-2">
-                      Mensaje
-                    </label>
-                    <Textarea 
-                      id="contact-message" 
-                      placeholder="Escribe tu mensaje aquí..." 
-                      rows={5}
-                    />
-                  </div>
-                  <Button type="submit" className="w-full uppercase tracking-wider">
-                    Enviar mensaje
-                  </Button>
-                </form>
-              </div>
-
+            <div>
               {/* Información de contacto */}
-              <div className="space-y-8">
-                <div className="bg-card p-8 rounded-lg">
-                  <h3 className="font-serif text-xl mb-6">Información de contacto</h3>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
+              <div className="bg-card p-8 rounded-lg text-center mx-auto max-w-md">
+                <h3 className="font-serif text-xl mb-6">Información de contacto</h3>
+                <div className="space-y-4 text-center">
+                    <div className="flex flex-col items-center gap-2">
                       <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                         <MapPin className="h-5 w-5 text-accent" />
                       </div>
-                      <div>
+                      <div className="text-center">
                         <p className="font-medium">Dirección</p>
                         <p className="text-muted-foreground text-sm">
                           Calle Gran Vía 42, 28013<br />Madrid, España
                         </p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center gap-2">
                       <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                         <Phone className="h-5 w-5 text-accent" />
                       </div>
-                      <div>
+                      <div className="text-center">
                         <p className="font-medium">Teléfono</p>
                         <p className="text-muted-foreground text-sm">+34 91 123 45 67</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center gap-2">
                       <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                         <Mail className="h-5 w-5 text-accent" />
                       </div>
-                      <div>
+                      <div className="text-center">
                         <p className="font-medium">Email</p>
-                        <p className="text-muted-foreground text-sm">info@atelier.com</p>
+                        <p className="text-muted-foreground text-sm">info@customlab.com</p>
                       </div>
                     </div>
-                    <div className="flex items-start gap-4">
+                    <div className="flex flex-col items-center gap-2">
                       <div className="w-10 h-10 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
                         <Clock className="h-5 w-5 text-accent" />
                       </div>
-                      <div>
+                      <div className="text-center">
                         <p className="font-medium">Horario</p>
                         <p className="text-muted-foreground text-sm">
                           Lunes - Sábado: 10:00 - 21:00<br />
@@ -236,7 +193,7 @@ export default function SobreNosotrosPage() {
                     </div>
                   </div>
                 </div>
-              </div>
+                
             </div>
 
             {/* Mapa */}
