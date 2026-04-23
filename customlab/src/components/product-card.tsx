@@ -6,17 +6,23 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ProductCardProps } from "@/types/products"
 
-export function ProductCard({
-  nombre_producto,
-  precio,
-  precio_original,
-  image_cover,
-  image_hover,
-  categoria,
-  personalizable,
-  nuevo,
-  oferta,
-}: ProductCardProps) {
+export interface ProductCardExtendedProps extends ProductCardProps {
+  onClick?: () => void
+}
+
+export function ProductCard(props: ProductCardExtendedProps) {
+  const {
+    nombre_producto,
+    precio,
+    precio_original,
+    image_cover,
+    image_hover,
+    categoria,
+    personalizable,
+    nuevo,
+    oferta,
+    onClick,
+  } = props
   const [isHovered, setIsHovered] = useState(false)
 
   return (
@@ -72,6 +78,10 @@ export function ProductCard({
           isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}>
           <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              onClick?.()
+            }}
             className="w-full bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-wider"
           >
             Ver más

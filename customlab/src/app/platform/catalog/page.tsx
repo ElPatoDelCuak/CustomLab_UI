@@ -11,6 +11,7 @@ import { FilterState, CaracteristicsResponse } from "@/types/catalogFilters"
 import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/catalog-filters"
 import { cn } from "@/lib/utils"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { ProductModal } from "@/components/product-modal"
 
 const initialFilters: FilterState = {
   categories: [],
@@ -28,6 +29,19 @@ export default function CatalogPage() {
   const [filters, setFilters] = useState<FilterState>(initialFilters)
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
+
+  // Modal State
+  const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+  const handleOpenModal = (product: ProductCardProps) => {
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
+
+  const handleAddToCart = (product: ProductCardProps, size: string, quantity: number) => {
+    console.log("Adding to cart:", { product, size, quantity })
+  }
 
   useEffect(() => {
     // Fetch products and features with loading state
@@ -183,6 +197,7 @@ export default function CatalogPage() {
                     <ProductCard
                       key={product.id_producto}
                       {...product}
+                      onClick={() => handleOpenModal(product)}
                     />
                   ))}
                 </div>
@@ -220,6 +235,13 @@ export default function CatalogPage() {
           availableCategories={categoriesWithCounts}
         />
       </div>
+
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
+        onAddToCart={handleAddToCart}
+      />
     </div>
   )
 }
