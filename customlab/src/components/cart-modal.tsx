@@ -94,7 +94,7 @@ export function CartModal({
                                                     </p>
                                                 )}
 
-                                                {/*CARRITO - MENSAJE SI EL PRODUCTO ESTA AGOTADO*/}
+                                                {/*CARRITO - MENSAJE SI EL PRODUCTO ES INSUFICIENTE*/}
                                                 {isInsufficientStock && (
                                                     <div className="mt-1 space-y-1">
                                                         <p className="text-[10px] text-amber-600 font-bold uppercase tracking-tight">
