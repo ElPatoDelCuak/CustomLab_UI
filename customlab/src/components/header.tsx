@@ -7,16 +7,32 @@ import { Button } from "@/components/ui/button"
 import { usePlatformStore } from "@/stores/platformStore"
 import { useRouter } from "next/navigation"
 import logo from "./../../public/img/logo_black_white.png"
+import { useCart } from "@/context/CartContext"
+import { CartModal } from "@/components/cart-modal"
+
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isCartOpen, setIsCartOpen] = useState(false)
+  //CARRITO - constantes y funciones importadas desde el context del carrito
+  const { items, totalItems, updateQuantity, removeItem } = useCart()
   const { usuario, clearAuth } = usePlatformStore()
   const router = useRouter()
+
+  //CARRITO - gestion del carrito
+  const handleUpdateQuantity = (id_producto: number, id_talla: number, quantity: number) => {
+    updateQuantity(id_producto, id_talla, quantity)
+  }
+
+  const handleRemoveItem = (id_producto: number, id_talla: number) => {
+    removeItem(id_producto, id_talla)
+  }
 
   function handleLogout() {
     clearAuth()
     router.push("/")
   }
+
 
   return (
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
@@ -35,7 +51,7 @@ export function Header() {
             <Link href="/platform/catalog" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
             <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
             <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Accesorios</Link>
+            <Link href="/information/about" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Sobre Nosotros</Link>
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
@@ -48,6 +64,7 @@ export function Header() {
               <Search className="h-5 w-5" />
             </Button>
 
+            {/* Cart button */}
             {usuario ? (
               // Usuario logueado
               <>
@@ -56,11 +73,19 @@ export function Header() {
                     <User className="h-5 w-5" />
                   </Link>
                 </Button>
-                <Button variant="ghost" size="icon" className="relative">
+                {/* Cart button */}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative"
+                  onClick={() => setIsCartOpen(true)}
+                >
                   <ShoppingBag className="h-5 w-5" />
-                  <span className="absolute -top-1 -right-1 h-4 w-4 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center">
-                    3
-                  </span>
+                  {totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 h-5 w-5 rounded-full bg-accent text-accent-foreground text-xs flex items-center justify-center font-medium">
+                      {totalItems}
+                    </span>
+                  )}
                 </Button>
                 <Button
                   variant="ghost"
@@ -117,6 +142,17 @@ export function Header() {
             )}
           </nav>
         </div>
+      )}
+      {/* CART MODAL */}
+      {usuario && (
+        <CartModal
+          isOpen={isCartOpen}
+          onClose={() => setIsCartOpen(false)}
+          items={items}
+          //CARRITO - Se le pasan las funciones para actualizar y eliminar productos del carrito
+          onUpdateQuantity={handleUpdateQuantity}
+          onRemoveItem={handleRemoveItem}
+        />
       )}
     </header>
   )

@@ -3,18 +3,8 @@
 import { AlertTriangle, Loader2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { ConfirmModalProps } from "@/types/confirmModal"
 
-interface ConfirmModalProps {
-  isOpen: boolean
-  onClose: () => void
-  onConfirm: () => void
-  title: string
-  description: string
-  confirmText?: string
-  cancelText?: string
-  isLoading?: boolean
-  variant?: "danger" | "primary"
-}
 
 export function ConfirmModal({
   isOpen,

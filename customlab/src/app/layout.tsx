@@ -16,6 +16,8 @@ export const metadata: Metadata = {
   title: "CustomLab",
   description: "Moda personalizada y productos destacados en CustomLab.",
 };
+//IMPORT CartProvider para que el carrito persista en toda la pagina
+import { CartProvider } from "@/context/CartContext";
 
 export default function RootLayout({
   children,
@@ -23,11 +25,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning={true}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <CartProvider>
+          {children}
+        </CartProvider>
       </body>
     </html>
   );

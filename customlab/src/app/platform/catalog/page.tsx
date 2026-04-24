@@ -11,6 +11,8 @@ import { FilterState, CaracteristicsResponse } from "@/types/catalogFilters"
 import { CatalogFilters, MobileFilterButton, CatalogSort } from "./components/catalog-filters"
 import { cn } from "@/lib/utils"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
+import { ProductModal } from "@/components/product-modal"
+import { useCart } from "@/context/CartContext"
 
 const initialFilters: FilterState = {
   categories: [],
@@ -21,16 +23,45 @@ const initialFilters: FilterState = {
 }
 
 export default function CatalogPage() {
+  //Móvil
   const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false)
+  //Obtención de productos y características
   const { getProducts } = useProductsServices()
   const { getCaracteristics } = useFeaturesServices()
+
   const [products, setProducts] = useState<ProductCardProps[]>([])
   const [filters, setFilters] = useState<FilterState>(initialFilters)
   const [availableFeatures, setAvailableFeatures] = useState<CaracteristicsResponse[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
+  //Carrito
+  const { addItem } = useCart()
+
+  //Modal
+  const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
+
+
+  const handleOpenModal = (product: ProductCardProps) => {
+    setSelectedProduct(product)
+    setIsModalOpen(true)
+  }
+
+  //CARRITO - 
+  const handleAddToCart = async (product: ProductCardProps, size: string, quantity: number) => {
+    const sizeObj = product.tallas.find(s => s.talla === size)
+    if (!sizeObj) return
+
+    await addItem(product.id_producto, sizeObj.id_talla, quantity, {
+      nombre: product.nombre_producto,
+      talla: size,
+      precio_unitario: product.precio,
+      image: product.image_cover,
+      stock: sizeObj.stock
+    })
+  }
+
   useEffect(() => {
-    // Fetch products and features with loading state
     const fetchData = async () => {
       setIsLoading(true)
       try {
@@ -183,6 +214,7 @@ export default function CatalogPage() {
                     <ProductCard
                       key={product.id_producto}
                       {...product}
+                      onClick={() => handleOpenModal(product)}
                     />
                   ))}
                 </div>
@@ -220,6 +252,15 @@ export default function CatalogPage() {
           availableCategories={categoriesWithCounts}
         />
       </div>
+
+      {/* Product Modal */}
+      <ProductModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        product={selectedProduct}
+        //CARRITO - Se le pasa la funcion handleAddToCart al modal para agregar productos al carrito
+        onAddToCart={handleAddToCart}
+      />
     </div>
   )
 }

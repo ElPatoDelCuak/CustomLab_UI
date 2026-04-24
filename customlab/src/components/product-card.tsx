@@ -6,21 +6,27 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ProductCardProps } from "@/types/products"
 
-export function ProductCard({
-  nombre_producto,
-  precio,
-  precio_original,
-  image_cover,
-  image_hover,
-  categoria,
-  personalizable,
-  nuevo,
-  oferta,
-}: ProductCardProps) {
+export interface ProductCardExtendedProps extends ProductCardProps {
+  onClick?: () => void
+}
+
+export function ProductCard(props: ProductCardExtendedProps) {
+  const {
+    nombre_producto,
+    precio,
+    precio_original,
+    image_cover,
+    image_hover,
+    categoria,
+    personalizable,
+    nuevo,
+    oferta,
+    onClick,
+  } = props
   const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <article 
+    <article
       className="group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -46,7 +52,7 @@ export function ProductCard({
             )}
           />
         )}
-        
+
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col items-start gap-2">
           {oferta && (
@@ -71,10 +77,14 @@ export function ProductCard({
           "absolute bottom-0 left-0 right-0 p-3 transition-all duration-300",
           isHovered ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}>
-          <Button 
+          <Button
+            onClick={(e) => {
+              e.stopPropagation()
+              onClick?.()
+            }}
             className="w-full bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-wider"
           >
-            Agregar al carrito
+            Ver más
           </Button>
         </div>
       </div>

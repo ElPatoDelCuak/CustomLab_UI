@@ -6,10 +6,38 @@ import { Footer } from "@/components/footer"
 import { useProductsServices } from "@/services/productsServices"
 import { useEffect, useState } from "react"
 import { ProductCardProps } from "@/types/products"
+import { ProductModal } from "@/components/product-modal"
+import { useCart } from "@/context/CartContext"
 
 export default function LandingPage() {
     const { getFeaturedProducts } = useProductsServices();
     const [products, setProducts] = useState<ProductCardProps[]>([]);
+
+    //Carrito
+    const { addItem } = useCart();
+
+    // Modal State
+    const [selectedProduct, setSelectedProduct] = useState<ProductCardProps | null>(null)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    //Modal
+    const handleOpenModal = (product: ProductCardProps) => {
+        setSelectedProduct(product)
+        setIsModalOpen(true)
+    }
+
+    //Carrito
+    const handleAddToCart = async (product: ProductCardProps, size: string, quantity: number) => {
+        const sizeObj = product.tallas.find(s => s.talla === size)
+        if (!sizeObj) return
+
+        await addItem(product.id_producto, sizeObj.id_talla, quantity, {
+            nombre: product.nombre_producto,
+            talla: size,
+            precio_unitario: product.precio,
+            image: product.image_cover
+        })
+    }
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -34,7 +62,7 @@ export default function LandingPage() {
                 <h2 className="text-2xl font-bold text-gray-900 mb-6">Productos Destacados</h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6">
                     {products.map((product) => (
-                        <ProductCard 
+                        <ProductCard
                             key={product.id_producto}
                             id_producto={product.id_producto}
                             nombre_producto={product.nombre_producto}
@@ -49,11 +77,18 @@ export default function LandingPage() {
                             oferta={product.oferta}
                             images={product.images}
                             tallas={product.tallas}
+                            onClick={() => handleOpenModal(product)}
                         />
                     ))}
                 </div>
             </div>
             <Footer />
+            <ProductModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                product={selectedProduct}
+                onAddToCart={handleAddToCart}
+            />
         </div>
     )
 }
