@@ -5,6 +5,8 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { ProductCardProps } from "@/types/products"
+import { usePlatformStore } from "@/stores/platformStore"
+import { useRouter } from "next/navigation"
 
 export interface ProductCardExtendedProps extends ProductCardProps {
   onClick?: () => void
@@ -24,6 +26,8 @@ export function ProductCard(props: ProductCardExtendedProps) {
     onClick,
   } = props
   const [isHovered, setIsHovered] = useState(false)
+  const { usuario } = usePlatformStore()
+  const router = useRouter()
 
   return (
     <article
@@ -80,6 +84,10 @@ export function ProductCard(props: ProductCardExtendedProps) {
           <Button
             onClick={(e) => {
               e.stopPropagation()
+              if (!usuario) {
+                router.push("/auth/login")
+                return
+              }
               onClick?.()
             }}
             className="w-full bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-wider"

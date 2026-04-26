@@ -11,6 +11,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 import { ProductModalProps } from "@/types/products"
+import { usePlatformStore } from "@/stores/platformStore"
 
 
 export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductModalProps) {
@@ -18,6 +19,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
     const [quantity, setQuantity] = useState(1)
     const [currentImageIndex, setCurrentImageIndex] = useState(0)
     const { items: cartItems } = useCart() // CARRITO - Obtenemos los items que ya están en la cesta para calcular el stock real disponible
+    const { usuario } = usePlatformStore()
 
     // CARRITO - Limpiar selección cada vez que se abre el modal para evitar errores de persistencia visual
     useEffect(() => {
@@ -28,7 +30,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
         }
     }, [isOpen])
 
-    if (!product) return null
+    if (!product || !usuario) return null
 
     // Map Backend fields to modal logic
     const images = product.images.map(img => img.url)
