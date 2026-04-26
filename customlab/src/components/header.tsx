@@ -136,7 +136,7 @@ export function Header() {
             <Link href="/platform/catalog" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
             <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
             <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
-            <Link href="#" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Accesorios</Link>
+            <Link href="/information/about" className="py-3 text-sm uppercase tracking-wider hover:text-accent transition-colors">Sobre Nosotros</Link>
             {/* Opciones móvil según sesión */}
             {usuario ? (
               <button onClick={handleLogout} className="py-3 text-sm uppercase tracking-wider text-left hover:text-accent transition-colors">
