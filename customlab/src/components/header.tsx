@@ -38,14 +38,22 @@ export function Header() {
     <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="lg:hidden"
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
-          >
-            {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
+          <div className="flex items-center gap-1 lg:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+            {usuario && (
+              <Button variant="ghost" size="icon" asChild>
+                <Link href="/platform/perfil">
+                  <User className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
+          </div>
 
           <nav className="hidden lg:flex items-center gap-8">
             <Link href="/platform/catalog" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
@@ -68,7 +76,7 @@ export function Header() {
             {usuario ? (
               // Usuario logueado
               <>
-                <Button variant="ghost" size="icon" asChild>
+                <Button variant="ghost" size="icon" asChild className="hidden lg:flex">
                   <Link href="/platform/perfil">
                     <User className="h-5 w-5" />
                   </Link>
@@ -98,7 +106,7 @@ export function Header() {
                 {usuario.rol === "admin" || usuario.rol === "manager" ? (
                   <Button
                     variant="ghost"
-                    className="text-sm uppercase tracking-wider gap-2"
+                    className="hidden lg:flex text-sm uppercase tracking-wider gap-2"
                     asChild
                   >
                     <Link href="/admin/panel">
