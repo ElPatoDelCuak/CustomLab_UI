@@ -94,7 +94,7 @@ export function Footer() {
             <Link href="/information/terms_privacy/terms" className="text-sm text-background/60 hover:text-background transition-colors">
               Términos
             </Link>
-            <Link href="/information/terms_privacy/cookies" className="text-sm text-background/60 hover:text-background transition-colors">
+            <Link href="#" className="text-sm text-background/60 hover:text-background transition-colors">
               Cookies
             </Link>
           </div>
