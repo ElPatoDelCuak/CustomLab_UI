@@ -150,7 +150,7 @@ export default function RegisterPage() {
         <div
           className="absolute inset-0 bg-cover bg-center"
           style={{
-            backgroundImage: `url('/img/auth/register.jpg')`,
+            backgroundImage: `url('/img/auth/register.jpeg')`,
           }}
         />
         <div className="absolute inset-0 bg-foreground/30" />
