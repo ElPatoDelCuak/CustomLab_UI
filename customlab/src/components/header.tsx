@@ -15,7 +15,7 @@ export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isCartOpen, setIsCartOpen] = useState(false)
   //CARRITO - constantes y funciones importadas desde el context del carrito
-  const { items, totalItems, updateQuantity, removeItem } = useCart()
+  const { items, totalItems, updateQuantity, removeItem, clearCart } = useCart()
   const { usuario, clearAuth } = usePlatformStore()
   const router = useRouter()
 
@@ -160,6 +160,7 @@ export function Header() {
           //CARRITO - Se le pasan las funciones para actualizar y eliminar productos del carrito
           onUpdateQuantity={handleUpdateQuantity}
           onRemoveItem={handleRemoveItem}
+          onClearCart={clearCart}
         />
       )}
     </header>

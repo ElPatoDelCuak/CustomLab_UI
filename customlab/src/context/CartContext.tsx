@@ -165,6 +165,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
     };
 
+    // CARRITO - Función para VACIAR el carrito por completo.
+    const clearCart = async () => {
+        // --- ACTUALIZACION OPTIMISTA ---
+        setItems([]);
+        localStorage.removeItem("customlab_cart");
+
+        // --- SINCRONIZACION EN SEGUNDO PLANO ---
+        try {
+            await cartServices.clearCart();
+        } catch (error) {
+            console.error("Error al vaciar el carrito:", error);
+            await refreshCart();
+        }
+    };
+
     //CARRITO - Valores calculados para exportar (totales del carrito)
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0);
     const totalPrice = items.reduce((acc, item) => acc + item.precio_total, 0);
@@ -177,6 +192,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             addItem,
             removeItem,
             updateQuantity,
+            clearCart,
             totalItems,
             totalPrice
         }}>

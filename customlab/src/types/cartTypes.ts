@@ -35,6 +35,7 @@ export interface CartContextType {
     addItem: (id_producto: number, id_talla: number, cantidad: number, productInfo?: Partial<CartItem>) => Promise<void>;
     removeItem: (id_producto: number, id_talla: number) => Promise<void>;
     updateQuantity: (id_producto: number, id_talla: number, quantity: number) => Promise<void>;
+    clearCart: () => Promise<void>;
     totalItems: number;
     totalPrice: number;
 }
@@ -45,4 +46,5 @@ export interface CartModalProps {
     items: CartItem[]
     onUpdateQuantity: (id_producto: number, id_talla: number, quantity: number) => void
     onRemoveItem: (id_producto: number, id_talla: number) => void
+    onClearCart: () => void
 }
