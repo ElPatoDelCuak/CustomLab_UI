@@ -11,6 +11,7 @@ export interface AuthStore {
   usuario: Usuario | null
   accessToken: string | null
   refreshToken: string | null
-  setAuth: (usuario: Usuario, accessToken: string, refreshToken: string) => void
+  rememberMe: boolean
+  setAuth: (usuario: Usuario, accessToken: string, refreshToken: string, rememberMe: boolean) => void
   clearAuth: () => void
 }

@@ -14,6 +14,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [rememberMe, setRememberMe] = useState(false)
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
   const router = useRouter()
@@ -23,7 +24,7 @@ export default function LoginPage() {
     setError("")
     setLoading(true)
 
-    const result = await loginService(email, password)
+    const result = await loginService(email, password, rememberMe)
 
     if (result.success) {
       const rol = result.data?.usuario?.rol?.toLowerCase() || ""
@@ -125,7 +126,12 @@ export default function LoginPage() {
             {/* Recordarme y Olvidé contraseña */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Checkbox id="remember" className="border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" />
+                <Checkbox 
+                  id="remember" 
+                  className="border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
+                  checked={rememberMe}
+                  onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                />
                 <label htmlFor="remember" className="text-sm text-muted-foreground cursor-pointer">
                   Recordarme
                 </label>

@@ -10,7 +10,16 @@ const cookieStorage = {
     return cookie ? decodeURIComponent(cookie.split('=')[1]) : null
   },
   setItem: (name: string, value: string) => {
-    document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${60 * 60 * 24 * 7}` // 7 días
+    let maxAge = ''
+    try {
+      const parsed = JSON.parse(value)
+      if (parsed.state.rememberMe) {
+        maxAge = `; max-age=${60 * 60 * 24 * 7}` // 7 días
+      }
+    } catch (e) {
+      console.error('Error parsing auth storage value', e)
+    }
+    document.cookie = `${name}=${encodeURIComponent(value)}; path=/${maxAge}`
   },
   removeItem: (name: string) => {
     document.cookie = `${name}=; path=/; max-age=0`
@@ -23,10 +32,11 @@ export const usePlatformStore = create<AuthStore>()(
       usuario: null,
       accessToken: null,
       refreshToken: null,
-      setAuth: (usuario, accessToken, refreshToken) =>
-        set({ usuario, accessToken, refreshToken }),
+      rememberMe: false,
+      setAuth: (usuario, accessToken, refreshToken, rememberMe) =>
+        set({ usuario, accessToken, refreshToken, rememberMe }),
       clearAuth: () =>
-        set({ usuario: null, accessToken: null, refreshToken: null }),
+        set({ usuario: null, accessToken: null, refreshToken: null, rememberMe: false }),
     }),
     {
       name: 'auth-storage',
