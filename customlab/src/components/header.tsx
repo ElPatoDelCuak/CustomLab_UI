@@ -48,7 +48,7 @@ export function Header() {
             </Button>
             {usuario && (
               <Button variant="ghost" size="icon" asChild>
-                <Link href="/platform/perfil">
+                <Link href="/platform/profile">
                   <User className="h-5 w-5" />
                 </Link>
               </Button>
@@ -77,7 +77,7 @@ export function Header() {
               // Usuario logueado
               <>
                 <Button variant="ghost" size="icon" asChild className="hidden lg:flex">
-                  <Link href="/platform/perfil">
+                  <Link href="/platform/profile">
                     <User className="h-5 w-5" />
                   </Link>
                 </Button>
