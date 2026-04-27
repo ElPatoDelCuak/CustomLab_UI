@@ -7,7 +7,7 @@ interface FetchOptions extends RequestInit {
 }
 
 export async function apiClient(endpoint: string, options: FetchOptions = {}) {
-    const { accessToken, refreshToken, setAuth, clearAuth, usuario } = usePlatformStore.getState();
+    const { accessToken, refreshToken, rememberMe, setAuth, clearAuth, usuario } = usePlatformStore.getState();
 
     // Prepare headers
     const headers: Record<string, string> = { ...options.headers };
@@ -49,7 +49,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
 
                 //If refresh token is valid, update the token
                 if (newAccessToken && usuario) {
-                    setAuth(usuario, newAccessToken, refreshToken);
+                    setAuth(usuario, newAccessToken, refreshToken, rememberMe);
 
                     console.info("Token refreshed successfully. Retrying original request...");
 
