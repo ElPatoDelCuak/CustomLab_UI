@@ -21,13 +21,23 @@ import {
 import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
-import { getMyUser } from "@/services/userService"
+import { useUserServices } from "@/services/userServices"
+import ChangePasswordModal from "./components/change-password-modal"
+import EditProfileModal from "./components/edit-profile-modal"
+import { ConfirmModal } from "@/components/ui/confirm-modal"
+
 
 
 export default function ProfilePage() {
     const { usuario, clearAuth, setUsuario } = usePlatformStore()
     const [activeTab, setActiveTab] = useState("perfil")
+    const [isPasswordModalOpen, setIsPasswordModalOpen] = useState(false)
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+    const [isDeleting, setIsDeleting] = useState(false)
+    const { getMyUser, deleteUser } = useUserServices()
     const router = useRouter()
+
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -49,6 +59,26 @@ export default function ProfilePage() {
         router.push("/auth/login")
     }
 
+    const handleDeleteAccount = async () => {
+        if (!usuario) return
+        setIsDeleting(true)
+        try {
+            const result = await deleteUser(usuario.id_usuario)
+            if (result.success) {
+                clearAuth()
+                router.push("/auth/login")
+            } else {
+                alert(result.message || "Error al eliminar la cuenta")
+            }
+        } catch (error) {
+            console.error("Error deleting account:", error)
+            alert("Error de conexión al eliminar la cuenta")
+        } finally {
+            setIsDeleting(false)
+            setIsDeleteModalOpen(false)
+        }
+    }
+
 
     const menuItems = [
         { id: "perfil", label: "Mi Perfil", icon: User },
@@ -59,10 +89,10 @@ export default function ProfilePage() {
     ]
 
     return (
-        <div className="min-h-screen bg-background">
+        <div className="min-h-screen bg-background flex flex-col">
             <Header />
             
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
+            <main className="flex-grow w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 lg:py-16">
                 {/* Breadcrumbs */}
                 <nav className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground mb-8">
                     <a href="/" className="hover:text-foreground transition-colors">Inicio</a>
@@ -123,9 +153,13 @@ export default function ProfilePage() {
                                             <h3 className="text-2xl font-serif mb-1">Información Personal</h3>
                                             <p className="text-sm text-muted-foreground">Gestiona tus datos personales y cómo te contactamos.</p>
                                         </div>
-                                        <Button className="rounded-full px-8 h-12 bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-widest transition-all">
+                                        <Button 
+                                            onClick={() => setIsEditModalOpen(true)}
+                                            className="rounded-full px-8 h-12 bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-widest transition-all"
+                                        >
                                             Editar Datos
                                         </Button>
+
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -222,9 +256,13 @@ export default function ProfilePage() {
                                                 <h4 className="font-medium">Contraseña</h4>
                                                 <p className="text-sm text-muted-foreground">Cambia tu contraseña para mantener tu cuenta segura.</p>
                                             </div>
-                                            <Button className="rounded-full px-8 h-11 bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-widest transition-all">
+                                            <Button 
+                                                onClick={() => setIsPasswordModalOpen(true)}
+                                                className="rounded-full px-8 h-11 bg-foreground text-background hover:bg-foreground/90 text-xs uppercase tracking-widest transition-all"
+                                            >
                                                 Actualizar
                                             </Button>
+
                                         </div>
 
                                         <div className="flex items-center justify-between p-6 bg-[#fafafa] rounded-xl border border-border/50">
@@ -233,10 +271,12 @@ export default function ProfilePage() {
                                                 <p className="text-sm text-muted-foreground">Esta acción borrará permanentemente todos tus datos.</p>
                                             </div>
                                             <Button 
+                                                onClick={() => setIsDeleteModalOpen(true)}
                                                 className="bg-transparent shadow-none hover:bg-destructive/10 text-destructive hover:text-destructive px-6 h-10 rounded-full text-xs uppercase tracking-widest font-bold transition-colors"
                                             >
                                                 Eliminar
                                             </Button>
+
                                         </div>
                                     </div>
                                 </div>
@@ -256,6 +296,34 @@ export default function ProfilePage() {
             </main>
 
             <Footer />
+
+            {isPasswordModalOpen && usuario && (
+                <ChangePasswordModal 
+                    userId={usuario.id_usuario} 
+                    onClose={() => setIsPasswordModalOpen(false)} 
+                />
+            )}
+
+            {isEditModalOpen && usuario && (
+                <EditProfileModal 
+                    usuario={usuario}
+                    onClose={() => setIsEditModalOpen(false)}
+                    onSuccess={(updatedUser) => setUsuario(updatedUser)}
+                />
+            )}
+
+            <ConfirmModal 
+                isOpen={isDeleteModalOpen}
+                onClose={() => setIsDeleteModalOpen(false)}
+                onConfirm={handleDeleteAccount}
+                title="¿Eliminar tu cuenta?"
+                description="Esta acción es permanente y no se puede deshacer. Perderás todo tu historial de pedidos y datos guardados."
+                confirmText="Sí, eliminar cuenta"
+                cancelText="No, mantener cuenta"
+                isLoading={isDeleting}
+                variant="danger"
+            />
+
 
             <style jsx>{`
                 @keyframes spin-slow {

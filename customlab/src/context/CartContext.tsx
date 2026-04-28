@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useCallback } from "react";
-import { cartServices } from "@/services/cartServices";
+import { useCartServices } from "@/services/cartServices";
 import { usePlatformStore } from "@/stores/platformStore";
 import { CartItem, CartBackendItem, CartContextType } from "@/types/cartTypes";
 
@@ -11,6 +11,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [items, setItems] = useState<CartItem[]>([]);
     const [isLoading, setIsLoading] = useState(false);
     const { accessToken } = usePlatformStore();
+    const { getCart, addToCart, updateQuantity: updateQuantityService, removeItem: removeItemService, clearCart: clearCartService } = useCartServices();
 
     //CARRITO - Transforma los datos del backend al formato de datos sencillo del carrito de la UI
     const mapBackendToUi = (backendItems: CartBackendItem[]): CartItem[] => {
@@ -56,7 +57,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
 
         try {
-            const result = await cartServices.getCart();
+            const result = await getCart();
             if (result.success && result.data) {
                 const freshItems = mapBackendToUi(result.data);
                 setItems(freshItems);
@@ -109,7 +110,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Si el servidor falla o no hay stock, el Paso 1 se deshace automáticamente con refreshCart().
 
         try {
-            const result = await cartServices.addToCart(id_producto, id_talla, cantidad);
+            const result = await addToCart(id_producto, id_talla, cantidad);
             if (!result.success) {
                 alert(result.message || "No hay suficiente stock disponible");
                 // Si el servidor rechaza (ej: por stock), revertimos el carrito a la realidad del servidor
@@ -131,7 +132,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // --- SINCRONIZACION EN SEGUNDO PLANO ---
         try {
-            await cartServices.removeItem(id_producto, id_talla);
+            await removeItemService(id_producto, id_talla);
         } catch (error) {
             await refreshCart();
         }
@@ -154,7 +155,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // --- SINCRONIZACION EN SEGUNDO PLANO ---
         try {
-            const result = await cartServices.updateQuantity(id_producto, id_talla, quantity);
+            const result = await updateQuantityService(id_producto, id_talla, quantity);
             if (!result.success) {
                 alert(result.message || "No se pudo actualizar la cantidad por falta de stock");
                 // Revertimos si el servidor dice que no (ej: alguien compró el último stock mientras el modal estaba abierto)
@@ -173,7 +174,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         // --- SINCRONIZACION EN SEGUNDO PLANO ---
         try {
-            await cartServices.clearCart();
+            await clearCartService();
         } catch (error) {
             console.error("Error al vaciar el carrito:", error);
             await refreshCart();
