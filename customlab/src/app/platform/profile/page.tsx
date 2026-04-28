@@ -18,15 +18,31 @@ import {
     Calendar,
     Shield
 } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { cn } from "@/lib/utils"
 import { useRouter } from "next/navigation"
+import { getMyUser } from "@/services/userService"
 
 
 export default function ProfilePage() {
-    const { usuario, clearAuth } = usePlatformStore()
+    const { usuario, clearAuth, setUsuario } = usePlatformStore()
     const [activeTab, setActiveTab] = useState("perfil")
     const router = useRouter()
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await getMyUser()
+                if (response.success && response.data?.[0]) {
+                    setUsuario(response.data[0])
+                }
+            } catch (error) {
+                console.error("Error fetching user data:", error)
+            }
+        }
+
+        fetchUserData()
+    }, [setUsuario])
 
     const handleLogout = () => {
         clearAuth()

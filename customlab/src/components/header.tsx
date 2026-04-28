@@ -63,7 +63,7 @@ export function Header() {
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-            <Image src={logo} alt="CustomLab Logo" className="h-45 w-auto" />
+            <Image src={logo} alt="CustomLab Logo" className="h-45 w-auto" priority />
           </Link>
 
           {/* Zona derecha — condicional según sesión */}
