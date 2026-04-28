@@ -14,6 +14,7 @@ export interface ProductCardProps {
   personalizable: boolean
   nuevo: boolean
   oferta: boolean
+  precio_costo?: number
   tallas: {
     id_talla: number
     id_producto: number
@@ -36,6 +37,7 @@ export interface BackendProduct {
   personalizable: boolean;
   nuevo: boolean;
   oferta: boolean;
+  precio_costo?: number;
   images: {
     id_imagen_producto: number;
     ruta: string;

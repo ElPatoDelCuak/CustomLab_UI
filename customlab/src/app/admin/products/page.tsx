@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Plus, Edit, Trash2, Eye } from "lucide-react"
 import { ProductInformationCard } from "./components/product-information-card"
 import UploadModal from "./components/product-uploadModal"
+import ProductEditModal from "./components/product-editModal"
 import { LoadingSpinner } from "@/components/ui/loading-spinner"
 import { ConfirmModal } from "@/components/ui/confirm-modal"
 
@@ -17,6 +18,7 @@ export default function AdminProductsPage() {
     const [error, setError] = useState<string | null>(null)
     const [selectedProductId, setSelectedProductId] = useState<number | null>(null)
     const [isUploadModalOpen, setIsUploadModalOpen] = useState(false)
+    const [productToEdit, setProductToEdit] = useState<ProductCardProps | null>(null)
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
     const [productToDelete, setProductToDelete] = useState<number | null>(null)
     const [isDeleting, setIsDeleting] = useState(false)
@@ -163,9 +165,15 @@ export default function AdminProductsPage() {
                                                     >
                                                         <Eye className="h-4 w-4" />
                                                     </Button>
-                                                    <Button variant="ghost" size="icon" className="h-8 w-8 text-gray-500 hover:text-gray-900">
+                                                    <Button 
+                                                        variant="ghost" 
+                                                        size="icon" 
+                                                        className="h-8 w-8 text-gray-500 hover:text-gray-900"
+                                                        onClick={() => setProductToEdit(product)}
+                                                    >
                                                         <Edit className="h-4 w-4" />
                                                     </Button>
+
                                                     <Button variant="ghost" size="icon" className="h-8 w-8 text-red-500 hover:text-red-700 hover:bg-red-50" onClick={() => handleDeleteClick(product.id_producto)}>
                                                         <Trash2 className="h-4 w-4" />
                                                     </Button>
@@ -190,6 +198,14 @@ export default function AdminProductsPage() {
             {isUploadModalOpen && (
                 <UploadModal
                     onClose={() => setIsUploadModalOpen(false)}
+                    onSuccess={fetchProducts}
+                />
+            )}
+
+            {productToEdit && (
+                <ProductEditModal
+                    product={productToEdit}
+                    onClose={() => setProductToEdit(null)}
                     onSuccess={fetchProducts}
                 />
             )}

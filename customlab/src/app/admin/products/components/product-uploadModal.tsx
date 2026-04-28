@@ -105,10 +105,26 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
         }
 
         try {
+            const pVenta = parseFloat(precioVenta)
+            const pOriginal = precioOriginal ? parseFloat(precioOriginal) : null
+
+            if (pOriginal !== null) {
+                if (pOriginal <= 0) {
+                    setError("El precio original no puede ser 0.")
+                    setLoading(false)
+                    return
+                }
+                if (pOriginal <= pVenta) {
+                    setError("El precio original debe ser mayor que el precio de venta.")
+                    setLoading(false)
+                    return
+                }
+            }
+
             const formData = new FormData()
             formData.append("nombre_producto", nombre)
             formData.append("precio_venta", precioVenta)
-            formData.append("precio_original", precioOriginal || "0")
+            formData.append("precio_original", pOriginal !== null ? pOriginal.toString() : "")
             formData.append("precio_costo", precioCosto || "0")
             formData.append("stock", stockTotal || "0")
             formData.append("categoria", categoria)
