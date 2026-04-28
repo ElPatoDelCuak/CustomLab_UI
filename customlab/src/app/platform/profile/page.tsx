@@ -14,14 +14,25 @@ import {
     Phone, 
     MapPin, 
     ShieldCheck,
-    CreditCard
+    CreditCard,
+    Calendar,
+    Shield
 } from "lucide-react"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { useRouter } from "next/navigation"
+
 
 export default function ProfilePage() {
     const { usuario, clearAuth } = usePlatformStore()
     const [activeTab, setActiveTab] = useState("perfil")
+    const router = useRouter()
+
+    const handleLogout = () => {
+        clearAuth()
+        router.push("/auth/login")
+    }
+
 
     const menuItems = [
         { id: "perfil", label: "Mi Perfil", icon: User },
@@ -74,7 +85,8 @@ export default function ProfilePage() {
                                 </button>
                             ))}
                             <button 
-                                onClick={clearAuth}
+                                onClick={handleLogout}
+
                                 className="w-full flex items-center gap-3 px-4 py-3 text-sm font-medium text-destructive hover:bg-destructive/5 transition-all rounded-lg mt-4"
                             >
                                 <LogOut className="h-4 w-4" />
@@ -117,10 +129,18 @@ export default function ProfilePage() {
                                             </div>
                                         </div>
                                         <div className="space-y-1.5">
-                                            <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Teléfono</label>
+                                            <label className="text-[10px] uppercase tracking-widest text-muted-foreground font-bold">Fecha de Nacimiento</label>
                                             <div className="flex items-center gap-2 border-b border-border pb-2">
-                                                <Phone className="h-3 w-3 text-muted-foreground" />
-                                                <p className="text-sm font-medium text-muted-foreground italic">No especificado</p>
+                                                <Calendar className="h-3 w-3 text-muted-foreground" />
+                                                <p className="text-sm font-medium">
+                                                    {usuario?.fecha_nacimiento 
+                                                        ? new Date(usuario.fecha_nacimiento).toLocaleDateString('es-ES', {
+                                                            day: '2-digit',
+                                                            month: 'long',
+                                                            year: 'numeric'
+                                                        })
+                                                        : "No especificada"}
+                                                </p>
                                             </div>
                                         </div>
                                     </div>
@@ -133,10 +153,25 @@ export default function ProfilePage() {
                                             <div>
                                                 <h4 className="font-medium mb-1">Verificación de Cuenta</h4>
                                                 <p className="text-sm text-muted-foreground mb-3">Tu cuenta está protegida con los estándares de seguridad de CustomLab.</p>
-                                                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
-                                                    Protegida
-                                                </span>
+                                                
+                                                <div className="flex flex-wrap gap-3">
+                                                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 text-[10px] font-bold uppercase tracking-wider">
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-green-500" />
+                                                        Cuenta Protegida
+                                                    </span>
+
+                                                    {usuario?.doble_factor ? (
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-[10px] font-bold uppercase tracking-wider">
+                                                            <Shield className="h-3 w-3" />
+                                                            Doble Factor Activo
+                                                        </span>
+                                                    ) : (
+                                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-50 text-amber-700 text-[10px] font-bold uppercase tracking-wider">
+                                                            <Shield className="h-3 w-3 opacity-50" />
+                                                            Doble Factor Inactivo
+                                                        </span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

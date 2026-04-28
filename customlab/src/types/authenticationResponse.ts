@@ -5,6 +5,7 @@ export interface Usuario {
   email: string
   rol: string
   doble_factor: boolean | null
+  fecha_nacimiento: string | null
 }
 
 export interface AuthStore {
