@@ -81,7 +81,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
 
     return (
         <Dialog open={isOpen} onOpenChange={(open) => { if (!open) { resetSelection(); onClose(); } }}>
-            <DialogContent className="!w-[95vw] !max-w-[1400px] !h-[85vh] p-0 gap-0 overflow-hidden" showCloseButton={false}>
+            <DialogContent className="!w-full sm:!w-[95vw] !max-w-[1400px] !h-[100dvh] sm:!h-[85vh] p-0 gap-0 overflow-hidden border-none sm:border-solid" showCloseButton={false}>
                 <DialogTitle className="sr-only">{product.nombre_producto}</DialogTitle>
 
                 {/* Close button */}
@@ -92,9 +92,9 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                     <X className="h-4 w-4" />
                 </button>
 
-                <div className="flex h-full w-full">
+                <div className="flex flex-col md:flex-row h-full w-full overflow-y-auto md:overflow-hidden">
                     {/* Left: Images */}
-                    <div className="relative bg-neutral-100 flex-1 min-w-0 flex flex-col">
+                    <div className="relative bg-neutral-100 w-full md:flex-1 md:min-w-0 flex flex-col h-[60vh] md:h-full shrink-0">
                         {/* Main Image Container */}
                         <div className="flex-1 relative overflow-hidden">
                             {/* Main Image */}
@@ -131,7 +131,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                 <>
                                     <button
                                         onClick={() => setCurrentImageIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1))}
-                                        className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-background transition-colors z-10"
+                                        className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-background transition-colors z-10"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -139,7 +139,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                                     </button>
                                     <button
                                         onClick={() => setCurrentImageIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1))}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-background transition-colors z-10"
+                                        className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 w-8 h-8 md:w-10 md:h-10 rounded-full bg-background/90 backdrop-blur-sm shadow-lg flex items-center justify-center hover:bg-background transition-colors z-10"
                                     >
                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -174,7 +174,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                     </div>
 
                     {/* Right: Info */}
-                    <div className="p-8 flex flex-col justify-between h-full overflow-y-auto flex-1 min-w-0">
+                    <div className="p-6 md:p-8 flex flex-col justify-between h-auto md:h-full md:overflow-y-auto flex-1 min-w-0 bg-background">
                         {/* Top Section */}
                         <div>
                             {/* Header */}
@@ -202,7 +202,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                             {/* Features */}
                             <div className="mb-6">
                                 <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">Caracteristicas</span>
-                                <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-3">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 mt-3">
                                     {features.map((feature, index) => (
                                         <span key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                                             <Check className="h-4 w-4 text-foreground flex-shrink-0" />
@@ -214,7 +214,7 @@ export function ProductModal({ isOpen, onClose, product, onAddToCart }: ProductM
                         </div>
 
                         {/* Bottom Section - Purchase Controls */}
-                        <div className="border-t border-border pt-6">
+                        <div className="border-t border-border pt-6 mt-8 sticky bottom-0 bg-background -mx-6 px-6 pb-6 md:pb-0 md:mx-0 md:relative md:bg-transparent md:mt-0 z-20">
                             {/* Stock Indicator */}
                             <div className="mb-5">
                                 <div className="flex items-center justify-between mb-2">
