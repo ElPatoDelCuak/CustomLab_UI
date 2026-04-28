@@ -34,6 +34,13 @@ export function ProductCard(props: ProductCardExtendedProps) {
       className="group cursor-pointer"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onClick={() => {
+        if (!usuario) {
+          router.push("/auth/login")
+          return
+        }
+        onClick?.()
+      }}
     >
       <div className="relative aspect-[3/4] overflow-hidden bg-muted rounded-sm">
         <Image
