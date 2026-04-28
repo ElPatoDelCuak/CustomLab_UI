@@ -124,7 +124,9 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
             const formData = new FormData()
             formData.append("nombre_producto", nombre)
             formData.append("precio_venta", precioVenta)
-            formData.append("precio_original", pOriginal !== null ? pOriginal.toString() : "")
+            if (pOriginal !== null) {
+                formData.append("precio_original", pOriginal.toString())
+            }
             formData.append("precio_costo", precioCosto || "0")
             formData.append("stock", stockTotal || "0")
             formData.append("categoria", categoria)
