@@ -31,16 +31,16 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="text-sm uppercase tracking-wider font-medium">Tienda</h4>
             <nav className="flex flex-col gap-3">
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Novedades
               </Link>
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Mujer
               </Link>
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Hombre
               </Link>
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Accesorios
               </Link>
             </nav>
@@ -52,13 +52,13 @@ export function Footer() {
               <Link href="/information/about#contact" className="text-sm text-background/70 hover:text-background transition-colors">
                 Contacto
               </Link>
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Envíos
               </Link>
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Devoluciones
               </Link>
-              <Link href="#" className="text-sm text-background/70 hover:text-background transition-colors">
+              <Link href="/information/coming-soon" className="text-sm text-background/70 hover:text-background transition-colors">
                 Guía de tallas
               </Link>
             </nav>
