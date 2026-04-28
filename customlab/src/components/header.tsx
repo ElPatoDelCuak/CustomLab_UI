@@ -48,7 +48,7 @@ export function Header() {
             </Button>
             {usuario && (
               <Button variant="ghost" size="icon" asChild>
-                <Link href="/platform/perfil">
+                <Link href="/platform/profile">
                   <User className="h-5 w-5" />
                 </Link>
               </Button>
@@ -57,13 +57,13 @@ export function Header() {
 
           <nav className="hidden lg:flex items-center gap-8">
             <Link href="/platform/catalog" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Catalogo</Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
-            <Link href="#" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
+            <Link href="/information/coming-soon" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Mujer</Link>
+            <Link href="/information/coming-soon" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Hombre</Link>
             <Link href="/information/about" className="text-sm uppercase tracking-wider hover:text-accent transition-colors">Sobre Nosotros</Link>
           </nav>
 
           <Link href="/" className="absolute left-1/2 -translate-x-1/2">
-            <Image src={logo} alt="CustomLab Logo" className="h-45 w-auto" />
+            <Image src={logo} alt="CustomLab Logo" className="h-45 w-auto" priority />
           </Link>
 
           {/* Zona derecha — condicional según sesión */}
@@ -77,7 +77,7 @@ export function Header() {
               // Usuario logueado
               <>
                 <Button variant="ghost" size="icon" asChild className="hidden lg:flex">
-                  <Link href="/platform/perfil">
+                  <Link href="/platform/profile">
                     <User className="h-5 w-5" />
                   </Link>
                 </Button>

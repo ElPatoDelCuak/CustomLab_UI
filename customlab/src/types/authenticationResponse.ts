@@ -5,6 +5,7 @@ export interface Usuario {
   email: string
   rol: string
   doble_factor: boolean | null
+  fecha_nacimiento: string | null
 }
 
 export interface AuthStore {
@@ -13,5 +14,6 @@ export interface AuthStore {
   refreshToken: string | null
   rememberMe: boolean
   setAuth: (usuario: Usuario, accessToken: string, refreshToken: string, rememberMe: boolean) => void
+  setUsuario: (usuario: Usuario) => void
   clearAuth: () => void
 }

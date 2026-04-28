@@ -35,6 +35,8 @@ export const usePlatformStore = create<AuthStore>()(
       rememberMe: false,
       setAuth: (usuario, accessToken, refreshToken, rememberMe) =>
         set({ usuario, accessToken, refreshToken, rememberMe }),
+      setUsuario: (usuario) =>
+        set({ usuario }),
       clearAuth: () =>
         set({ usuario: null, accessToken: null, refreshToken: null, rememberMe: false }),
     }),

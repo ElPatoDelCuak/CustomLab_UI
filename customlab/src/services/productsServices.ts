@@ -45,6 +45,7 @@ export const useProductsServices = () => {
                 personalizable: product.personalizable,
                 nuevo: product.nuevo,
                 oferta: product.oferta,
+                precio_costo: product.precio_costo,
                 tallas: product.tallas,
                 caracteristicas: product.caracteristicas,
             }));
@@ -99,6 +100,7 @@ export const useProductsServices = () => {
                 personalizable: product.personalizable,
                 nuevo: product.nuevo,
                 oferta: product.oferta,
+                precio_costo: product.precio_costo,
                 tallas: product.tallas,
                 caracteristicas: product.caracteristicas,
             }));
@@ -158,6 +160,7 @@ export const useProductsServices = () => {
                 personalizable: product.personalizable,
                 nuevo: product.nuevo,
                 oferta: product.oferta,
+                precio_costo: product.precio_costo,
                 tallas: tallas,
                 caracteristicas: caracteristicas,
             };
@@ -231,5 +234,34 @@ export const useProductsServices = () => {
         }
     };
 
-    return { getProducts, getFeaturedProducts, getProductById, postProductFormData, deleteProduct };
+    const updateProductFormData = async (id: number, formData: FormData): Promise<ApiResponse<any>> => {
+        try {
+            const response = await apiClient(`/api/productos/update/${id}/`, {
+                method: "PATCH",
+                body: formData,
+            });
+
+            const payload = (await response.json()) as ApiResponse<any>;
+
+            if (!response.ok) {
+                return {
+                    success: false,
+                    message: payload.message || `Error HTTP ${response.status}`,
+                };
+            }
+
+            return {
+                success: payload.success,
+                message: payload.message,
+                data: payload.data,
+            };
+        } catch {
+            return {
+                success: false,
+                message: "No se pudo conectar con el servidor",
+            };
+        }
+    };
+
+    return { getProducts, getFeaturedProducts, getProductById, postProductFormData, updateProductFormData, deleteProduct };
 };
