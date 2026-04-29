@@ -120,7 +120,7 @@ export default function SobreNosotrosPage() {
             <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-8">
               {[
                 { name: "Moussa Boudhafri", role: "Desarrollador Web", image: "/img/team/team1.jpg" },
-                { name: "David Juncosa", role: "Desarollador/a Web", image: "/img/team/david.jpeg" },
+                { name: "David Juncosa", role: "Desarollador Web", image: "/img/team/david.jpeg" },
               ].map((member) => (
                 <div key={member.name} className="text-center">
                   <div
