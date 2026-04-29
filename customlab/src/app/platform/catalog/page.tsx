@@ -141,7 +141,9 @@ export default function CatalogPage() {
 
     if (filters.features.length > 0) {
       result = result.filter((p) =>
-        p.caracteristicas?.some((c) => filters.features.includes(c.id_caracteristica.toString()))
+        filters.features.every((featureId) =>
+          p.caracteristicas?.some((c) => c.id_caracteristica.toString() === featureId)
+        )
       )
     }
 
