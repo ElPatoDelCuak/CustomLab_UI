@@ -126,9 +126,9 @@ export default function LoginPage() {
             {/* Recordarme y Olvidé contraseña */}
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Checkbox 
-                  id="remember" 
-                  className="border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent" 
+                <Checkbox
+                  id="remember"
+                  className="border-border data-[state=checked]:bg-accent data-[state=checked]:border-accent"
                   checked={rememberMe}
                   onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                 />
@@ -137,7 +137,7 @@ export default function LoginPage() {
                 </label>
               </div>
               <Link
-                href="/forgot-password"
+                href="/information/coming-soon"
                 className="text-sm text-accent hover:text-accent/80 transition-colors"
               >
                 ¿Olvidaste tu contraseña?
