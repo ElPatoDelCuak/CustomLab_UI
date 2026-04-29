@@ -9,15 +9,15 @@ interface FetchOptions extends RequestInit {
 export async function apiClient(endpoint: string, options: FetchOptions = {}) {
     const { accessToken, refreshToken, rememberMe, setAuth, clearAuth, usuario } = usePlatformStore.getState();
 
-    // Prepare headers
+    //Preparar los headers
     const headers: Record<string, string> = { ...options.headers };
 
-    // Inject Authorization header if token exists
+    //Si existe el token, añadimos el token de autorización
     if (accessToken) {
         headers["Authorization"] = `Bearer ${accessToken}`;
     }
 
-    // Set JSON content-type if not FormData
+    //Set JSON content-type si no es FormData
     if (!(options.body instanceof FormData) && !headers["Content-Type"]) {
         headers["Content-Type"] = "application/json";
     }
@@ -32,7 +32,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
     try {
         let response = await fetch(url, config);
 
-        // If response 401, refresh token (Potentially expired token)
+        // Si response 401, refresh token (Potentially expired token)
         if (response.status === 401 && refreshToken) {
             console.warn("Access token expired. Attempting silent refresh...");
 
@@ -47,13 +47,13 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
                 const refreshData = await refreshResponse.json();
                 const newAccessToken = refreshData.data?.access || refreshData.access;
 
-                //If refresh token is valid, update the token
+                //Si el token es válido, actualizamos el token
                 if (newAccessToken && usuario) {
                     setAuth(usuario, newAccessToken, refreshToken, rememberMe);
 
                     console.info("Token refreshed successfully. Retrying original request...");
 
-                    // Retry the original request with the new token
+                    // Reintentar la petición original con el nuevo token
                     config.headers = {
                         ...headers,
                         "Authorization": `Bearer ${newAccessToken}`,
@@ -62,7 +62,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
                     response = await fetch(url, config);
                 }
             } else {
-                //If refresh token is invalid, log out and redirect to login
+                //Si refresh token es inválido, cerramos sesión y redirigimos a login
                 console.error("Refresh token expired or invalid. Logging out...");
                 clearAuth();
                 if (typeof window !== "undefined") {

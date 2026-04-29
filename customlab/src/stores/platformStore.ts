@@ -4,11 +4,13 @@ import { persist, createJSONStorage } from 'zustand/middleware'
 import { Usuario, AuthStore } from '../types/authenticationResponse'
 
 const cookieStorage = {
+  //PLATFORM - Obtiene el valor de una cookie por nombre
   getItem: (name: string) => {
     const cookies = document.cookie.split('; ')
     const cookie = cookies.find(c => c.startsWith(`${name}=`))
     return cookie ? decodeURIComponent(cookie.split('=')[1]) : null
   },
+  //PLATFORM - Establece el valor de una cookie por nombre
   setItem: (name: string, value: string) => {
     let maxAge = ''
     try {
@@ -21,12 +23,15 @@ const cookieStorage = {
     }
     document.cookie = `${name}=${encodeURIComponent(value)}; path=/${maxAge}`
   },
+  //PLATFORM - Elimina el valor de una cookie por nombre
   removeItem: (name: string) => {
     document.cookie = `${name}=; path=/; max-age=0`
   },
 }
 
+//PLATFORM - Crea el store de la plataforma
 export const usePlatformStore = create<AuthStore>()(
+  //PLATFORM - Persistencia del store
   persist(
     (set) => ({
       usuario: null,
