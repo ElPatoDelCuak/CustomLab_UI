@@ -66,7 +66,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
                 console.error("Refresh token expired or invalid. Logging out...");
                 clearAuth();
                 if (typeof window !== "undefined") {
-                    window.location.href = "/login";
+                    window.location.href = "/auth/login";
                 }
                 throw new Error("Session expired. Please log in again.");
             }
