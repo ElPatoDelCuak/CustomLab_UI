@@ -23,6 +23,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
             cantidad: item.cantidad,
             precio_unitario: item.producto.precio_unitario,
             precio_total: item.precio_total,
+            precio_original: item.producto.precio_original,
+            precio_total_original: (item.producto.precio_original || item.producto.precio_unitario) * item.cantidad,
+            oferta: item.producto.oferta,
             image: item.producto.imagen,
             stock: item.talla.stock
         }));
@@ -84,19 +87,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 const item = { ...updatedItems[existingIndex] };
                 item.cantidad += cantidad;
                 item.precio_total = item.cantidad * item.precio_unitario;
+                if (item.precio_original) {
+                    item.precio_total_original = item.cantidad * item.precio_original;
+                }
                 updatedItems[existingIndex] = item;
                 return updatedItems;
             }
 
             if (productInfo) {
+                const precio_unitario = productInfo.precio_unitario || 0;
+                const precio_original = productInfo.precio_original || precio_unitario;
                 const newItem: CartItem = {
                     id_producto,
                     id_talla,
                     nombre: productInfo.nombre || "Producto",
                     talla: productInfo.talla || "-",
                     cantidad: cantidad,
-                    precio_unitario: productInfo.precio_unitario || 0,
-                    precio_total: cantidad * (productInfo.precio_unitario || 0),
+                    precio_unitario: precio_unitario,
+                    precio_total: cantidad * precio_unitario,
+                    precio_original: productInfo.precio_original,
+                    precio_total_original: cantidad * precio_original,
+                    oferta: productInfo.oferta,
                     image: productInfo.image || "",
                     stock: productInfo.stock || 999
                 };
@@ -147,7 +158,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
                 return {
                     ...item,
                     cantidad: quantity,
-                    precio_total: quantity * item.precio_unitario
+                    precio_total: quantity * item.precio_unitario,
+                    precio_total_original: quantity * (item.precio_original || item.precio_unitario)
                 };
             }
             return item;

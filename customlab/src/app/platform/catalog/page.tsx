@@ -56,6 +56,8 @@ export default function CatalogPage() {
       nombre: product.nombre_producto,
       talla: size,
       precio_unitario: product.precio,
+      precio_original: product.precio_original,
+      oferta: product.oferta,
       image: product.image_cover,
       stock: sizeObj.stock
     })

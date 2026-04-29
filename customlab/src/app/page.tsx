@@ -35,7 +35,10 @@ export default function LandingPage() {
             nombre: product.nombre_producto,
             talla: size,
             precio_unitario: product.precio,
-            image: product.image_cover
+            precio_original: product.precio_original,
+            oferta: product.oferta,
+            image: product.image_cover,
+            stock: sizeObj.stock
         })
     }
 

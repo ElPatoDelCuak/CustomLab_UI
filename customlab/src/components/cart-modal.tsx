@@ -24,7 +24,9 @@ export function CartModal({
 }: CartModalProps) {
     const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false)
     const total = items.filter(i => i.stock > 0).reduce((acc, item) => acc + item.precio_total, 0)
+    const totalOriginal = items.filter(i => i.stock > 0).reduce((acc, item) => acc + (item.precio_total_original || item.precio_total), 0)
     const totalItems = items.reduce((acc, item) => acc + item.cantidad, 0)
+    const hasDiscount = totalOriginal > total;
 
     const handleClearCart = async () => {
         onClearCart()
@@ -94,13 +96,20 @@ export function CartModal({
                                                         <h3 className={`font-medium text-sm leading-tight line-clamp-2 ${isOutOfStock ? "text-muted-foreground opacity-60" : ""}`}>
                                                             {item.nombre}
                                                         </h3>
-                                                        <button
-                                                            onClick={() => onRemoveItem(item.id_producto, item.id_talla)}
-                                                            className="p-1.5 text-muted-foreground hover:text-destructive transition-colors shrink-0"
-                                                            aria-label="Eliminar producto"
-                                                        >
-                                                            <Trash2 className="h-4 w-4" />
-                                                        </button>
+                                                        <div className="flex flex-col items-end gap-1.5 shrink-0">
+                                                            <button
+                                                                onClick={() => onRemoveItem(item.id_producto, item.id_talla)}
+                                                                className="p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                                                                aria-label="Eliminar producto"
+                                                            >
+                                                                <Trash2 className="h-4 w-4" />
+                                                            </button>
+                                                            {item.oferta && !isOutOfStock && (
+                                                                <span className="px-2 py-0.5 text-[9px] uppercase tracking-wider bg-accent text-accent-foreground font-semibold">
+                                                                    Oferta
+                                                                </span>
+                                                            )}
+                                                        </div>
                                                     </div>
 
                                                     <p className={`text-xs text-muted-foreground mt-1 ${isOutOfStock ? "opacity-50" : ""}`}>
@@ -153,10 +162,26 @@ export function CartModal({
                                                             </button>
                                                         </div>
 
-                                                        <div className="text-right">
-                                                            <p className="font-medium">{item.precio_total.toFixed(2)} &euro;</p>
+                                                        <div className="text-right flex flex-col justify-end">
+                                                            {item.oferta && item.precio_total_original && (
+                                                                <p className="text-[11px] text-muted-foreground line-through decoration-muted-foreground/50 leading-none mb-0.5">
+                                                                    {item.precio_total_original.toFixed(2)} &euro;
+                                                                </p>
+                                                            )}
+                                                            <p className={`font-semibold ${item.oferta ? "text-accent" : ""}`}>
+                                                                {item.precio_total.toFixed(2)} &euro;
+                                                            </p>
                                                             {item.cantidad > 1 && (
-                                                                <p className="text-xs text-muted-foreground">{item.precio_unitario.toFixed(2)} &euro;/ud</p>
+                                                                <div className="mt-0.5">
+                                                                    {item.oferta && item.precio_original && (
+                                                                        <span className="text-[9px] text-muted-foreground/60 line-through mr-1">
+                                                                            {item.precio_original.toFixed(2)} &euro;
+                                                                        </span>
+                                                                    )}
+                                                                    <span className="text-[10px] text-muted-foreground font-medium">
+                                                                        {item.precio_unitario.toFixed(2)} &euro;/ud
+                                                                    </span>
+                                                                </div>
                                                             )}
                                                         </div>
                                                     </div>
@@ -167,11 +192,23 @@ export function CartModal({
                                 </div>
                             </div>
                             {/*CARRITO - PIE DEL CARRITO*/}
-                            <SheetFooter className="border-t border-border px-6 py-4 block">
-                                <div className="flex justify-between font-semibold text-base">
+                            <SheetFooter className="border-t border-border px-6 py-5 block bg-muted/5">
+                                {hasDiscount && (
+                                    <div className="flex justify-between text-xs text-muted-foreground mb-1.5 px-0.5">
+                                        <span>Subtotal original</span>
+                                        <span className="line-through">{totalOriginal.toFixed(2)} &euro;</span>
+                                    </div>
+                                )}
+                                <div className="flex justify-between font-bold text-lg mb-1 px-0.5">
                                     <span>Total</span>
-                                    <span>{total.toFixed(2)} &euro;</span>
+                                    <span className={hasDiscount ? "text-accent" : ""}>{total.toFixed(2)} &euro;</span>
                                 </div>
+                                {hasDiscount && (
+                                    <div className="bg-accent/10 text-accent text-[11px] font-bold py-1.5 px-3 rounded-md flex justify-between items-center mb-4 border border-accent/20">
+                                        <span>Ahorras en esta compra</span>
+                                        <span className="text-xs">-{ (totalOriginal - total).toFixed(2) } &euro;</span>
+                                    </div>
+                                )}
 
                                 <Button
                                     className="w-full mt-4"

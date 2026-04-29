@@ -6,6 +6,9 @@ export interface CartItem {
     cantidad: number;
     precio_unitario: number;
     precio_total: number;
+    precio_original?: number;
+    precio_total_original?: number;
+    oferta?: boolean;
     image: string;
     stock: number;
 }
@@ -19,6 +22,8 @@ export interface CartBackendItem {
     producto: {
         nombre_producto: string;
         precio_unitario: number;
+        precio_original?: number;
+        oferta?: boolean;
         imagen: string;
         categoria: string;
     };
