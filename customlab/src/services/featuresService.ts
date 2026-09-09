@@ -8,7 +8,7 @@ import { apiClient } from "@/services/apiClient";
 export const useFeaturesServices = () => {
     const getCaracteristics = async (): Promise<ApiResponse<CaracteristicsResponse[]>> => {
         try {
-            const response = await apiClient("/api/caracteristicas/", {
+            const response = await apiClient("/customlab/api/caracteristicas/", {
                 method: "GET",
             });
 
@@ -42,7 +42,7 @@ export const useFeaturesServices = () => {
 
     const createCaracteristica = async (caracteristica: string): Promise<ApiResponse<CaracteristicsResponse>> => {
         try {
-            const response = await apiClient("/api/caracteristicas/create/", {
+            const response = await apiClient("/customlab/api/caracteristicas/create/", {
                 method: "POST",
                 body: JSON.stringify({ caracteristica }),
             });
@@ -71,7 +71,7 @@ export const useFeaturesServices = () => {
 
     const deleteCaracteristica = async (id: number): Promise<ApiResponse<null>> => {
         try {
-            const response = await apiClient(`/api/caracteristicas/delete/${id}/`, {
+            const response = await apiClient(`/customlab/api/caracteristicas/delete/${id}/`, {
                 method: "DELETE",
             });
 

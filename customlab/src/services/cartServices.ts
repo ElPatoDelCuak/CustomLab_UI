@@ -7,12 +7,12 @@ import { CartBackendItem } from "@/types/cartTypes";
  */
 export const useCartServices = () => {
     const getCart = async (): Promise<ApiResponse<CartBackendItem[]>> => {
-        const response = await apiClient("/api/carrito/", { method: "GET" });
+        const response = await apiClient("/customlab/api/carrito/", { method: "GET" });
         return await response.json();
     };
 
     const addToCart = async (id_producto: number, id_talla: number, cantidad: number): Promise<ApiResponse<any>> => {
-        const response = await apiClient("/api/carrito/add/", {
+        const response = await apiClient("/customlab/api/carrito/add/", {
             method: "POST",
             body: JSON.stringify({ id_producto, id_talla, cantidad }),
         });
@@ -20,7 +20,7 @@ export const useCartServices = () => {
     };
 
     const updateQuantity = async (id_producto: number, id_talla: number, cantidad: number): Promise<ApiResponse<any>> => {
-        const response = await apiClient("/api/carrito/update/", {
+        const response = await apiClient("/customlab/api/carrito/update/", {
             method: "PUT",
             body: JSON.stringify({ id_producto, id_talla, cantidad }),
         });
@@ -28,7 +28,7 @@ export const useCartServices = () => {
     };
 
     const removeItem = async (id_producto: number, id_talla: number): Promise<ApiResponse<any>> => {
-        const response = await apiClient("/api/carrito/remove/", {
+        const response = await apiClient("/customlab/api/carrito/remove/", {
             method: "DELETE",
             body: JSON.stringify({ id_producto, id_talla }),
         });
@@ -36,7 +36,7 @@ export const useCartServices = () => {
     };
 
     const clearCart = async (): Promise<ApiResponse<any>> => {
-        const response = await apiClient("/api/carrito/clear/", { method: "DELETE" });
+        const response = await apiClient("/customlab/api/carrito/clear/", { method: "DELETE" });
         return await response.json();
     };
 

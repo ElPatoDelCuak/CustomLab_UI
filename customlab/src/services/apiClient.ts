@@ -37,7 +37,7 @@ export async function apiClient(endpoint: string, options: FetchOptions = {}) {
             console.warn("Access token expired. Attempting silent refresh...");
 
             // Refresh token
-            const refreshResponse = await fetch(`${API_URL}/api/login/refresh/`, {
+            const refreshResponse = await fetch(`${API_URL}/customlab/api/login/refresh/`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ refresh: refreshToken }),

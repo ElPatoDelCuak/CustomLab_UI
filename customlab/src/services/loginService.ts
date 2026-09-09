@@ -6,7 +6,7 @@ import { apiClient } from '@/services/apiClient'
  * Uses apiClient to maintain consistency, although auth header won't be present yet.
  */
 export async function loginService(email: string, password: string, rememberMe: boolean = false) {
-  const res = await apiClient("/api/login/", {
+  const res = await apiClient("/customlab/api/login/", {
     method: 'POST',
     body: JSON.stringify({ email, password }),
   })

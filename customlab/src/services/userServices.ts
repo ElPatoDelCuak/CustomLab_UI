@@ -9,7 +9,7 @@ export const useUserServices = () => {
      */
     const getMyUser = async () => {
         try {
-            const response = await apiClient('/api/usuario/my/')
+            const response = await apiClient('/customlab/api/usuario/my/')
             
             // Try to parse JSON safely
             let json: any = {}
@@ -46,7 +46,7 @@ export const useUserServices = () => {
      */
     const updatePassword = async (userId: number, oldPassword: string, newPassword: string) => {
         try {
-            const response = await apiClient(`/api/usuarios/update-password/${userId}/`, {
+            const response = await apiClient(`/customlab/api/usuarios/update-password/${userId}/`, {
                 method: 'PATCH',
                 body: JSON.stringify({
                     old_password: oldPassword,
@@ -87,7 +87,7 @@ export const useUserServices = () => {
      */
     const deleteUser = async (userId: number) => {
         try {
-            const response = await apiClient(`/api/usuarios/delete/${userId}/`, {
+            const response = await apiClient(`/customlab/api/usuarios/delete/${userId}/`, {
                 method: 'DELETE'
             })
 
@@ -130,7 +130,7 @@ export const useUserServices = () => {
         doble_factor?: boolean;
     }) => {
         try {
-            const response = await apiClient(`/api/usuarios/update/${userId}/`, {
+            const response = await apiClient(`/customlab/api/usuarios/update/${userId}/`, {
                 method: 'PATCH',
                 body: JSON.stringify(payload)
             })

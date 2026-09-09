@@ -6,7 +6,7 @@ import { apiClient } from "@/services/apiClient";
  */
 export async function registerService(payload: RegisterPayload): Promise<{ success: boolean; message: string }> {
   try {
-    const res = await apiClient("/api/usuarios/create/", {
+    const res = await apiClient("/customlab/api/usuarios/create/", {
       method: 'POST',
       body: JSON.stringify(payload),
     });

@@ -9,7 +9,7 @@ import { apiClient } from "@/services/apiClient";
 export const useProductsServices = () => {
     const getProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
-            const response = await apiClient("/api/productos/", {
+            const response = await apiClient("/customlab/api/productos/", {
                 method: "GET",
             });
 
@@ -64,7 +64,7 @@ export const useProductsServices = () => {
 
     const getFeaturedProducts = async (): Promise<ApiResponse<ProductCardProps[]>> => {
         try {
-            const response = await apiClient("/api/productos/featured/", {
+            const response = await apiClient("/customlab/api/productos/featured/", {
                 method: "GET",
             });
 
@@ -119,7 +119,7 @@ export const useProductsServices = () => {
 
     const getProductById = async (id: string | number): Promise<ApiResponse<ProductCardProps>> => {
         try {
-            const response = await apiClient(`/api/productos/${id}`, {
+            const response = await apiClient(`/customlab/api/productos/${id}`, {
                 method: "GET",
             });
 
@@ -179,7 +179,7 @@ export const useProductsServices = () => {
 
     const postProductFormData = async (formData: FormData): Promise<ApiResponse<BackendProduct>> => {
         try {
-            const response = await apiClient("/api/productos/create/", {
+            const response = await apiClient("/customlab/api/productos/create/", {
                 method: "POST",
                 body: formData,
             });
@@ -208,7 +208,7 @@ export const useProductsServices = () => {
 
     const deleteProduct = async (id: string | number): Promise<ApiResponse<BackendProduct>> => {
         try {
-            const response = await apiClient(`/api/productos/delete/${id}/`, {
+            const response = await apiClient(`/customlab/api/productos/delete/${id}/`, {
                 method: "DELETE",
             });
 
@@ -236,7 +236,7 @@ export const useProductsServices = () => {
 
     const updateProductFormData = async (id: number, formData: FormData): Promise<ApiResponse<any>> => {
         try {
-            const response = await apiClient(`/api/productos/update/${id}/`, {
+            const response = await apiClient(`/customlab/api/productos/update/${id}/`, {
                 method: "PATCH",
                 body: formData,
             });
